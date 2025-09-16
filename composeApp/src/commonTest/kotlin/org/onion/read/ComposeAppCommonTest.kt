@@ -20,6 +20,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -45,7 +46,7 @@ class ComposeAppCommonTest {
 
     @Test
     fun requestBookSource() = runTest{
-        val url = "https://www.yckceo.sbs/yuedu/shuyuans/json/id/891.json"
+        val url = "https://www.yckceo.sbs/yuedu/shuyuans/json/id/914.json"
         val requestUrl: String
         val noUaRequest = url.endsWith("#requestWithoutUA")
         requestUrl = if (noUaRequest) {
@@ -70,6 +71,7 @@ class ComposeAppCommonTest {
                         ruler.substring(4, ruler.lastIndexOf("<"))
                     }
                 }
+                println("bookSource-> $this")
                 println("sourceUrl-> $bookSourceUrl")
                 val finalBookSourceUrl = bookSourceUrlRegex.find(bookSourceUrl)?.groupValues?.first() ?: ""
                 launch {
@@ -126,7 +128,7 @@ class ComposeAppCommonTest {
                             val bookKindMatch = bookKindRegex.findAll(kind.url?:"")
                             // 输出需要替换占位的内容
                             bookKindMatch
-                                .map { it.groupValues[1] } // groupValues[0]是完整匹配(如"{{page}}")，[1]是第一个捕获组的内容(如"page")
+                                .map { it.groupValues[0] } // groupValues[0]是完整匹配(如"{{page}}")，[1]是第一个捕获组的内容(如"page")
                                 .toList().let { placeContent ->
                                     println("kind replace content -> $placeContent")
                                 }
@@ -137,7 +139,7 @@ class ComposeAppCommonTest {
                             )
                             val finalKindUrl = bookKindRegex.replace(kind.url ?: ""){ matchResult ->
                                 // groupValues[1] 对应 `(.+?)` 捕获的内容，例如 "page",0则是完整匹配 {{page}}
-                                val key = matchResult.groupValues[1]
+                                val key = matchResult.groupValues[0]
                                 val value = requestParams[key]?.toString()
                                 value ?: matchResult.value
                             }
@@ -152,6 +154,13 @@ class ComposeAppCommonTest {
             }
         }
     }
+
+    private fun extractString(json: JsonElement?, path: String): String? {
+        if (json !is JsonObject) return null
+        val current: JsonElement? = json[path]
+        return (current as? JsonPrimitive)?.content
+    }
+
 
     fun getExploreData(data: JsonObject, ruleExplore: BookListRule) {
         val bookListRule = ruleExplore.bookList ?: return
@@ -183,8 +192,20 @@ class ComposeAppCommonTest {
         }
 
         if (currentElement is JsonArray) {
-            println("Successfully extracted book list: $currentElement")
-            // 在这里处理提取到的JsonArray
+            val bookList = currentElement.map { jsonObject ->
+                BookListRule(
+                    name = extractString(jsonObject, ruleExplore.name!!),
+                    author = extractString(jsonObject, ruleExplore.author!!),
+                    intro = extractString(jsonObject, ruleExplore.intro!!),
+                    kind = extractString(jsonObject, ruleExplore.kind!!),
+                    lastChapter = extractString(jsonObject, ruleExplore.lastChapter!!),
+                    updateTime = extractString(jsonObject, ruleExplore.updateTime!!),
+                    bookUrl = extractString(jsonObject, ruleExplore.bookUrl!!),
+                    coverUrl = extractString(jsonObject, ruleExplore.coverUrl!!),
+                    wordCount = extractString(jsonObject, ruleExplore.wordCount!!)
+                )
+            }
+            println("Successfully extracted book list: $bookList")
         } else {
             println("Warning: The final element is not a JsonArray.")
         }
