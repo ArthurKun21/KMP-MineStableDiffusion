@@ -5,8 +5,26 @@ import com.dokar.quickjs.quickJs
 import kotlinx.coroutines.runBlocking
 import org.onion.read.constant.JsPattern.JS_PATTERN
 import org.onion.read.constant.JsPattern.PAGE_PATTERN
+import org.onion.read.utils.HTTP_JSON
+import org.onion.read.utils.NetworkUtil
+import org.onion.read.utils.RequestMethod
 
-class ExploreRuleParser(var ruleUrl: String,val page: Int? = null) {
+class ExploreRuleParser(val page: Int? = null,private var baseUrl: String = "") {
+
+    var ruleUrl = ""
+        private set
+    var url: String = ""
+        private set
+    private var urlNoQuery: String = ""
+    private var method = RequestMethod.GET
+    private val headerMap = LinkedHashMap<String, String>()
+    private var body: String? = null
+    private var type: String? = null
+        private set
+    private var charset: String? = null
+    private var retry: Int = 0
+    private var useWebView: Boolean = false
+    private var webJs: String? = null
 
     private suspend fun analyzeJs() {
         // 1. 初始化累加器和游标
@@ -92,6 +110,108 @@ class ExploreRuleParser(var ruleUrl: String,val page: Int? = null) {
                         pages.last()
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * 解析Url
+     */
+    private suspend fun analyzeUrl() {
+        val urlMatcher = PAGE_PATTERN.find(ruleUrl)
+        val urlNoOption = if (urlMatcher != null) ruleUrl.substring(0, urlMatcher.range.first)
+        else ruleUrl
+        url = NetworkUtil.getAbsoluteURL(baseUrl, urlNoOption)
+        NetworkUtil.getBaseUrl(url)?.let {
+            baseUrl = it
+        }
+        if (urlNoOption.length != ruleUrl.length) {
+            val urlOptionStr = ruleUrl.substring(urlMatcher!!.range.last)
+            val urlOption = HTTP_JSON.decodeFromString<UrlOption>(urlOptionStr)
+
+            urlOption.let { option ->
+                option.getMethod()?.let {
+                    if (it.equals("POST", true)) method = RequestMethod.POST
+                }
+                option.getHeaderMap()?.forEach { entry ->
+                    headerMap[entry.key.toString()] = entry.value.toString()
+                }
+                option.getBody()?.let {
+                    body = it
+                }
+                type = option.type
+                charset = option.charset
+                retry = option.retry ?: 0
+                useWebView = option.webView ?: false
+                webJs = option.webJs ?: ""
+                option.js?.let { jsStr ->
+                    url = quickJs {
+                        function("result"){
+                            url
+                        }
+                        evaluate(jsStr)
+                    }
+                }
+            }
+        }
+
+    }
+
+    data class UrlOption(
+        private var method: String? = null,
+        var charset: String? = null,
+        private var headers: Any? = null,
+        private var body: Any? = null,
+        /**
+         * 源Url
+         **/
+        private var origin: String? = null,
+        /**
+         * 重试次数
+         **/
+        var retry: Int? = null,
+        /**
+         * 类型
+         **/
+        var type: String? = null,
+        /**
+         * 是否使用webView
+         **/
+        var webView: Boolean? = null,
+        /**
+         * webView中执行的js
+         **/
+        var webJs: String? = null,
+        /**
+         * 解析完url参数时执行的js
+         * 执行结果会赋值给url
+         */
+        var js: String? = null,
+        /**
+         * 服务器id
+         */
+        private var serverID: Long? = null,
+        /**
+         * webview等待页面加载完毕的延迟时间（毫秒）
+         */
+        private var webViewDelayTime: Long? = null,
+    ){
+
+        fun getMethod(): String? {
+            return method
+        }
+
+        fun getHeaderMap(): Map<*, *>? {
+            return when (val value = headers) {
+                is Map<*, *> -> value
+                is String -> HTTP_JSON.decodeFromString<Map<String, Any>>(value)
+                else -> null
+            }
+        }
+
+        fun getBody(): String? {
+            return body?.let {
+                it as? String ?: HTTP_JSON.encodeToString(it)
             }
         }
     }
