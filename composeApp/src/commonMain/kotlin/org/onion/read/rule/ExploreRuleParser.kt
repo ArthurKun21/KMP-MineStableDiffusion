@@ -154,7 +154,7 @@ class ExploreRuleParser(val page: Int? = null,private var baseUrl: String = "") 
                 }
             }
         }
-
+        println("explore url -> $url")
     }
 
     data class UrlOption(

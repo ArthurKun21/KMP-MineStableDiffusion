@@ -9,7 +9,6 @@ import com.onion.model.rule.BookListRule
 import com.onion.network.constant.UA_NAME
 import com.onion.network.di.getHttpClient
 import com.skydoves.sandwich.getOrElse
-import com.skydoves.sandwich.getOrThrow
 import com.skydoves.sandwich.ktor.getApiResponse
 import com.skydoves.sandwich.onSuccess
 import io.ktor.client.request.header
@@ -46,7 +45,7 @@ class ComposeAppCommonTest {
 
     @Test
     fun requestBookSource() = runTest{
-        val url = "https://www.yckceo.sbs/yuedu/shuyuans/json/id/914.json"
+        val url = "https://www.yckceo.sbs/yuedu/shuyuans/json/id/811.json"
         val requestUrl: String
         val noUaRequest = url.endsWith("#requestWithoutUA")
         requestUrl = if (noUaRequest) {
@@ -61,7 +60,7 @@ class ComposeAppCommonTest {
                 header(UA_NAME, "null")
             }
         }.onSuccess {
-            data.get(2).run {
+            data.get(3).run {
                 val ruler = exploreUrl ?: ""
                 var jsStr = ruler
                 if (ruler.startsWith("<js>", true) || ruler.startsWith("@js:", true)){
@@ -71,7 +70,7 @@ class ComposeAppCommonTest {
                         ruler.substring(4, ruler.lastIndexOf("<"))
                     }
                 }
-                println("bookSource-> $this")
+                println("jsStr-> $jsStr")
                 println("sourceUrl-> $bookSourceUrl")
                 val finalBookSourceUrl = bookSourceUrlRegex.find(bookSourceUrl)?.groupValues?.first() ?: ""
                 launch {
@@ -100,15 +99,17 @@ class ComposeAppCommonTest {
                                 ""
                             }
                             function("ajax"){
-                                println("ajax -> $it")
                                 val result = runBlocking {
                                     httpClient.getApiResponse<String>(it.first().toString())
                                 }
+                                println("ajax -> ${result.getOrElse { "" }}")
                                 result.getOrElse { "" }
                             }
                             function("longToast"){
-                                println("js toast -> $it")
-                                ""
+                                println("js toast -> ${it.first()}")
+                            }
+                            function("toast"){
+                                println("js toast -> ${it.first()}")
                             }
                         }
                         function("getArguments"){ args ->
@@ -120,35 +121,23 @@ class ComposeAppCommonTest {
                         function("gets_key"){ args ->
                             ""
                         }
-                        val result = evaluate<Any?>(jsStr.trim())
-                        val kindList = httpJson.decodeFromString<List<BookKind>>(result.toString())
-                        kindList.get(3).let { kind ->
-                            println("kind-> ${kind}")
-                            // 解析还原JS请求地址
-                            val bookKindMatch = bookKindRegex.findAll(kind.url?:"")
-                            // 输出需要替换占位的内容
-                            bookKindMatch
-                                .map { it.groupValues[0] } // groupValues[0]是完整匹配(如"{{page}}")，[1]是第一个捕获组的内容(如"page")
-                                .toList().let { placeContent ->
-                                    println("kind replace content -> $placeContent")
-                                }
-                            // 替换占位请求参数
-                            val requestParams = mapOf(
-                                "page" to 1,
-                                "source.bookSourceUrl" to "$finalBookSourceUrl/"
-                            )
-                            val finalKindUrl = bookKindRegex.replace(kind.url ?: ""){ matchResult ->
-                                // groupValues[1] 对应 `(.+?)` 捕获的内容，例如 "page",0则是完整匹配 {{page}}
-                                val key = matchResult.groupValues[0]
-                                val value = requestParams[key]?.toString()
-                                value ?: matchResult.value
-                            }
-                            val requestBookKindUrl = if(isHttpUrlWithKtor(finalKindUrl)) finalKindUrl else
-                                finalBookSourceUrl+finalKindUrl
-                            println("final kind url -> $requestBookKindUrl")
-                            val exploreData = httpClient.getApiResponse<JsonObject>(requestBookKindUrl).getOrThrow()
-                            getExploreData(exploreData,ruleExplore!!)
+                        val firstParseResult = runCatching {
+                            httpJson.decodeFromString<List<BookKind>>(jsStr.trim())
+                        }.getOrNull()
+                        if(firstParseResult.isNullOrEmpty().not()){
+                            println("kind-> ${firstParseResult[0]}")
+                        }else {
+                            val result = evaluate<Any>(jsStr.trim())
+                            println("kind-> ${result}")
                         }
+                        /*val result = evaluate<List<JsObject>>(jsStr.trim())
+                        result.forEach {
+                            println("kind JsObject-> ${it.entries}")
+                        }*/
+                        /*val kindList = httpJson.decodeFromString<List<BookKind>>(result.toString())
+                        kindList.get(0).let { kind ->
+                            println("kind-> ${kind}")
+                        }*/
                     }
                 }
             }
