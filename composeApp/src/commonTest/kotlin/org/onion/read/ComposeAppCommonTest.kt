@@ -10,6 +10,8 @@ import com.onion.network.constant.UA_NAME
 import com.onion.network.di.getHttpClient
 import com.skydoves.sandwich.getOrElse
 import com.skydoves.sandwich.ktor.getApiResponse
+import com.skydoves.sandwich.message
+import com.skydoves.sandwich.onFailure
 import com.skydoves.sandwich.onSuccess
 import io.ktor.client.request.header
 import kotlinx.coroutines.launch
@@ -20,6 +22,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import org.onion.read.rule.ExploreRuleParser
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -60,7 +63,7 @@ class ComposeAppCommonTest {
                 header(UA_NAME, "null")
             }
         }.onSuccess {
-            data.get(3).run {
+            data.filter { bookSource -> bookSource.exploreUrl.isNullOrEmpty().not() }[1].run {
                 val ruler = exploreUrl ?: ""
                 var jsStr = ruler
                 if (ruler.startsWith("<js>", true) || ruler.startsWith("@js:", true)){
@@ -100,9 +103,12 @@ class ComposeAppCommonTest {
                             }
                             function("ajax"){
                                 val result = runBlocking {
-                                    httpClient.getApiResponse<String>(it.first().toString())
+                                    httpClient.getApiResponse<String>(it.first().toString()).onSuccess {
+                                        println("ajax onSuccess -> $data")
+                                    }.onFailure {
+                                        println("ajax onFailure -> ${message()}")
+                                    }
                                 }
-                                println("ajax -> ${result.getOrElse { "" }}")
                                 result.getOrElse { "" }
                             }
                             function("longToast"){
@@ -121,15 +127,18 @@ class ComposeAppCommonTest {
                         function("gets_key"){ args ->
                             ""
                         }
-                        val firstParseResult = runCatching {
+                        var jsonParseResult = runCatching {
                             httpJson.decodeFromString<List<BookKind>>(jsStr.trim())
                         }.getOrNull()
-                        if(firstParseResult.isNullOrEmpty().not()){
-                            println("kind-> ${firstParseResult[0]}")
+                        if(jsonParseResult.isNullOrEmpty().not()){
+                            println("json kind-> ${jsonParseResult}")
                         }else {
-                            val result = evaluate<Any>(jsStr.trim())
-                            println("kind-> ${result}")
+                            val evaluateResult = evaluate<List<BookKind>>(jsStr.trim())
+                            jsonParseResult = evaluateResult
+                            println("evaluate kind-> ${evaluateResult}")
                         }
+                        val exploreRuleParser = ExploreRuleParser(1,bookSourceUrl,jsonParseResult.filter { it.url.isNullOrEmpty().not() }[0].url ?: "")
+                        exploreRuleParser.startParseUrl()
                         /*val result = evaluate<List<JsObject>>(jsStr.trim())
                         result.forEach {
                             println("kind JsObject-> ${it.entries}")

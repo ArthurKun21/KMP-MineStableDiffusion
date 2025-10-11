@@ -1,5 +1,6 @@
 package org.onion.read.rule
 
+import com.dokar.quickjs.binding.JsObject
 import com.dokar.quickjs.binding.function
 import com.dokar.quickjs.quickJs
 import kotlinx.coroutines.runBlocking
@@ -9,7 +10,7 @@ import org.onion.read.utils.HTTP_JSON
 import org.onion.read.utils.NetworkUtil
 import org.onion.read.utils.RequestMethod
 
-class ExploreRuleParser(val page: Int? = null,private var baseUrl: String = "") {
+class ExploreRuleParser(val page: Int? = null,private var baseUrl: String = "",private var exploreUrl: String = "") {
 
     var ruleUrl = ""
         private set
@@ -25,6 +26,19 @@ class ExploreRuleParser(val page: Int? = null,private var baseUrl: String = "") 
     private var retry: Int = 0
     private var useWebView: Boolean = false
     private var webJs: String? = null
+
+    init {
+        ruleUrl = exploreUrl
+    }
+
+    suspend fun startParseUrl(){
+        //执行@js,<js></js>
+        analyzeJs()
+        //替换参数
+        replaceKeyPageJs()
+        //处理URL
+        analyzeUrl()
+    }
 
     private suspend fun analyzeJs() {
         // 1. 初始化累加器和游标
@@ -81,14 +95,13 @@ class ExploreRuleParser(val page: Int? = null,private var baseUrl: String = "") 
             val url = analyze.innerRule("{{", "}}") {
                 val jsEval = runBlocking {
                     quickJs {
-                        evaluate<Any>(it)
+                        function("page"){ args ->
+                            page
+                        }
+                        evaluate<JsObject>(it)
                     }
                 }
-                when {
-                    jsEval is String -> jsEval
-                    jsEval is Double && jsEval % 1.0 == 0.0 -> jsEval.toInt().toString()
-                    else -> jsEval.toString()
-                }
+                jsEval.values.first().toString()
             }
             if (url.isNotEmpty()) ruleUrl = url
         }
