@@ -88,6 +88,9 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutinesTest)
             implementation(libs.quickjs.kt)
+            implementation("org.drewcarlson:ktsoup-core:0.6.0")
+            implementation("org.drewcarlson:ktsoup-fs:0.6.0")
+            implementation("org.drewcarlson:ktsoup-ktor:0.6.0")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

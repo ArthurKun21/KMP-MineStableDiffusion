@@ -1,5 +1,6 @@
 package org.onion.read
 
+import com.dokar.quickjs.alias.func
 import com.dokar.quickjs.binding.define
 import com.dokar.quickjs.binding.function
 import com.dokar.quickjs.quickJs
@@ -63,7 +64,7 @@ class ComposeAppCommonTest {
                 header(UA_NAME, "null")
             }
         }.onSuccess {
-            data.filter { bookSource -> bookSource.exploreUrl.isNullOrEmpty().not() }[1].run {
+            data.filter { bookSource -> bookSource.exploreUrl.isNullOrEmpty().not() }[3].run {
                 val ruler = exploreUrl ?: ""
                 var jsStr = ruler
                 if (ruler.startsWith("<js>", true) || ruler.startsWith("@js:", true)){
@@ -104,7 +105,7 @@ class ComposeAppCommonTest {
                             function("ajax"){
                                 val result = runBlocking {
                                     httpClient.getApiResponse<String>(it.first().toString()).onSuccess {
-                                        println("ajax onSuccess -> $data")
+                                        //println("ajax onSuccess -> $data")
                                     }.onFailure {
                                         println("ajax onFailure -> ${message()}")
                                     }
@@ -126,6 +127,13 @@ class ComposeAppCommonTest {
                         }
                         function("gets_key"){ args ->
                             ""
+                        }
+                        define("org"){
+                            define("jsoup"){
+                                function("parse"){ args ->
+                                    ""
+                                }
+                            }
                         }
                         var jsonParseResult = runCatching {
                             httpJson.decodeFromString<List<BookKind>>(jsStr.trim())
