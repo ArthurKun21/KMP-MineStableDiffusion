@@ -100,11 +100,11 @@ kotlin {
 }
 
 android {
-    namespace = "org.onion.read"
+    namespace = "org.onion.diffusion"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.onion.read"
+        applicationId = "org.onion.diffusion"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -132,11 +132,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "org.onion.read.MainKt"
+        mainClass = "org.onion.diffusion.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.onion.read"
+            packageName = "org.onion.diffusion"
             packageVersion = "1.0.0"
         }
     }

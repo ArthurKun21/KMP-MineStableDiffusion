@@ -1,8 +1,8 @@
 package org.onion.diffusion.ui.navigation.route
 
-import mineread.composeapp.generated.resources.Res
-import mineread.composeapp.generated.resources.home
-import mineread.composeapp.generated.resources.ic_home
+import minediffusion.composeapp.generated.resources.Res
+import minediffusion.composeapp.generated.resources.home
+import minediffusion.composeapp.generated.resources.ic_home
 
 
 sealed interface MainRoute {

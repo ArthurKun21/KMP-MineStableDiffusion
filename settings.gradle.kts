@@ -1,4 +1,4 @@
-rootProject.name = "MineRead"
+rootProject.name = "MineDiffusion"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

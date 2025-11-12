@@ -4,10 +4,10 @@ plugins {
     application
 }
 
-group = "org.onion.read"
+group = "org.onion.diffusion"
 version = "1.0.0"
 application {
-    mainClass.set("org.onion.read.ApplicationKt")
+    mainClass.set("org.onion.diffusion.ApplicationKt")
     
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")

@@ -46,11 +46,11 @@ import androidx.navigation.compose.rememberNavController
 import com.onion.theme.helper.verticalSafePadding
 import com.onion.theme.state.AdaptiveLayoutType
 import kotlinx.coroutines.delay
-import mineread.composeapp.generated.resources.Res
-import mineread.composeapp.generated.resources.dark_theme
-import mineread.composeapp.generated.resources.ic_moon
-import mineread.composeapp.generated.resources.ic_sun
-import mineread.composeapp.generated.resources.light_theme
+import minediffusion.composeapp.generated.resources.Res
+import minediffusion.composeapp.generated.resources.dark_theme
+import minediffusion.composeapp.generated.resources.ic_moon
+import minediffusion.composeapp.generated.resources.ic_sun
+import minediffusion.composeapp.generated.resources.light_theme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.onion.diffusion.ui.navigation.NavActions

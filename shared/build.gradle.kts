@@ -50,7 +50,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.onion.read.shared"
+    namespace = "org.onion.diffusion.shared"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

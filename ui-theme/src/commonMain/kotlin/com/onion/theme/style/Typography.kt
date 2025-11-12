@@ -10,12 +10,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import mineread.ui_theme.generated.resources.Res
-import mineread.ui_theme.generated.resources.metropolis_bold
-import mineread.ui_theme.generated.resources.metropolis_light
-import mineread.ui_theme.generated.resources.metropolis_medium
-import mineread.ui_theme.generated.resources.metropolis_regular
-import mineread.ui_theme.generated.resources.metropolis_semibold
+import minediffusion.ui_theme.generated.resources.Res
+import minediffusion.ui_theme.generated.resources.metropolis_bold
+import minediffusion.ui_theme.generated.resources.metropolis_light
+import minediffusion.ui_theme.generated.resources.metropolis_medium
+import minediffusion.ui_theme.generated.resources.metropolis_regular
+import minediffusion.ui_theme.generated.resources.metropolis_semibold
 import org.jetbrains.compose.resources.Font
 
 data class Typography(

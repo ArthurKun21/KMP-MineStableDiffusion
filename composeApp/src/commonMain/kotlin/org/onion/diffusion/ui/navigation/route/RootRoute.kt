@@ -1,9 +1,9 @@
 package org.onion.diffusion.ui.navigation.route
 
 import androidx.navigation.NamedNavArgument
-import mineread.composeapp.generated.resources.Res
-import mineread.composeapp.generated.resources.ic_help
-import mineread.composeapp.generated.resources.unknown
+import minediffusion.composeapp.generated.resources.Res
+import minediffusion.composeapp.generated.resources.ic_help
+import minediffusion.composeapp.generated.resources.unknown
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
