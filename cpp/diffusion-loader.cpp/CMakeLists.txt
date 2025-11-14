@@ -1,7 +1,7 @@
 # 设置 CMake 最低版本要求
 cmake_minimum_required(VERSION 3.22.1)
 # 定义项目名称
-project("loader")
+project("sdloader")
 
 
 
@@ -49,7 +49,19 @@ set(GGML_VULKAN ON CACHE BOOL "ggml: vulkan" FORCE)
 # 在 Android NDK 的默认链接路径中查找 Vulkan 的动态库 (libvulkan.so)，并将其路径存入 VULKAN_LIB 变量。REQUIRED 表示如果找不到就报错
 find_library(VULKAN_LIB vulkan REQUIRED)
 # 手动指定了 Vulkan C 头文件 (vulkan/vulkan.h 等) 的位置。这里的路径是硬编码的，指向 NDK 内部的 sysroot。虽然有效，但如果 NDK 结构变化，可能会失效
-set(Vulkan_INCLUDE_DIR "${ANDROID_NDK}/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/include")
+# 根据主机操作系统（Host OS）动态确定 NDK 预编译工具链的路径
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
+    set(HOST_PREBUILT_DIR "windows-x86_64")
+elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
+    set(HOST_PREBUILT_DIR "linux-x86_64")
+elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
+    set(HOST_PREBUILT_DIR "darwin-x86_64")
+else()
+    message(FATAL_ERROR "不支持的主机操作系统: ${CMAKE_HOST_SYSTEM_NAME}")
+endif()
+# 指定 Vulkan C 头文件 (vulkan/vulkan.h 等) 头文件的位置，现在路径是跨平台的,
+set(Vulkan_INCLUDE_DIR "${ANDROID_NDK}/toolchains/llvm/prebuilt/${HOST_PREBUILT_DIR}/sysroot/usr/include")
+
 
 # 使用 FetchContent 下载 Vulkan C++ 头文件,这是现代 CMake 的一个核心功能，用于在配置阶段自动下载和集成外部依赖
 # FetchContent_Declare: 声明一个名为 vulkan_hpp 的依赖项，告诉 CMake 从哪里 (Git 仓库) 和哪个版本 (Git Tag) 下载
@@ -78,7 +90,7 @@ endif()
 
 # 添加预编译的库
 # A-add_subdirectory:将另一个目录下的 CMake 项目包含到当前的构建流程中。这个子目录必须有自己的 CMakeLists.txt 文件
-add_subdirectory(${STABLE_DIFFUSION_DIR} ${STABLE_DIFFUSION_DIR}/stable-diffusion.cpp)
+add_subdirectory(${STABLE_DIFFUSION_DIR} ${CMAKE_CURRENT_BINARY_DIR}/stable-diffusion.cpp)
 # B-定义JNI库 sdloader 库, 指定是STATIC (静态库, .a) 还是 SHARED (共享库, .so)。模块化的内部库通常设为 STATIC，最终给 JNI 调用的设为 SHARED
 add_library(sdloader SHARED diffusion_loader_jni.cpp)
 # C-指定头文件 (.h, .hpp) 的搜索路径。为JNI库添加 stable-diffusion 的头文件搜索路径
