@@ -10,3 +10,9 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.kotlin.serialization) apply false
 }
+
+// Project Dir
+val dirProject: Directory = layout.projectDirectory
+// Cpp
+val dirCpp by extra(dirProject.dir("cpp"))
+val dirCppMakeFile by extra("${dirCpp}/diffusion-loader.cpp/CMakeLists.txt")

@@ -124,6 +124,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
+    externalNativeBuild {
+        cmake {
+            path = file("${rootProject.extra["dirCppMakeFile"]}")
+            version = "3.22.1"
+        }
+    }
 }
 
 dependencies {
