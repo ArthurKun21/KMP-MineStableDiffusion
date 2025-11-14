@@ -26,8 +26,8 @@ set(SD_MUSA OFF CACHE BOOL "sd: musa backend" FORCE)
 
 # 为交叉编译环境下的主机编译任务创建一个临时的工具链文件,确保在交叉编译大环境下,部分代码能正确地为主机进行编译
 if (CMAKE_MAKE_PROGRAM)
-    set(_GGML_VK_HOST_TC "${CMAKE_CURRENT_BINARY_DIR}/ggml_vulkan_host_toolchain.cmake")
     # 这段代码动态地生成了一个 .cmake 文件 (ggml_vulkan_host_toolchain.cmake)。
+    set(_GGML_VK_HOST_TC "${CMAKE_CURRENT_BINARY_DIR}/ggml_vulkan_host_toolchain.cmake")
     # 这个文件告诉 CMake，当编译那个特定的主机工具时，请不要使用 Android NDK 的交叉编译器，而是使用本机的编译器 (CMAKE_HOST_SYSTEM_NAME) 和构建系统 (Ninja)
     # 将 ninja.exe 的 Windows 路径转换为 CMake 兼容的路径（使用正斜杠）
     file(TO_CMAKE_PATH "${CMAKE_MAKE_PROGRAM}" _NINJA_EXECUTABLE_PATH)
