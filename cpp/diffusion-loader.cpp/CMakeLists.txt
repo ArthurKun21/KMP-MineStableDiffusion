@@ -85,14 +85,13 @@ set(Vulkan_FOUND ON)
 set(Vulkan_INCLUDE_DIR "${Vulkan_INCLUDE_DIR}" CACHE PATH "Vulkan include directory" FORCE)
 set(Vulkan_LIBRARY "${VULKAN_LIB}" CACHE FILEPATH "Vulkan library" FORCE)
 
+# 添加预编译的库
+# A-add_subdirectory:将另一个目录下的 CMake 项目包含到当前的构建流程中。这个子目录必须有自己的 CMakeLists.txt 文件
+add_subdirectory(${STABLE_DIFFUSION_DIR} ${CMAKE_CURRENT_BINARY_DIR}/stable-diffusion.cpp)
 # 也许 ggml-vulkan 的构建脚本没有（或无法）自动包含 vulkan_hpp 的路径。这段代码检查 ggml-vulkan 这个目标是否存在，如果存在，就为其添加 vulkan_hpp 的头文件搜索路径
 if (TARGET ggml-vulkan)
     target_include_directories(ggml-vulkan PRIVATE ${vulkan_hpp_SOURCE_DIR})
 endif()
-
-# 添加预编译的库
-# A-add_subdirectory:将另一个目录下的 CMake 项目包含到当前的构建流程中。这个子目录必须有自己的 CMakeLists.txt 文件
-add_subdirectory(${STABLE_DIFFUSION_DIR} ${CMAKE_CURRENT_BINARY_DIR}/stable-diffusion.cpp)
 # B-定义JNI库 sdloader 库, 指定是STATIC (静态库, .a) 还是 SHARED (共享库, .so)。模块化的内部库通常设为 STATIC，最终给 JNI 调用的设为 SHARED
 add_library(sdloader SHARED diffusion_loader_jni.cpp)
 # C-指定头文件 (.h, .hpp) 的搜索路径。为JNI库添加 stable-diffusion 的头文件搜索路径
@@ -105,15 +104,6 @@ target_include_directories(sdloader
         ${STABLE_DIFFUSION_DIR}/thirdparty
 )
 
-# 类似gradle的implementation,给sdloader库添加依赖 android,log(标准的Android NDK库),stable-diffusion
-target_link_libraries(sdloader
-        android log
-        stable-diffusion
-)
-if(SD_VULKAN)
-    target_link_libraries(sdloader vulkan)
-endif()
-
 # 编译优化
 # A-指定所需的 C 和 C++ 标准，确保代码能以正确的语言版本进行编译
 target_compile_features(sdloader PUBLIC c_std_11 cxx_std_17)
@@ -121,6 +111,15 @@ target_compile_features(sdloader PUBLIC c_std_11 cxx_std_17)
 #  -fvisibility=hidden: 非常重要的优化。它将库中所有符号的可见性默认设为隐藏，只有显式导出的（如 JNI 函数）才可见。这能减小库体积，提高加载速度。
 #  -ffunction-sections -fdata-sections: 将每个函数和数据放到独立的节中
 target_compile_options(sdloader PUBLIC -fvisibility=hidden -fvisibility-inlines-hidden -ffunction-sections -fdata-sections)
+# 类似gradle的implementation,给sdloader库添加依赖 android,log(标准的Android NDK库),stable-diffusion
+target_link_libraries(sdloader
+        android log
+        stable-diffusion
+)
+
+if(SD_VULKAN)
+    target_link_libraries(sdloader vulkan)
+endif()
 # C-添加链接器标志。
 #  -Wl,--gc-sections: 配合 -ffunction-sections，告诉链接器移除所有未被使用的代码和数据节（死代码消除），显著减小库体积。
 #  -flto: 启用链接时优化 (Link-Time Optimization)。这是一种强大的全局优化技术，链接器可以在所有代码都可见的情况下进行内联、常量传播等优化，能提升性能并减小体积。
