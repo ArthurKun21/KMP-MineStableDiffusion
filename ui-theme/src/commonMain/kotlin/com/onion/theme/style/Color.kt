@@ -51,3 +51,6 @@ val neutral700 = Color(0xff4d4d4d)
 val neutral800 = Color(0xff3e3e3e)
 val neutral900 = Color(0xff212121)
 val neutral950 = Color(0xff1b1a1a)
+
+val splashBackgroundStart = Color(0xFF000223)
+val splashBackgroundEnd = Color(0xFF0C0934)
