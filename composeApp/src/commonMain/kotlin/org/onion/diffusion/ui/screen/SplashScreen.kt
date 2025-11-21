@@ -41,7 +41,7 @@ import ui.theme.AppTheme
 
 fun NavGraphBuilder.splashScreen(autoToMainPage: () -> Unit){
     composable(RootRoute.Splash.name) {
-        val scale = remember { Animatable(0.7f) }
+        val scale = remember { Animatable(0.3f) }
         val alpha = remember { Animatable(0f) }
 
         LaunchedEffect(true) {
