@@ -7,7 +7,9 @@ import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 import org.onion.diffusion.ui.navigation.NavActions
+import org.onion.diffusion.ui.navigation.route.MainRoute
 import org.onion.diffusion.ui.navigation.route.RootRoute
+import org.onion.diffusion.ui.screen.homeScreen
 import org.onion.diffusion.ui.screen.mainScreen
 import org.onion.diffusion.ui.screen.splashScreen
 import ui.theme.AppTheme
@@ -25,9 +27,12 @@ fun App() {
             startDestination = RootRoute.Splash.name
         ) {
             // ---- 开屏页,CPM启动会有一阵子白屏,还是依据具体平台定制化比较合理 ------
-            splashScreen(autoToMainPage = { rootNavActions.popAndNavigation(RootRoute.MainRoute) })
+            //splashScreen(autoToMainPage = { rootNavActions.popAndNavigation(RootRoute.MainRoute) })
+            splashScreen(autoToMainPage = { rootNavActions.popAndNavigation(MainRoute.HomeRoute) })
             // ---- 首页架构容器 ------
-            mainScreen()
+            // mainScreen()
+            // ---- 首页架构容器,暂时不做多tab首页,先搭建起来再说 ------
+            homeScreen()
         }
     }
 }

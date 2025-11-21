@@ -13,18 +13,29 @@ androidx-testExt = "1.2.1"
 composeHotReload = "1.0.0-alpha11"
 composeMultiplatform = "1.8.2"
 android-desugar-jdk-libs = "2.1.5"
+fileKitVersion = "0.10.0-beta03"
 junit = "4.13.2"
 kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.2"
 ktor = "3.2.3"
 kotlinx-serialization = "1.8.0"
 koin = "4.1.0"
+lottieVersion = "2.0.0-rc04"
 quickjs = "1.0.0-alpha13"
 sandwich = "2.1.2"
 logback = "1.5.18"
 compose-adaptive = "1.1.2"
 lifecycle = "2.9.1"
 [libraries]
+#=== UI
+compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "lottieVersion" }
+compottie-dot = { module = "io.github.alexzhirkevich:compottie-dot", version.ref = "lottieVersion" }
+#=== IO
+filekit-coil = { module = "io.github.vinceglb:filekit-coil", version.ref = "fileKitVersion" }
+filekit-core = { module = "io.github.vinceglb:filekit-core", version.ref = "fileKitVersion" }
+filekit-dialogs = { module = "io.github.vinceglb:filekit-dialogs", version.ref = "fileKitVersion" }
+filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "fileKitVersion" }
+#=== Test
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

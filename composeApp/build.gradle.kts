@@ -62,13 +62,10 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
+            // ---- Resource,KMP目前无法跨模块获取Res ------
+            implementation(compose.materialIconsExtended)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            // ---- di ------
+            // ---- DI ------
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
             // ---- App Runtime ------
@@ -77,7 +74,12 @@ kotlin {
             implementation(libs.runtime.savedstate)
             implementation(libs.runtime.viewmodel)
             implementation(libs.runtime.lifecycle)
-            // ---- project module ------
+            // ---- IO ------
+            implementation(libs.filekit.core)
+            implementation(libs.filekit.dialogs)
+            implementation(libs.filekit.dialogs.compose)
+            implementation(libs.filekit.coil)
+            // ---- Project Module ------
             implementation(projects.shared)
             implementation(projects.uiTheme)
             implementation(projects.dataNetwork)

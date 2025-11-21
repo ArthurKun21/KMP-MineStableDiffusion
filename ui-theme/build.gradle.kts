@@ -25,6 +25,8 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
                 implementation(libs.compose.adaptive)
+                implementation(libs.compottie)
+                implementation(libs.compottie.dot)
             }
         }
         named("androidMain") {
