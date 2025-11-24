@@ -68,6 +68,8 @@ kotlin {
             // ---- DI ------
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
             // ---- App Runtime ------
             implementation(libs.runtime.shapes)
             implementation(libs.runtime.navigation)
