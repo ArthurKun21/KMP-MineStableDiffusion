@@ -100,6 +100,13 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }
+
+        val jvmMain by creating {
+            dependencies {
+                //implementation(fileTree(mapOf("dir" to "path/path", "include" to listOf("*.jar"))))
+            }
+        }
+        desktopMain.dependsOn(jvmMain)
     }
 }
 
