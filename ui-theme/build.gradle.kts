@@ -18,15 +18,15 @@ kotlin {
     sourceSets {
         commonMain{
             dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.ui)
-                implementation(compose.components.resources)
-                implementation(compose.components.uiToolingPreview)
-                implementation(libs.compose.adaptive)
-                implementation(libs.compottie)
-                implementation(libs.compottie.dot)
+                api(compose.runtime)
+                api(compose.foundation)
+                api(compose.material3)
+                api(compose.ui)
+                api(compose.components.resources)
+                api(compose.components.uiToolingPreview)
+                api(libs.compose.adaptive)
+                api(libs.compottie)
+                api(libs.compottie.dot)
             }
         }
         named("androidMain") {
