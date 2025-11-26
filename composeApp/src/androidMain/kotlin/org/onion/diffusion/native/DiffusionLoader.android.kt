@@ -16,6 +16,8 @@ actual class DiffusionLoader actual constructor() {
         System.loadLibrary("sdloader")
     }
 
+    private var nativePtr = 0L
+
     actual suspend fun getModelFilePath(): String {
         val androidFile = FileKit.openFilePicker(type = FileKitType.File(listOf(
             "safetensors","ckpt","pt","bin","gguf"
@@ -29,5 +31,34 @@ actual class DiffusionLoader actual constructor() {
     }
 
     actual fun loadModel(modelPath: String) {
+        nativePtr = nativeLoadModel(modelPath,true,true,true)
     }
+
+    actual fun release() {
+        nativeRelease(nativePtr)
+    }
+
+    actual fun txt2Img(
+        handle: Long,
+        prompt: String,
+        negative: String,
+        width: Int,
+        height: Int,
+        steps: Int,
+        cfg: Float,
+        seed: Long
+    ): ByteArray? = nativeTxt2Img(handle,prompt,negative,width,height,steps,cfg,seed)
+
+    private external fun nativeLoadModel(modelPath: String, offloadToCpu: Boolean, keepClipOnCpu: Boolean, keepVaeOnCpu: Boolean): Long
+    private external fun nativeTxt2Img(
+        handle: Long,
+        prompt: String,
+        negative: String,
+        width: Int,
+        height: Int,
+        steps: Int,
+        cfg: Float,
+        seed: Long
+    ): ByteArray?
+    private external fun nativeRelease(handle: Long)
 }
