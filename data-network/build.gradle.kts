@@ -1,9 +1,11 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     id("android-library-convention")
     id("kotlin-library-convention")
+    alias(libs.plugins.ktor)
 }
 android {
     namespace = "com.onion.data.network"
@@ -34,11 +36,6 @@ kotlin {
             }
         }
         named("androidMain") {
-            dependencies {
-                api(libs.ktor.client.okhttp)
-            }
-        }
-        named("desktopMain") {
             dependencies {
                 api(libs.ktor.client.okhttp)
             }
