@@ -80,9 +80,7 @@ import minediffusion.composeapp.generated.resources.ic_avatar_user
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.onion.diffusion.ui.navigation.route.DetailRoute
 import org.onion.diffusion.ui.navigation.route.MainRoute
-import org.onion.diffusion.ui.navigation.route.RootRoute
 import org.onion.diffusion.utils.Animations
 import org.onion.diffusion.viewmodel.ChatViewModel
 
@@ -110,7 +108,7 @@ fun HomeScreen() {
         var showFileDialog by remember { mutableStateOf(true) }
         val coroutineScope = rememberCoroutineScope()
         coroutineScope.launch {
-            chatViewModel.loadingLLMState.collect { state ->
+            chatViewModel.loadingModelState.collect { state ->
                 if(state == 2) showFileDialog = false
             }
         }
@@ -118,10 +116,10 @@ fun HomeScreen() {
             showDialog = showFileDialog,
             selectAction = {
                 coroutineScope.launch(Dispatchers.Default) {
-                    if(chatViewModel.loadingLLMState.value == 1) return@launch
+                    if(chatViewModel.loadingModelState.value == 1) return@launch
                     val file = chatViewModel.selectLLMModelFile()
                     if(file.isBlank()){
-                        chatViewModel.loadingLLMState.emit(0)
+                        chatViewModel.loadingModelState.emit(0)
                         snackbarHostState.showSnackbar("请选择正确的LLM模型文件")
                     }else {
                         chatViewModel.initLLM()
@@ -531,7 +529,7 @@ fun LLMFileSelectTipDialog(
 ) {
     if (showDialog) {
         val chatViewModel = koinViewModel<ChatViewModel>()
-        val loadingState by chatViewModel.loadingLLMState.collectAsState(0)
+        val loadingState by chatViewModel.loadingModelState.collectAsState(0)
         Dialog(
             onDismissRequest = {},
             properties = DialogProperties(dismissOnClickOutside = true)

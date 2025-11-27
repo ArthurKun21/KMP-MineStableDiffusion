@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.onion.model.ChatMessage
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,26 +17,26 @@ import kotlin.time.measureTime
 
 class ChatViewModel  : ViewModel() {
 
-    private var llmTalker:DiffusionLoader = DiffusionLoader()
+    private var diffusionLoader:DiffusionLoader = DiffusionLoader()
     private var modelPath = ""
-    private var initLLM = false
+    private var initModel = false
     // 0 default,1 loading,2 loading completely
-    var loadingLLMState = MutableStateFlow(0)
+    var loadingModelState = MutableStateFlow(0)
 
     suspend fun selectLLMModelFile(): String{
-        loadingLLMState.emit(1)
-        modelPath = llmTalker.getModelFilePath()
+        loadingModelState.emit(1)
+        modelPath = diffusionLoader.getModelFilePath()
         return modelPath
     }
 
     fun initLLM(){
-        if(initLLM) return
-        initLLM = true
+        if(initModel) return
+        initModel = true
         viewModelScope.launch(Dispatchers.Default) {
-            loadingLLMState.emit(1)
+            loadingModelState.emit(1)
             // ---- read chatTemplate and contextSize ------
-            llmTalker.loadModel(modelPath)
-            loadingLLMState.emit(2)
+            diffusionLoader.loadModel(modelPath)
+            loadingModelState.emit(2)
         }
     }
 
