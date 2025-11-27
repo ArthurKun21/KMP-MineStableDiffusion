@@ -1,4 +1,6 @@
 *.iml
+*.dll
+*.dll.a
 .kotlin
 .gradle
 **/build/
@@ -19,3 +21,4 @@ captures
 **/xcshareddata/WorkspaceSettings.xcsettings
 /cpp/diffusion-loader.cpp/build-windows/
 /cpp/libs/
+/composeApp/libsdloader.dll
