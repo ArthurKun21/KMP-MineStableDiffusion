@@ -27,6 +27,8 @@ kotlin {
                 api(libs.compose.adaptive)
                 api(libs.compottie)
                 api(libs.compottie.dot)
+                api(libs.coil.network.ktor)
+                api(libs.coil.compose)
             }
         }
         named("androidMain") {
