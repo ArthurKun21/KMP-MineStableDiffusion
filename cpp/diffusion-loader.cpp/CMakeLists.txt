@@ -10,6 +10,37 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CPP_ROOT_DIR}/libs") # .exe and .dll
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CPP_ROOT_DIR}/libs") # .so and .dylib
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CPP_ROOT_DIR}/libs") # .lib and .a
 
+# JNI检查
+if(CMAKE_SYSTEM_NAME STREQUAL "Android" OR ANDROID)
+    # 这是 Android NDK 构建
+    message(STATUS "Android NDK build detected. NDK JNI headers will be used automatically.")
+else()
+    # 这是非 Android 构建 (例如桌面 Windows, Linux, macOS)
+    message(STATUS "Host JNI build detected (Non-Android). Looking for desktop JDK JNI headers.")
+    if(NOT DEFINED ENV{JAVA_HOME})
+        message(FATAL_ERROR "Please set JAVA_HOME environment variable for host JNI build.")
+    endif()
+    set(JAVA_INCLUDE_DIR "$ENV{JAVA_HOME}/include")
+    include_directories(${JAVA_INCLUDE_DIR}) # 添加 $JAVA_HOME/include
+    # 为不同的桌面平台添加平台特定的 JNI 头文件目录
+    if(WIN32) # Windows (MSVC, MinGW)
+        set(JAVA_INCLUDE_DIR_PLATFORM "$ENV{JAVA_HOME}/include/win32")
+        include_directories(${JAVA_INCLUDE_DIR_PLATFORM})
+    elseif(APPLE) # macOS
+        set(JAVA_INCLUDE_DIR_PLATFORM "$ENV{JAVA_HOME}/include/darwin")
+        include_directories(${JAVA_INCLUDE_DIR_PLATFORM})
+    elseif(UNIX) # Linux 和其他 Unix-like (确保不是 APPLE 或 ANDROID)
+        set(JAVA_INCLUDE_DIR_PLATFORM "$ENV{JAVA_HOME}/include/linux") # 通常是 'linux'
+        include_directories(${JAVA_INCLUDE_DIR_PLATFORM})
+    else()
+        message(WARNING "Host JNI build: Unknown OS for platform-specific JNI headers. Only $JAVA_HOME/include added.")
+    endif()
+    message(STATUS "Host JNI: Added include directory: ${JAVA_INCLUDE_DIR}")
+    if(JAVA_INCLUDE_DIR_PLATFORM AND EXISTS "${JAVA_INCLUDE_DIR_PLATFORM}")
+        message(STATUS "Host JNI: Added platform-specific include directory: ${JAVA_INCLUDE_DIR_PLATFORM}")
+    endif()
+endif()
+
 
 # 创建一个变量指向 stable-diffusion.cpp 目录
 set(DIFFUSION_LOADER_DIR "${CMAKE_SOURCE_DIR}")
@@ -131,19 +162,26 @@ target_include_directories(sdloader
         ${STABLE_DIFFUSION_DIR}
         ${STABLE_DIFFUSION_DIR}/thirdparty
 )
+# 无论在哪个平台, sdloader 都需要链接到 stable-diffusion 核心库
+target_link_libraries(sdloader
+        PUBLIC
+        stable-diffusion
+)
 
 # 编译优化
 # A-指定所需的 C 和 C++ 标准，确保代码能以正确的语言版本进行编译
 target_compile_features(sdloader PUBLIC c_std_11 cxx_std_17)
 # B-添加编译器标志。
-if(ANDROID)
-    #  -fvisibility=hidden: 非常重要的优化。它将库中所有符号的可见性默认设为隐藏，只有显式导出的（如 JNI 函数）才可见。这能减小库体积，提高加载速度。
-    #  -ffunction-sections -fdata-sections: 将每个函数和数据放到独立的节中
-    target_compile_options(sdloader PUBLIC -fvisibility=hidden -fvisibility-inlines-hidden -ffunction-sections -fdata-sections)
-    # 类似gradle的implementation,给sdloader库添加依赖 android,log(标准的Android NDK库),stable-diffusion
+if(ANDROID)# 类似gradle的implementation,给sdloader库添加依赖 android,log(标准的Android NDK库),stable-diffusion
+    # -fvisibility=hidden: 这是针对 Android/Linux 共享库的一项重要优化。
+    # -ffunction-sections -fdata-sections: 将每个函数和数据放到独立的节中
+    # 它默认隐藏所有符号，可以减小库体积并提高加载速度。
+    target_compile_options(sdloader PRIVATE -fvisibility=hidden -fvisibility-inlines-hidden -ffunction-sections -fdata-sections)
+    # 仅在 Android 平台下链接标准的 NDK 库
     target_link_libraries(sdloader
-            android log
-            stable-diffusion
+            PRIVATE
+            android
+            log
     )
     if(SD_VULKAN)
         target_link_libraries(sdloader vulkan)
