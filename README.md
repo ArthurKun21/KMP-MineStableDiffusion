@@ -9,6 +9,7 @@
 ### Tip
 
 - 由于Windows系统对文件路径有260字符的限制,注意路径要尽可能短,要不然会导致CMake构建失败
+- Vulkan 1.2 required: ErrorFeatureNotPresent,报这个错说明设备配置太低了
 
 ### gradle cache dir 
 
