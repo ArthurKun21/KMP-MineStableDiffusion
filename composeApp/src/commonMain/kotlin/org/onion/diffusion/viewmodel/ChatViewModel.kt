@@ -66,11 +66,13 @@ class ChatViewModel  : ViewModel() {
                     println("Image size: ${imageByteArray?.size} bytes")
                     if (imageByteArray != null && imageByteArray.size >= 10) {
                         println("First 10 bytes: ${imageByteArray.take(10).joinToString { it.toString() }}")
-                        // PNG signature: 137 80 78 71 13 10 26 10
+                        // PNG signature: 137 80 78 71 13 10 26 10 (需要使用 and 0xFF 转换为无符号值)
                         // JPEG signature: 255 216 255
                         val isPNG = imageByteArray.size >= 8 &&
-                                imageByteArray[0].toInt() == 137 &&
-                                imageByteArray[1].toInt() == 80
+                                imageByteArray[0].toInt() and 0xFF == 137 &&
+                                imageByteArray[1].toInt() and 0xFF == 80 &&
+                                imageByteArray[2].toInt() and 0xFF == 78 &&
+                                imageByteArray[3].toInt() and 0xFF == 71
                         val isJPEG = imageByteArray.size >= 3 &&
                                 imageByteArray[0].toInt() and 0xFF == 255 &&
                                 imageByteArray[1].toInt() and 0xFF == 216
