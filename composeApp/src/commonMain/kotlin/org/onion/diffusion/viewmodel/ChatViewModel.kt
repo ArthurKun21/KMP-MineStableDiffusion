@@ -9,7 +9,6 @@ import com.onion.model.ChatMessage
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.onion.diffusion.native.DiffusionLoader
@@ -51,14 +50,23 @@ class ChatViewModel  : ViewModel() {
             responseGenerationJob = viewModelScope.launch(Dispatchers.Default) {
                 isInferenceOn = true
                 val duration = measureTime {
-                    //val inputPrompt = query.split("|")
+                    println("\n=== Image Generation Params===")
+                    var negativeContent = defaultNegative
+                    var promptContent = query
+                    if(query.contains("|")){
+                        val inputContent = query.split("|")
+                        negativeContent = inputContent.last()
+                        promptContent = inputContent.first()
+                    }
+                    println("Image prompt: $promptContent")
+                    println("Image negative: $negativeContent")
                     // Call txt2Img to generate image from the query prompt
                     val imageByteArray = diffusionLoader.txt2Img(
-                        prompt = query,
-                        negative = defaultNegative,
+                        prompt = promptContent,
+                        negative = negativeContent,
                         // 768×1024（竖版人像）/ 1024×768（横版场景）/ 1024×1344（高清竖版）
-                        width = 512,
-                        height = 512,
+                        width = 768,
+                        height = 1024,
                         steps = 22,//模型渲染细节的 “迭代次数”，步数越多细节越丰富，但耗时越长（20-30 步性价比最高）
                         cfg = 6f,// 控制模型 “遵守正向提示词” 的严格程度，数值越高越贴合提示词，越低越自由发挥（7.0-9.0 最常用）
                         seed = Clock.System.now().toEpochMilliseconds()

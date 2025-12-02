@@ -543,8 +543,8 @@ private fun AiMessage(
                 alignment = Alignment.Center,
                 contentScale = ContentScale.Inside,
                 modifier = Modifier
-                    .size(256.dp,256.dp)
                     .clip(RoundedCornerShape(8.dp))
+                    .wrapContentSize()
                     .padding(bottom = 4.dp)
             )
         }
