@@ -703,13 +703,13 @@ private fun MagicLoadingAnimation() {
             .fillMaxWidth()
             .height(140.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
-            .padding(24.dp),
+            //.background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+            ,
         contentAlignment = Alignment.Center
     ) {
         // 主呼吸圆环 - 两层叠加
         Box(
-            modifier = Modifier.size(80.dp),
+            modifier = Modifier.size(80.dp).padding(bottom = 28.dp),
             contentAlignment = Alignment.Center
         ) {
             // 外层光晕
