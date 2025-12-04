@@ -1,19 +1,29 @@
 package org.onion.diffusion.ui.screen
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -55,6 +65,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -536,26 +547,32 @@ private fun AiMessage(
     image: ByteArray? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-        if (image != null) {
-            AsyncImage(
-                model = image,
-                contentDescription = "AI Image",
-                alignment = Alignment.Center,
-                contentScale = ContentScale.Inside,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .wrapContentSize()
-                    .padding(bottom = 4.dp)
-            )
-        }
-        if (message.isNotEmpty()) {
-            MediumText(
-                text = message,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .padding(top = 4.dp, end = 8.dp)
-                    .fillMaxWidth()
-            )
+        // 当消息为空且无图片时，显示创意加载动画
+        if (message.isEmpty() && image == null) {
+            MagicLoadingAnimation()
+        } else {
+            // 正常显示逻辑
+            if (image != null) {
+                AsyncImage(
+                    model = image,
+                    contentDescription = "AI Image",
+                    alignment = Alignment.Center,
+                    contentScale = ContentScale.Inside,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .wrapContentSize()
+                        .padding(bottom = 4.dp)
+                )
+            }
+            if (message.isNotEmpty()) {
+                MediumText(
+                    text = message,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier
+                        .padding(top = 4.dp, end = 8.dp)
+                        .fillMaxWidth()
+                )
+            }
         }
     }
 }
@@ -640,5 +657,113 @@ fun LLMFileSelectTipDialog(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun MagicLoadingAnimation() {
+    val infiniteTransition = rememberInfiniteTransition()
+
+    // 渐变背景脉动动画
+    val alphaChange by infiniteTransition.animateFloat(
+        initialValue = 0.3f,
+        targetValue = 0.6f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    // 浮动图标的垂直位置动画
+    val floatOffset by infiniteTransition.animateFloat(
+        initialValue = -8f,
+        targetValue = 8f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    // Shimmer效果的移动动画
+    val shimmerOffset by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1000f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1200, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        )
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = alphaChange),
+                        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = alphaChange),
+                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = alphaChange)
+                    )
+                )
+            )
+            .padding(16.dp)
+    ) {
+        // 浮动的魔法图标
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            listOf("✨", "💫", "🎨", "✨").forEachIndexed { index, icon ->
+                Text(
+                    text = icon,
+                    fontSize = 28.sp,
+                    modifier = Modifier.graphicsLayer {
+                        translationY = floatOffset * (if (index % 2 == 0) 1f else -1f)
+                        alpha = alpha
+                    }
+                )
+            }
+        }
+
+        // Shimmer加载条
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.7f)
+                .height(4.dp)
+                .align(Alignment.BottomCenter)
+                .clip(RoundedCornerShape(2.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(100.dp)
+                    .offset(x = (shimmerOffset % 300).dp)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                                Color.Transparent
+                            )
+                        )
+                    )
+            )
+        }
+
+        // 加载文本
+        Text(
+            text = "AI 正在创作中...",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 4.dp)
+        )
     }
 }
