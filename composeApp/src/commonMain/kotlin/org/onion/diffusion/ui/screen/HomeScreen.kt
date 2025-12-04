@@ -665,7 +665,7 @@ private fun MagicLoadingAnimation() {
     val infiniteTransition = rememberInfiniteTransition()
 
     // 渐变背景脉动动画
-    val alphaChange by infiniteTransition.animateFloat(
+    val alphaOffset by infiniteTransition.animateFloat(
         initialValue = 0.3f,
         targetValue = 0.6f,
         animationSpec = infiniteRepeatable(
@@ -702,9 +702,9 @@ private fun MagicLoadingAnimation() {
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = alphaChange),
-                        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = alphaChange),
-                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = alphaChange)
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = alphaOffset),
+                        MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = alphaOffset),
+                        MaterialTheme.colorScheme.secondaryContainer.copy(alpha = alphaOffset)
                     )
                 )
             )
@@ -724,7 +724,7 @@ private fun MagicLoadingAnimation() {
                     fontSize = 28.sp,
                     modifier = Modifier.graphicsLayer {
                         translationY = floatOffset * (if (index % 2 == 0) 1f else -1f)
-                        alpha = alpha
+                        alpha = alphaOffset
                     }
                 )
             }
