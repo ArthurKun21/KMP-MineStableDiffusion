@@ -1,4 +1,19 @@
- 
+<div align="center">
+
+# Mine Diffusion 🐯
+
+**Kotlin Multiplatform Stable Diffusion**  
+_Only supports VulKun 1.1 or above_
+
+<img src="./docs/splash.jpg" alt="splash" width="800">
+
+</div>
+
+
+## About this Repo
+
+This project is **open sourced and free**. Hope you enjoy it!
+
 ## Build
 
 - 安装Vulkan SDK,并验证好环境变量
