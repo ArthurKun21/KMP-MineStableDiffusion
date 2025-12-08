@@ -155,7 +155,10 @@ fun HomeScreen() {
             },
             onSendClick = {
                 if (chatViewModel.isGenerating.value) {
-                    chatViewModel.stopGeneration()
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar("由于StableDiffusion-CPP未存在中断API,暂不支持中断")
+                    }
+                    //chatViewModel.stopGeneration()
                 } else {
                     if (text.isNotEmpty()) {
                         chatViewModel.sendMessage(text)
