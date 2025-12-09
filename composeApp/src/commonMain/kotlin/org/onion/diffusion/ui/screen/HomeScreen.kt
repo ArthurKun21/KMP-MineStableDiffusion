@@ -673,7 +673,7 @@ fun LLMFileSelectTipDialog(
                             ),
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent) // Make button background transparent
                     ) {
-                        Text(
+                        MediumText(
                             text = if(loadingState == 1) stringResource(Res.string.loading)  else 	stringResource(Res.string.select),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
