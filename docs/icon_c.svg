@@ -1,0 +1,65 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 背景渐变，增加深度感 -->
+    <radialGradient id="bg_grad" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop stop-color="#2A2A3E"/>
+      <stop offset="1" stop-color="#1E1E2F"/>
+    </radialGradient>
+
+    <!-- 内部核心的流动光芒渐变 -->
+    <radialGradient id="core_glow" cx="0.5" cy="0.5" r="0.5" gradientUnits="objectBoundingBox">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.7" stop-color="#00C9FF"/>
+      <stop offset="1" stop-color="#7F52FF" stop-opacity="0.8"/>
+    </radialGradient>
+
+    <!-- 内部核心的第二层色彩，增加丰富度 -->
+    <linearGradient id="core_color_overlay" x1="0.5" y1="0" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#FF0080" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#FFC800" stop-opacity="0.7"/>
+    </linearGradient>
+
+    <!-- 玻璃体的细微边框光泽 -->
+    <linearGradient id="border_glow" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="white" stop-opacity="0.3"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- 玻璃体左上角的高光 -->
+    <linearGradient id="highlight" x1="0.25" y1="0.25" x2="0.75" y2="0.75" gradientUnits="objectBoundingBox">
+      <stop stop-color="white" stop-opacity="0.8" />
+      <stop offset="1" stop-color="white" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. 深色背景 -->
+  <rect width="512" height="512" fill="url(#bg_grad)"/>
+
+  <!-- 2. 主体：玻璃拟态方块 -->
+  <!-- 2.1 玻璃体底色和模糊效果 -->
+  <rect x="80" y="80" width="352" height="352" rx="80" fill="rgba(180, 190, 220, 0.1)" stroke="url(#border_glow)" stroke-width="1.5"/>
+  <g style="filter: blur(50px);">
+    <rect x="80" y="80" width="352" height="352" rx="80" fill="rgba(127, 82, 255, 0.2)"/>
+  </g>
+
+  <!-- 3. 核心：流光能量球 -->
+  <!-- 3.1 基础光晕 (最底层，最模糊) -->
+  <g style="filter: blur(40px); opacity: 0.8;">
+    <circle cx="256" cy="256" r="120" fill="url(#core_glow)" />
+  </g>
+  <!-- 3.2 叠加色彩 (增加颜色层次) -->
+  <g style="filter: blur(30px); opacity: 0.9; mix-blend-mode: overlay;">
+    <circle cx="256" cy="256" r="140" fill="url(#core_color_overlay)"/>
+  </g>
+  <!-- 3.3 明亮内核 (最顶层，最清晰) -->
+  <g style="filter: blur(15px); mix-blend-mode: screen;">
+    <circle cx="256" cy="256" r="80" fill="white" fill-opacity="0.9"/>
+  </g>
+
+  <!-- 4. 玻璃质感细节 -->
+  <!-- 4.1 内部阴影，增加深度 -->
+  <rect x="80" y="80" width="352" height="352" rx="80" stroke="rgba(0, 0, 0, 0.1)" stroke-width="1" style="paint-order: stroke;"/>
+
+  <!-- 4.2 左上角高光，模拟反光 -->
+  <path d="M 160 80 A 80 80 0 0 1 80 160 L 130 130 A 30 30 0 0 0 130 130 L 160 80 Z" fill="url(#highlight)" opacity="0.6"/>
+</svg>

@@ -1,0 +1,28 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景容器 -->
+  <rect width="1024" height="1024" rx="240" fill="#1A1A2A"/>
+  
+  <!-- 核心图形：闪电/画笔 -->
+  <g transform="translate(262, 212) scale(1.0)">
+    <!-- 上半部分：清晰实心 (代表生成完成) -->
+    <path d="M360 0L180 300H320L200 600" stroke="#39FF14" stroke-width="60" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- 下半部分：像素噪点 (代表扩散过程) -->
+    <!-- 我们用一些散落的方块来模拟像素化 -->
+    <rect x="220" y="620" width="40" height="40" rx="4" fill="#39FF14" opacity="0.8"/>
+    <rect x="160" y="650" width="30" height="30" rx="4" fill="#39FF14" opacity="0.6"/>
+    <rect x="280" y="660" width="20" height="20" rx="2" fill="#39FF14" opacity="0.7"/>
+    <rect x="190" y="710" width="25" height="25" rx="2" fill="#39FF14" opacity="0.4"/>
+    <rect x="250" y="730" width="15" height="15" rx="2" fill="#39FF14" opacity="0.3"/>
+    
+    <!-- 装饰性光晕 -->
+    <circle cx="360" cy="0" r="100" fill="#39FF14" fill-opacity="0.2" filter="url(#glow)"/>
+  </g>
+  
+  <!-- 滤镜定义 -->
+  <defs>
+    <filter id="glow" x="-100" y="-100" width="400" height="400" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="40" result="effect1_foregroundBlur"/>
+    </filter>
+  </defs>
+</svg>
