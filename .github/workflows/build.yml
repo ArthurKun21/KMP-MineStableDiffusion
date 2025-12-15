@@ -1,7 +1,20 @@
 name: Build
 
 on:
+  schedule:
+    - cron: '0 3 * * *' # 每天凌晨3点运行一次测试构建
+  # 1. 当代码推送到 main 分支时
   push:
+    branches:
+      - 'main'
+    # 且修改了应用或文档相关文件
+    paths:
+#      - 'composeApp/**'         # Kotlin Multiplatform 核心代码
+      - 'gradle/**'             # Gradle wrapper
+      - 'build.gradle.kts'
+      - 'settings.gradle.kts'
+      - 'gradle.properties'
+      - '.github/workflows/build.yml' # 工作流自身变更
   workflow_call:
 
 jobs:
@@ -117,6 +130,10 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
+
+      # ✅ 新增：增加 Android SDK,避免部分Runner找不到 ANDROID_HOME environment variable
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
