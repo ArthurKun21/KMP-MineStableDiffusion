@@ -6,7 +6,7 @@ on:
   # 1. 当代码推送到 main 分支时
   push:
     branches:
-      - 'main'
+      - 'master'
     # 且修改了应用或文档相关文件
     paths:
 #      - 'composeApp/**'         # Kotlin Multiplatform 核心代码
