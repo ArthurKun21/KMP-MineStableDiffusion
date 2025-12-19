@@ -123,9 +123,9 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 
-fun NavGraphBuilder.homeScreen(){
+fun NavGraphBuilder.homeScreen(onSettingsClick: () -> Unit = {}){
     composable(/*DetailRoute.Home.name*/MainRoute.HomeRoute.name) {
-        HomeScreen()
+        HomeScreen(onSettingsClick)
     }
 }
 
@@ -145,7 +145,7 @@ fun HomeScreen(
         val keyboardController = LocalSoftwareKeyboardController.current
         val focusManager = LocalFocusManager.current
         val snackbarHostState = remember { SnackbarHostState() }
-        var showFileDialog by remember { mutableStateOf(true) }
+        var showFileDialog by remember { mutableStateOf(chatViewModel.modelPath.isEmpty()) }
         val coroutineScope = rememberCoroutineScope()
         coroutineScope.launch {
             chatViewModel.loadingModelState.collect { state ->

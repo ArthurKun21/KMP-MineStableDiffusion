@@ -11,6 +11,7 @@ import org.jetbrains.compose.resources.StringResource
 sealed interface RootRoute {
     data object Splash : RoutePage(name = "Splash")
     data object MainRoute : RoutePage(name = "MainRoute")
+    data object SettingRoute : RoutePage(name = "SettingRoute")
 }
 
 open class RoutePage(

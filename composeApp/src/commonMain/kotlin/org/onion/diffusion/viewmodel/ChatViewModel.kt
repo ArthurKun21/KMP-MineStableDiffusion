@@ -19,10 +19,25 @@ import kotlin.time.measureTime
 class ChatViewModel  : ViewModel() {
 
     private var diffusionLoader:DiffusionLoader = DiffusionLoader()
-    private var modelPath = ""
+    var modelPath = ""
     private var initModel = false
     // 0 default,1 loading,2 loading completely
     var loadingModelState = MutableStateFlow(0)
+    
+    // ========================================================================================
+    //                              Image Generation Settings
+    // ========================================================================================
+    /** Image width - options: 128, 256, 512, 768, 1024 */
+    var imageWidth = mutableStateOf(768)
+    
+    /** Image height - options: 128, 256, 512, 768, 1024 */
+    var imageHeight = mutableStateOf(1024)
+    
+    /** Steps for generation - range: 1-50 */
+    var generationSteps = mutableStateOf(5)
+    
+    /** CFG Scale - range: 1.0-15.0 */
+    var cfgScale = mutableStateOf(2f)
 
     suspend fun selectLLMModelFile(): String{
         loadingModelState.emit(1)
@@ -65,10 +80,10 @@ class ChatViewModel  : ViewModel() {
                         prompt = promptContent,
                         negative = negativeContent,
                         // 768×1024（竖版人像）/ 1024×768（横版场景）/ 1024×1344（高清竖版）
-                        width = 768,
-                        height = 1024,
-                        steps = 5,//模型渲染细节的 “迭代次数”，步数越多细节越丰富，但耗时越长（20-30 步性价比最高）
-                        cfg = 2f,// 控制模型 “遵守正向提示词” 的严格程度，数值越高越贴合提示词，越低越自由发挥（7.0-9.0 最常用）
+                        width = imageWidth.value,
+                        height = imageHeight.value,
+                        steps = generationSteps.value,//模型渲染细节的 “迭代次数”，步数越多细节越丰富，但耗时越长（20-30 步性价比最高）
+                        cfg = cfgScale.value,// 控制模型 “遵守正向提示词” 的严格程度，数值越高越贴合提示词，越低越自由发挥（7.0-9.0 最常用）
                         seed = Clock.System.now().toEpochMilliseconds()
                     )
 

@@ -1,5 +1,6 @@
 package org.onion.diffusion.di
 
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import org.onion.diffusion.viewmodel.BookSourceViewModel
