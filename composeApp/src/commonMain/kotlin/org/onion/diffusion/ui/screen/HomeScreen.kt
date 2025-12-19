@@ -113,7 +113,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
 import org.onion.diffusion.ui.navigation.route.MainRoute
 import org.onion.diffusion.utils.Animations
 import org.onion.diffusion.viewmodel.ChatViewModel
@@ -139,7 +139,8 @@ fun HomeScreen(
             .background(MaterialTheme.colorScheme.background)
             .safeContentPadding()
     ) {
-        val chatViewModel = koinViewModel<ChatViewModel>()
+        // koinInject() 只是单纯地从 Koin 容器中取出这个 Singleton 实例，而不将其绑定到屏幕的生命周期。这样，即使你在屏幕间导航，ChatViewModel 的 Scope 也会一直保持活跃
+        val chatViewModel = koinInject<ChatViewModel>()
         val chatMessages = chatViewModel.currentChatMessages
         var text by remember { mutableStateOf("") }
         val keyboardController = LocalSoftwareKeyboardController.current
@@ -681,7 +682,7 @@ fun LLMFileSelectTipDialog(
     selectAction: () -> Unit
 ) {
     if (showDialog) {
-        val chatViewModel = koinViewModel<ChatViewModel>()
+        val chatViewModel = koinInject<ChatViewModel>()
         val loadingState by chatViewModel.loadingModelState.collectAsState(0)
         Dialog(
             onDismissRequest = {},

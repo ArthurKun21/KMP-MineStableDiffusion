@@ -50,7 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import org.koin.compose.viewmodel.koinViewModel
+import org.koin.compose.koinInject
 import org.onion.diffusion.ui.navigation.route.MainRoute
 import org.onion.diffusion.ui.navigation.route.RootRoute
 import org.onion.diffusion.viewmodel.ChatViewModel
@@ -68,7 +68,7 @@ fun NavGraphBuilder.settingScreen(
 fun SettingScreen(
     onBackClick: () -> Unit = {}
 ) {
-    val chatViewModel = koinViewModel<ChatViewModel>()
+    val chatViewModel = koinInject<ChatViewModel>()
     
     // Direct access to mutableStateOf properties (singleton ViewModel)
     val currentWidth by chatViewModel.imageWidth

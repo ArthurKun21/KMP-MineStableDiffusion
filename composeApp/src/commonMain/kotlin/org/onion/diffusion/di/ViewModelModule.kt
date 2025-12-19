@@ -8,5 +8,5 @@ import org.onion.diffusion.viewmodel.ChatViewModel
 
 val viewModelModule  = module {
     viewModelOf(::BookSourceViewModel)
-    viewModelOf(::ChatViewModel)
+    singleOf(::ChatViewModel)
 }

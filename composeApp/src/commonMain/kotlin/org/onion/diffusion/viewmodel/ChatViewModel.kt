@@ -28,10 +28,10 @@ class ChatViewModel  : ViewModel() {
     //                              Image Generation Settings
     // ========================================================================================
     /** Image width - options: 128, 256, 512, 768, 1024 */
-    var imageWidth = mutableStateOf(768)
+    var imageWidth = mutableStateOf(512)
     
     /** Image height - options: 128, 256, 512, 768, 1024 */
-    var imageHeight = mutableStateOf(1024)
+    var imageHeight = mutableStateOf(512)
     
     /** Steps for generation - range: 1-50 */
     var generationSteps = mutableStateOf(5)
