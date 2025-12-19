@@ -17,8 +17,28 @@
     <string name="ai_avatar">AI头像</string>
     <string name="user_image">用户图片</string>
     <string name="ai_image">AI图片</string>
-    <string name="select_llm_model_title">选择你的LLM模型</string>
+    <string name="select_llm_model_title">选择你的扩散模型</string>
     <string name="loading">加载中...</string>
     <string name="select">选择</string>
     <string name="creating">创建中</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">设置</string>
+    <string name="settings_subtitle">自定义生成参数</string>
+    <string name="settings_back">返回</string>
+    <string name="settings_image_dimensions">图片尺寸</string>
+    <string name="settings_image_dimensions_subtitle">配置输出图片大小</string>
+    <string name="settings_width">宽度</string>
+    <string name="settings_height">高度</string>
+    <string name="settings_quick_presets">快速预设</string>
+    <string name="settings_preset_portrait">人像 (竖屏)</string>
+    <string name="settings_preset_landscape">风景 (横屏)</string>
+    <string name="settings_preset_square">方形</string>
+    <string name="settings_generation_quality">生成质量</string>
+    <string name="settings_generation_quality_subtitle">微调生成细节</string>
+    <string name="settings_steps">迭代步数</string>
+    <string name="settings_steps_description">越高细节越多，越慢</string>
+    <string name="settings_cfg_scale">提示词相关性 (CFG)</string>
+    <string name="settings_cfg_scale_description">低 = 创意 | 高 = 精准</string>
+    <string name="settings_current_configuration">当前配置</string>
 </resources>

@@ -50,6 +50,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import minediffusion.composeapp.generated.resources.Res
+import minediffusion.composeapp.generated.resources.settings_back
+import minediffusion.composeapp.generated.resources.settings_cfg_scale
+import minediffusion.composeapp.generated.resources.settings_cfg_scale_description
+import minediffusion.composeapp.generated.resources.settings_current_configuration
+import minediffusion.composeapp.generated.resources.settings_generation_quality
+import minediffusion.composeapp.generated.resources.settings_generation_quality_subtitle
+import minediffusion.composeapp.generated.resources.settings_height
+import minediffusion.composeapp.generated.resources.settings_image_dimensions
+import minediffusion.composeapp.generated.resources.settings_image_dimensions_subtitle
+import minediffusion.composeapp.generated.resources.settings_preset_landscape
+import minediffusion.composeapp.generated.resources.settings_preset_portrait
+import minediffusion.composeapp.generated.resources.settings_preset_square
+import minediffusion.composeapp.generated.resources.settings_quick_presets
+import minediffusion.composeapp.generated.resources.settings_steps
+import minediffusion.composeapp.generated.resources.settings_steps_description
+import minediffusion.composeapp.generated.resources.settings_subtitle
+import minediffusion.composeapp.generated.resources.settings_title
+import minediffusion.composeapp.generated.resources.settings_width
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.onion.diffusion.ui.navigation.route.MainRoute
 import org.onion.diffusion.ui.navigation.route.RootRoute
@@ -101,13 +121,13 @@ fun SettingScreen(
             
             // Image Dimensions Section
             SettingsSectionCard(
-                title = "Image Dimensions",
-                subtitle = "Configure output image size",
+                title = stringResource(Res.string.settings_image_dimensions),
+                subtitle = stringResource(Res.string.settings_image_dimensions_subtitle),
                 icon = Icons.Default.AspectRatio
             ) {
                 // Width Selection
                 DimensionSelector(
-                    label = "Width",
+                    label = stringResource(Res.string.settings_width),
                     currentValue = currentWidth,
                     options = listOf(128, 256, 512, 768, 1024),
                     onValueSelected = { value ->
@@ -119,7 +139,7 @@ fun SettingScreen(
                 
                 // Height Selection
                 DimensionSelector(
-                    label = "Height",
+                    label = stringResource(Res.string.settings_height),
                     currentValue = currentHeight,
                     options = listOf(128, 256, 512, 768, 1024),
                     onValueSelected = { value ->
@@ -142,18 +162,18 @@ fun SettingScreen(
             
             // Generation Settings Section
             SettingsSectionCard(
-                title = "Generation Quality",
-                subtitle = "Fine-tune image generation",
+                title = stringResource(Res.string.settings_generation_quality),
+                subtitle = stringResource(Res.string.settings_generation_quality_subtitle),
                 icon = Icons.Default.Tune
             ) {
                 // Steps Slider
                 SliderSetting(
-                    label = "Steps",
+                    label = stringResource(Res.string.settings_steps),
                     value = currentSteps.toFloat(),
                     valueRange = 1f..50f,
                     steps = 49,
                     valueDisplay = currentSteps.toString(),
-                    description = "Higher = more detail, slower",
+                    description = stringResource(Res.string.settings_steps_description),
                     onValueChange = { value ->
                         chatViewModel.generationSteps.value = value.toInt()
                     }
@@ -163,12 +183,12 @@ fun SettingScreen(
                 
                 // CFG Scale Slider
                 SliderSetting(
-                    label = "CFG Scale",
+                    label = stringResource(Res.string.settings_cfg_scale),
                     value = currentCfg,
                     valueRange = 1f..15f,
                     steps = 0,
                     valueDisplay = ((currentCfg * 10).roundToInt() / 10.0).toString(),
-                    description = "Low = Creative  |  High = Precise",
+                    description = stringResource(Res.string.settings_cfg_scale_description),
                     onValueChange = { value ->
                         chatViewModel.cfgScale.value = value
                     }
@@ -217,7 +237,7 @@ private fun SettingsHeader(onBackClick: () -> Unit) {
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(Res.string.settings_back),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
@@ -227,19 +247,27 @@ private fun SettingsHeader(onBackClick: () -> Unit) {
         
         Column {
             Text(
-                text = "Settings",
+                text = stringResource(Res.string.settings_title),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                text = "Customize your generation",
+                text = stringResource(Res.string.settings_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
+
+// ... SettingsSectionCard ... 
+// (The rest of the file needs minimal changes, mostly just function calls inside SettingsSectionCard being updated above)
+// Wait, I need to make sure I don't delete helper functions if I'm replacing a huge block.
+// The instruction above replaces from line 49 to 242.
+// I will also provide the Updates for QuickPresetsRow and CurrentSettingsPreview separately or in one go if I include them.
+// Let's do a multi_replace for safer editing.
+
 
 @Composable
 private fun SettingsSectionCard(
@@ -407,7 +435,7 @@ private fun QuickPresetsRow(
 ) {
     Column {
         Text(
-            text = "Quick Presets",
+            text = stringResource(Res.string.settings_quick_presets),
             style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface,
@@ -419,19 +447,19 @@ private fun QuickPresetsRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             PresetButton(
-                label = "Portrait",
+                label = stringResource(Res.string.settings_preset_portrait),
                 ratio = "768×1024",
                 modifier = Modifier.weight(1f),
                 onClick = { onPresetSelected(768, 1024) }
             )
             PresetButton(
-                label = "Landscape",
+                label = stringResource(Res.string.settings_preset_landscape),
                 ratio = "1024×768",
                 modifier = Modifier.weight(1f),
                 onClick = { onPresetSelected(1024, 768) }
             )
             PresetButton(
-                label = "Square",
+                label = stringResource(Res.string.settings_preset_square),
                 ratio = "512×512",
                 modifier = Modifier.weight(1f),
                 onClick = { onPresetSelected(512, 512) }
@@ -578,7 +606,7 @@ private fun CurrentSettingsPreview(
             
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Current Configuration",
+                    text = stringResource(Res.string.settings_current_configuration),
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
