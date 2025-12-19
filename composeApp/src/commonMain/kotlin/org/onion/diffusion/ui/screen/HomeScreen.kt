@@ -682,6 +682,7 @@ fun LLMFileSelectTipDialog(
     selectAction: () -> Unit
 ) {
     if (showDialog) {
+        // koinInject唯一的“副作用”是 onCleared() 永远不会被调用
         val chatViewModel = koinInject<ChatViewModel>()
         val loadingState by chatViewModel.loadingModelState.collectAsState(0)
         Dialog(
