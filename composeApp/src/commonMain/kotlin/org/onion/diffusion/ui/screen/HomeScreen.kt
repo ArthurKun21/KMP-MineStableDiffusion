@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -137,7 +138,7 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .safeContentPadding()
+            .safeDrawingPadding()
     ) {
         // koinInject() 只是单纯地从 Koin 容器中取出这个 Singleton 实例，而不将其绑定到屏幕的生命周期。这样，即使你在屏幕间导航，ChatViewModel 的 Scope 也会一直保持活跃
         val chatViewModel = koinInject<ChatViewModel>()
