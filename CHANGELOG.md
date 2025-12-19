@@ -4,6 +4,11 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+
+## v1.1.0
+
+- Custom generated parameters
+
 ## v1.0.0
 
 
