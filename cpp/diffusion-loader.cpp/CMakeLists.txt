@@ -188,6 +188,9 @@ if(ANDROID)# 类似gradle的implementation,给sdloader库添加依赖 android,lo
         # 快速修复：添加 PRIVATE 关键字，使其与之前的调用风格保持一致
         target_link_libraries(sdloader PUBLIC vulkan)
     endif()
+    
+    # 修复 Android 15+ 16KB 页大小对齐问题
+    target_link_options(sdloader PRIVATE -Wl,-z,max-page-size=16384)
 endif ()
 
 
