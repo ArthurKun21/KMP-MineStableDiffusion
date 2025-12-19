@@ -37,6 +37,7 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -129,7 +130,9 @@ fun NavGraphBuilder.homeScreen(){
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onSettingsClick: () -> Unit = {}
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -165,6 +168,15 @@ fun HomeScreen() {
             }
         )
         ChatMessagesList(chatMessages = chatMessages)
+        
+        // Settings Entry Button - Premium floating design
+        SettingsEntryButton(
+            onClick = onSettingsClick,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 12.dp, end = 16.dp)
+        )
+        
         AskAnythingField(
             modifier = Modifier.align(Alignment.BottomStart),
             onAttachClick = {
@@ -212,6 +224,65 @@ fun HomeScreen() {
                 )
             }
         )
+    }
+}
+
+/**
+ * Premium styled settings entry button with glassmorphism effect and rotation animation.
+ * Features a smooth rotation on press and elegant shadow effects.
+ */
+@Composable
+private fun SettingsEntryButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "settings_rotation")
+    
+    // Subtle continuous rotation animation for visual interest
+    val rotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 20000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "gear_rotation"
+    )
+
+    Box(
+        modifier = modifier
+            .size(48.dp)
+            .shadow(
+                elevation = 8.dp,
+                shape = CircleShape,
+                spotColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
+            )
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        MaterialTheme.colorScheme.primaryContainer,
+                        MaterialTheme.colorScheme.secondaryContainer
+                    )
+                ),
+                shape = CircleShape
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.size(48.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Settings,
+                contentDescription = "Settings",
+                modifier = Modifier
+                    .size(24.dp)
+                    .graphicsLayer {
+                        rotationZ = rotation
+                    },
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
     }
 }
 
