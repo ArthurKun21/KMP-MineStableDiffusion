@@ -4,6 +4,11 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v1.2.0
+
+- adapt to android soft keyboard input
+- fix android 16kb size
+- android app icon add
 
 ## v1.1.0
 
