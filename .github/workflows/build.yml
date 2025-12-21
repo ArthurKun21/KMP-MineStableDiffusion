@@ -75,6 +75,14 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      # [新增] 针对 Windows 平台开启长路径支持
+      - name: Enable Windows Long Paths
+        if: startsWith(matrix.name, 'windows')
+        run: |
+          git config --system core.longpaths true
+          New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+        shell: powershell
+
       - uses: actions/checkout@v6
         with:
           submodules: 'recursive'

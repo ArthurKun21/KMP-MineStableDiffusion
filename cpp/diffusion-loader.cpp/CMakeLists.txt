@@ -168,7 +168,12 @@ elseif(MSVC)
     target_link_options(sdloader PRIVATE "/OPT:REF" "/OPT:ICF")
 else()
     # Linux / Android (GCC/Clang) 设置
-    target_link_options(sdloader PRIVATE "-Wl,--gc-sections" "-Wl,--exclude-libs,ALL")
+    # C-添加链接器标志。
+    #  -Wl,--gc-sections: 配合 -ffunction-sections，告诉链接器移除所有未被使用的代码和数据节（死代码消除），显著减小库体积。
+    #  -flto: 启用链接时优化 (Link-Time Optimization)。这是一种强大的全局优化技术，链接器可以在所有代码都可见的情况下进行内联、常量传播等优化，能提升性能并减小体积。
+    #  -Wl,--exclude-libs,ALL: 另一个体积优化选项，防止静态库中的所有符号都被添加到动态符号表中
+    #target_link_options(sdloader PRIVATE "-Wl,--gc-sections" "-Wl,--exclude-libs,ALL")
+    target_link_options(sdloader PRIVATE -Wl,--gc-sections -flto -Wl,--exclude-libs,ALL)
 endif()
 # C-指定头文件 (.h, .hpp) 的搜索路径。为JNI库添加 stable-diffusion 的头文件搜索路径
 # PUBLIC: 我自己需要这个路径，链接我的目标也需要这个路径。 (最常用)
@@ -211,8 +216,3 @@ if(ANDROID)# 类似gradle的implementation,给sdloader库添加依赖 android,lo
 endif ()
 
 
-# C-添加链接器标志。
-#  -Wl,--gc-sections: 配合 -ffunction-sections，告诉链接器移除所有未被使用的代码和数据节（死代码消除），显著减小库体积。
-#  -flto: 启用链接时优化 (Link-Time Optimization)。这是一种强大的全局优化技术，链接器可以在所有代码都可见的情况下进行内联、常量传播等优化，能提升性能并减小体积。
-#  -Wl,--exclude-libs,ALL: 另一个体积优化选项，防止静态库中的所有符号都被添加到动态符号表中
-target_link_options(sdloader PRIVATE -Wl,--gc-sections -flto -Wl,--exclude-libs,ALL)
