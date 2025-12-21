@@ -106,7 +106,15 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Build
+        if: "!startsWith(matrix.name, 'windows')"
         run: ${{ matrix.task }}
+
+      - name: Build (Windows)
+        if: startsWith(matrix.name, 'windows')
+        run: |
+          subst V: (Get-Location).Path
+          Set-Location V:
+          ${{ matrix.task }}
 
       - name: Upload artifact
         if: success()

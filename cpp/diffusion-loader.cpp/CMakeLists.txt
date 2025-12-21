@@ -147,6 +147,12 @@ endif()
 # 强制开启 PIC，解决 Linux 下链接静态库到共享库时的重定位错误,有错误可以if(UNIX OR ANDROID)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+# 解决 Windows 下路径过长问题
+if(WIN32)
+    # 使用哈希来缩短 CMakeScratch 路径
+    set(CMAKE_OBJECT_PATH_MAX 260)
+endif()
+
 # 添加预编译的库
 # A-add_subdirectory:将另一个目录下的 CMake 项目包含到当前的构建流程中。这个子目录必须有自己的 CMakeLists.txt 文件
 add_subdirectory(${STABLE_DIFFUSION_DIR} ${CMAKE_CURRENT_BINARY_DIR}/stable-diffusion.cpp)
@@ -211,5 +217,3 @@ if(ANDROID)# 类似gradle的implementation,给sdloader库添加依赖 android,lo
     # 修复 Android 15+ 16KB 页大小对齐问题
     target_link_options(sdloader PRIVATE -Wl,-z,max-page-size=16384)
 endif ()
-
-
