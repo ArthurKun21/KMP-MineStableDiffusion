@@ -1,5 +1,8 @@
 # 设置 CMake 最低版本要求
 cmake_minimum_required(VERSION 3.22.1)
+# 设置最长路径,防止长路径在windows平台上报错
+set(CMAKE_OBJECT_PATH_MAX 270)
+set(CMAKE_OBJECT_NAME_MAX 270)
 # 定义项目名称
 project("sdloader")
 
@@ -143,6 +146,9 @@ else()
     set(VULKAN_LIB ${Vulkan_LIBRARIES})
     
 endif()
+
+# 强制开启 PIC，解决 Linux 下链接静态库到共享库时的重定位错误,有错误可以if(UNIX OR ANDROID)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # 添加预编译的库
 # A-add_subdirectory:将另一个目录下的 CMake 项目包含到当前的构建流程中。这个子目录必须有自己的 CMakeLists.txt 文件
