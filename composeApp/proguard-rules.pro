@@ -12,9 +12,9 @@
 -dontpreverify
 
 # 移除会导致崩溃的激进优化选项
-# -mergeinterfacesaggressively
-# -overloadaggressively
-# -repackageclasses
+ -mergeinterfacesaggressively
+ -overloadaggressively
+ -repackageclasses
 # -allowaccessmodification
 
 # ================= Critical: Ignore Warnings for KMP =================
@@ -22,19 +22,24 @@
 -ignorewarnings
 
 # ================= Attributes & Annotations =================
+# 保留协程、反射、序列化及Crash堆栈所需的属性
 -keepattributes Signature, *Annotation*, EnclosingMethod, InnerClasses, SourceFile, LineNumberTable, Exceptions
 
 # ================= Kotlin & Serialization =================
+# 只保留序列化类的构造方法和生成的方法，而不是整个类
 -keepclassmembers class ** {
     @kotlinx.serialization.Serializable <init>(...);
     @kotlinx.serialization.Serializable <methods>;
 }
+# 保留序列化伴生对象生成的 serializer() 方法
 -keepclassmembers class **$Companion {
     kotlinx.serialization.KSerializer serializer(...);
 }
+# 保留生成的 Serializer 类
 -keep class *$$serializer { *; }
 
 # ================= Enum Optimizations =================
+# 确保枚举的 values 和 valueOf 不被移除，防止反射调用崩溃
 -keepclassmembers enum * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
@@ -47,6 +52,9 @@
 
 # ================= Ktor & Network =================
 -keep class io.ktor.** { *; }
+
+# ================= coil3=================
+-keep class coil3.** { *; }
 
 # ================= OkHttp & Okio =================
 -dontwarn okhttp3.internal.platform.**
@@ -72,6 +80,8 @@
 -dontwarn org.slf4j.**
 -dontwarn org.apache.commons.logging.**
 -dontwarn org.apache.log4j.**
+
+# 4. 忽略 Kotlin 内部的一些元数据检查警告
 -dontwarn kotlin.reflect.jvm.internal.**
 
 #•记录v1
