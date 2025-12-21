@@ -376,6 +376,6 @@ tasks.register("buildNativeLibsIfNeeded") {
 tasks.matching { it.name.contains("desktopRun") }.configureEach {
     dependsOn("buildNativeLibsIfNeeded")
 }
-tasks.matching { it.name.contains("packageRelease") }.configureEach {
+tasks.matching { it.name.contains("compileDesktopMainJava") }.configureEach {
     dependsOn("buildNativeLibsIfNeeded")
 }

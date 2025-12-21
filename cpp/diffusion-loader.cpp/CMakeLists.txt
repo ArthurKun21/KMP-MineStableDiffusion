@@ -1,8 +1,8 @@
+# 设置最长路径,防止长路径在windows平台上报错
+set(CMAKE_OBJECT_PATH_MAX 260)
+set(CMAKE_OBJECT_NAME_MAX 260)
 # 设置 CMake 最低版本要求
 cmake_minimum_required(VERSION 3.22.1)
-# 设置最长路径,防止长路径在windows平台上报错
-set(CMAKE_OBJECT_PATH_MAX 270)
-set(CMAKE_OBJECT_NAME_MAX 270)
 # 定义项目名称
 project("sdloader")
 
@@ -159,6 +159,17 @@ if (TARGET ggml-vulkan AND ANDROID)
 endif()
 # B-定义JNI库 sdloader 库, 指定是STATIC (静态库, .a) 还是 SHARED (共享库, .so)。模块化的内部库通常设为 STATIC，最终给 JNI 调用的设为 SHARED
 add_library(sdloader SHARED diffusion_loader_jni.cpp)
+# --- 修复开始 ---
+if(APPLE)
+    # macOS 链接器设置
+    target_link_options(sdloader PRIVATE "-Wl,-dead_strip")
+elseif(MSVC)
+    # Windows MSVC 设置 (可选)
+    target_link_options(sdloader PRIVATE "/OPT:REF" "/OPT:ICF")
+else()
+    # Linux / Android (GCC/Clang) 设置
+    target_link_options(sdloader PRIVATE "-Wl,--gc-sections" "-Wl,--exclude-libs,ALL")
+endif()
 # C-指定头文件 (.h, .hpp) 的搜索路径。为JNI库添加 stable-diffusion 的头文件搜索路径
 # PUBLIC: 我自己需要这个路径，链接我的目标也需要这个路径。 (最常用)
 # PRIVATE: 只有我自己（库内部）需要这个路径，链接我的目标不需要。
