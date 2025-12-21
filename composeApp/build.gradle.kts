@@ -204,10 +204,7 @@ compose.desktop {
             packageVersion = libs.versions.app.version.get()
             vendor = "Onion"
             licenseFile.set(rootProject.rootDir.resolve("LICENSE"))
-            modules(
-                "jdk.unsupported",
-                "java.instrument"
-            )
+
 
             linux {
                 iconFile.set(rootProject.file("docs/AppIcon.png"))
@@ -236,7 +233,8 @@ compose.desktop {
             //"-XX:+UseZGC",
             "-XX:SoftMaxHeapSize=2048m",
             "--add-opens=java.desktop/java.awt.peer=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.awt=ALL-UNNAMED"
+            "--add-opens=java.desktop/sun.awt=ALL-UNNAMED",
+            "-Xverify:none" // 错误 java.lang.VerifyError: Expecting a stackmap frame 表明 JVM 在加载类时，发现 Compose 编译器生成的字节码与 Java 21 严格的验证机制不兼容。 你需要禁用 JVM 的字节码验证，或者降级 Java 版本。最快的修复方法是在 build.gradle.kts 的 jvmArgs 中添加 -Xverify:none。
         )
 
         buildTypes.release.proguard {
