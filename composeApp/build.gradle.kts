@@ -236,133 +236,130 @@ afterEvaluate {
     }
 }
 
-// ------------------------------------------------------------------------
-// 配置 Native 构建任务
-//------------------------------------------------------------------------
-
-// 定义原生库目录的 provider，避免在任务执行时直接访问 project
-val cppLibsDir = rootProject.layout.projectDirectory.dir(rootProject.extra["cppLibsDir"].toString())
-val jvmResourceLibDir = rootProject.layout.projectDirectory.dir(rootProject.extra["jvmResourceLibDir"].toString())
-val sourceCodeDir = rootProject.layout.projectDirectory.dir("cpp/diffusion-loader.cpp")
+// 捕获 Configuration Phase 的变量，供 Execution Phase 使用，避免 configuration cache 问题
+val cppLibsDirVal = rootProject.extra["cppLibsDir"].toString()
+val jvmResourceLibDirVal = rootProject.extra["jvmResourceLibDir"].toString()
+val rootDirVal = rootDir
 
 val desktopPlatforms = listOf("windows", "macos", "linux")
-
 desktopPlatforms.forEach { platform ->
-    // 创建一个专门的构建任务，而不是通用的 DefaultTask
-    tasks.register<Exec>("buildNativeLibFor${platform.capitalize()}") {
-        group = "native-build"
-        description = "Builds native libraries for $platform"
+    tasks.register("buildNativeLibFor${platform.capitalize()}") {
+        println("配置 buildNativeLibFor${platform.capitalize()} 任务")
 
-        // 仅在当前操作系统匹配时执行，否则仅打印跳过信息并执行空命令
-        val osName = System.getProperty("os.name").lowercase(Locale.getDefault())
-        val isCurrentPlatform = when (platform) {
-            "windows" -> osName.contains("windows")
-            "macos" -> osName.contains("mac")
-            "linux" -> osName.contains("linux")
-            else -> false
+        doFirst {
+            println("开始构建 $platform 平台的原生库")
         }
 
-        // 只有当前平台匹配才真正执行命令
-        onlyIf { isCurrentPlatform }
+        // 捕获任务需要的配置
+        val targetWorkingDir = file("$rootDirVal/cpp/diffusion-loader.cpp")
 
-        // 定义输入输出，帮助 Gradle 进行增量构建 (UP-TO-DATE 检查)
-        inputs.dir(sourceCodeDir)
-        // 假设输出在 build-platform 目录下，具体取决于你的 CMake 配置
-        outputs.dir(layout.buildDirectory.dir("native/build-$platform"))
-
-        if (isCurrentPlatform) {
-            workingDir = file("$rootDir/cpp/diffusion-loader.cpp")
-
-            val cmakeGenerator = when (platform) {
+        doLast {
+            val cmakeGenerator = when(platform) {
                 "windows" -> "MinGW Makefiles"
-                "macos" -> "Xcode"
+                "linux" -> "Unix Makefiles"
                 else -> "Unix Makefiles"
             }
 
-            val cmakeOptions = mutableListOf<String>()
-            if (platform == "windows") {
-                cmakeOptions.addAll(listOf(
+            // 平台特定配置
+            val cmakeOptions = when(platform) {
+                "windows" -> mutableListOf(
                     "-DCMAKE_CXX_USE_RESPONSE_FILE_FOR_OBJECTS=1",
                     "-DCMAKE_CXX_USE_RESPONSE_FILE_FOR_LIBRARIES=1",
                     "-DCMAKE_CXX_RESPONSE_FILE_LINK_FLAG=\"@\"",
                     "-DCMAKE_NINJA_FORCE_RESPONSE_FILE=1"
-                ))
-            } else if (platform == "macos") {
-                cmakeOptions.add("-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64")
+                )
+                "macos" -> mutableListOf("-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64")
+                else -> mutableListOf()
             }
 
-            // 配置 Exec 任务的命令行
-            // 注意：这里简化了逻辑，Exec 只能运行一个命令。
-            // 建议将 cmake 配置和构建合并为一个 shell 脚本，或者分为两个依赖任务。
-            // 为了简单起见，这里演示将其改为 doFirst/doLast 结构，但避免引用 project
+            // 检查当前平台
+            val isCurrentPlatform = when(platform) {
+                "windows" -> System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows")
+                "macos" -> System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac")
+                "linux" -> System.getProperty("os.name").lowercase(Locale.getDefault()).contains("linux")
+                else -> false
+            }
 
-            commandLine("cmake", "--version") // 占位符，实际逻辑在下面
+            if (isCurrentPlatform) {
+                println("正在为当前平台 $platform 构建原生库")
 
-            doLast {
-                println("开始构建 $platform 平台的原生库...")
-
-                // 1. CMake Configure
                 exec {
-                    workingDir = this@register.workingDir
-                    commandLine(
-                        "cmake", "-S", ".", "-B", "build-$platform", "-G", cmakeGenerator, *cmakeOptions.toTypedArray()
-                    )
+                    workingDir = targetWorkingDir
+                    val cmd = mutableListOf("cmake",  "-S", ".", "-B", "build-$platform", "-G", cmakeGenerator)
+                    cmd.addAll(cmakeOptions)
+                    commandLine(cmd)
                 }
 
-                // 2. CMake Build
                 exec {
-                    workingDir = this@register.workingDir
+                    workingDir = targetWorkingDir
                     commandLine("cmake", "--build", "build-$platform", "--config", "Release")
                 }
 
-                // 3. Copy files (使用文件操作而不是 project.copy)
-                val srcDir = cppLibsDir.asFile
-                val destDir = jvmResourceLibDir.asFile
-
-                if (srcDir.exists()) {
-                    srcDir.listFiles { file ->
-                        file.name.endsWith(".dll") ||
-                                file.name.endsWith(".dll.a") ||
-                                file.name.endsWith(".so") ||
-                                file.name.endsWith(".dylib")
-                    }?.forEach { file ->
-                        file.copyTo(destDir.resolve(file.name), overwrite = true)
-                    }
-                    println("已将库文件从 $srcDir 复制到 $destDir")
+                // 迁移到JVM资源目录
+                copy {
+                    from(cppLibsDirVal)
+                    include("*.dll","*.dll.a", "*.so", "*.dylib")
+                    into(jvmResourceLibDirVal)
                 }
+
+                println("$platform 平台原生库构建完成")
+            } else {
+                println("跳过非当前平台 $platform 的构建")
             }
-        } else {
-            // 非当前平台，执行一个空命令避免报错
-            commandLine("echo", "Skipping build for $platform on $osName")
         }
     }
 }
 
-// 注册一个总入口任务
 tasks.register("buildNativeLibsIfNeeded") {
-    group = "native-build"
+    println("JVM Architecture: ${System.getProperty("os.arch")}")
+    println("Java Vendor: ${System.getProperty("java.vendor")}")
+    println("Java Version: ${System.getProperty("java.version")}")
+    println("Java VM Name: ${System.getProperty("java.vm.name")}")
+    println("Sun Arch Data Model: ${System.getProperty("sun.arch.data.model")}")
 
-    // 动态计算当前平台对应的任务名称
-    val currentPlatformName = when {
-        System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows") -> "Windows"
-        System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac") -> "Macos"
-        System.getProperty("os.name").lowercase(Locale.getDefault()).contains("linux") -> "Linux"
-        else -> null
+    // Configuration time logic
+    val currentOs = System.getProperty("os.name").lowercase(Locale.getDefault())
+    val currentPlatform = when {
+        currentOs.contains("windows") -> "Windows"
+        currentOs.contains("mac") -> "Macos"
+        currentOs.contains("linux") -> "Linux"
+        else -> ""
     }
 
-    // 关键修复：使用 dependsOn 而不是在 doFirst 中手动 execute
-    if (currentPlatformName != null) {
-        dependsOn("buildNativeLibFor$currentPlatformName")
+    val libName = when {
+        currentOs.contains("windows") -> "libsdloader.dll"
+        currentOs.contains("mac") -> "libsdloader.dylib"
+        else -> "libsdloader.so"
+    }
+
+    val libFile = file("$cppLibsDirVal/$libName")
+    val jvmLibFile = file("$jvmResourceLibDirVal/$libName")
+
+    // 如果库不存在，则添加构建任务依赖
+    if (!libFile.exists() && currentPlatform.isNotEmpty()) {
+         println("原生库不存在，配置构建任务依赖...")
+         dependsOn("buildNativeLibFor$currentPlatform")
+    } else {
+         println("原生库已存在 (配置阶段检查)")
     }
 
     doLast {
-        println("原生库检查/构建流程完成。")
-        // 如果文件不存在的额外检查逻辑可以放在这里，
-        // 但理论上 buildNativeLibFor... 任务执行完后文件就应该存在了。
+        // 如果我们没有运行构建任务（因为 libFile 存在），我们仍需确保它被复制到 jvmResourceLibDir
+        if (libFile.exists() && !jvmLibFile.exists()) {
+            println("原生库还没有迁移JVM资源目录,现在迁移")
+            copy {
+                from(cppLibsDirVal)
+                include("*.dll","*.dll.a", "*.so", "*.dylib")
+                into(jvmResourceLibDirVal)
+            }
+        }
     }
 }
 
-tasks.withType<org.jetbrains.compose.desktop.application.tasks.AbstractJPackageTask>().configureEach {
+// 让desktopRun依赖这个CMake构建任务,来执行桌面JVM平台构建
+tasks.matching { it.name.contains("desktopRun") }.configureEach {
     dependsOn("buildNativeLibsIfNeeded")
 }
-
+tasks.matching { it.name.contains("packageRelease") }.configureEach {
+    dependsOn("buildNativeLibsIfNeeded")
+}
