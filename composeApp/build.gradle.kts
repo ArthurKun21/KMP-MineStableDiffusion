@@ -354,8 +354,11 @@ desktopPlatforms.forEach { platform ->
                             name.endsWith(".so") || name.endsWith(".dylib")
                 }?.forEach { f ->
                     f.copyTo(File(destDir, f.name), overwrite = true)
-                    println("第一次SO迁移到JVM资源目录")
                 }
+                println("第一次SO迁移到JVM资源目录")
+                println("cppLibsDirVal:$cppLibsDirStr")
+                println("jvmResourceLibDirStr:$jvmResourceLibDirStr")
+                println("${destDir.listFiles().map { it.name }}")
             }
         }
     }
@@ -411,6 +414,9 @@ tasks.register("buildNativeLibsIfNeeded") {
                 f.copyTo(File(destDir, f.name), overwrite = true)
             }
             println("第二次SO迁移到JVM资源目录")
+            println("cppLibsDirVal:$cppLibsDirStr")
+            println("jvmResourceLibDirStr:$jvmResourceLibDirStr")
+            println("${destDir.listFiles().map { it.name }}")
         }
     }
 }
