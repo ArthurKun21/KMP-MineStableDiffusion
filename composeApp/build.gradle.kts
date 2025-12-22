@@ -90,6 +90,9 @@ kotlin {
             }
         }
         desktopMain.dependsOn(jvmMain)
+        // KMP 的 dependsOn 只处理源码依赖，不会合并资源目录
+        // 需要显式将 jvmMain/resources 添加到 desktopMain 的资源目录中
+        desktopMain.resources.srcDir("src/jvmMain/resources")
     }
 }
 
