@@ -102,6 +102,21 @@ jobs:
           version: 1.4.309.0
           cache: true
 
+      # Windows 需要安装 MinGW-w64 工具链来编译 64 位原生库
+      - name: Setup MinGW-w64
+        if: startsWith(matrix.name, 'windows')
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: false
+          install: mingw-w64-x86_64-toolchain mingw-w64-x86_64-cmake
+
+      - name: Add MinGW to PATH
+        if: startsWith(matrix.name, 'windows')
+        run: |
+          echo "C:\msys64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: powershell
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
