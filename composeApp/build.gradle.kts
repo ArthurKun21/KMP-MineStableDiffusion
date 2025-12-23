@@ -300,7 +300,15 @@ desktopPlatforms.forEach { platform ->
 
         val currentPlatformName = platform // 捕获循环变量
         val generator = when(currentPlatformName) {
-            "windows" -> "MinGW Makefiles" // 没装VisualStudio 不支持 "Visual Studio 17 2022"
+            "windows" -> {
+                // GitHub Actions 和 CI 环境使用 Visual Studio
+                // 本地开发可以通过环境变量 USE_MINGW=true 切换到 MinGW
+                if (System.getenv("USE_MINGW") == "true") {
+                    "MinGW Makefiles"
+                } else {
+                    "Visual Studio 17 2022"
+                }
+            }
             //"macos" -> "Xcode"
             "linux" -> "Unix Makefiles"
             else -> "Unix Makefiles"
@@ -309,19 +317,22 @@ desktopPlatforms.forEach { platform ->
 
 
         val options = when(platform) {
-            /*"windows" -> listOf(
-                "-DCMAKE_CXX_USE_RESPONSE_FILE_FOR_OBJECTS=1",
-                "-DCMAKE_CXX_USE_RESPONSE_FILE_FOR_LIBRARIES=1",
-                "-DCMAKE_CXX_RESPONSE_FILE_LINK_FLAG=\"@\"",
-                "-DCMAKE_NINJA_FORCE_RESPONSE_FILE=1"
-            )*/
+            "windows" -> {
+                // 为 Visual Studio generator 明确指定 x64 架构
+                if (System.getenv("USE_MINGW") != "true") {
+                    listOf("-A", "x64")
+                } else {
+                    listOf()
+                }
+            }
             "macos" -> listOf("-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64")
             else -> listOf()
         }
-        // window 平台显式指定编译器 (如果它们不在 PATH 中，或者你想确保使用特定的编译器)
+        // 注意: 使用 Visual Studio generator 时，不需要手动指定编译器路径
+        // MinGW 本地开发备注:
+        // 如需使用 MinGW，设置环境变量 USE_MINGW=true 并确保以下路径正确:
         // cmakeOptions.add("-DCMAKE_C_COMPILER=D:/MyApp/Code/mingw64/bin/x86_64-w64-mingw32-gcc.exe")
         // cmakeOptions.add("-DCMAKE_CXX_COMPILER=D:/MyApp/Code/mingw64/bin/x86_64-w64-mingw32-g++.exe")
-        // 如果 mingw32-make 也不在 PATH 中，可能还需要指定
         // cmakeOptions.add("-DCMAKE_MAKE_PROGRAM=C:/msys64/mingw64/bin/mingw32-make.exe")
 
         this.cmakeOptions.set(options)

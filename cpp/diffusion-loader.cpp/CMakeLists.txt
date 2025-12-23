@@ -151,6 +151,18 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 if(WIN32)
     # 使用哈希来缩短 CMakeScratch 路径
     set(CMAKE_OBJECT_PATH_MAX 260)
+    
+    # 强制使用 x64 架构 (解决 GitHub Actions 构建兼容性问题)
+    if(NOT CMAKE_GENERATOR_PLATFORM)
+        set(CMAKE_GENERATOR_PLATFORM x64 CACHE STRING "Platform" FORCE)
+    endif()
+    
+    # 验证架构配置
+    if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        message(STATUS "Windows: 配置为 64-bit 构建")
+    elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
+        message(WARNING "Windows: 当前配置为 32-bit 构建，这可能导致兼容性问题！")
+    endif()
 endif()
 
 # 添加预编译的库
