@@ -28,7 +28,9 @@ _Only supports VulKun 1.2 or above_
 
 </div>
 
-
+| Android                                                        | Desktop      |
+|----------------------------------------------------------------|--------------|
+| ![](.readme/images/screenshot_desktop_page_schedule_light.png) | ![desktop_screenshot.gif](docs/desktop_screenshot.gif) |
 
 ## 💡 Description
 
