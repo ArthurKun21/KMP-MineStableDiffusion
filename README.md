@@ -24,9 +24,11 @@
 **Kotlin Multiplatform Stable Diffusion**  
 _Only supports VulKun 1.2 or above_
 
-<img src="./docs/splash.jpg" alt="splash" width="800">
+<img src="./docs/figma.png" alt="splash" width="800">
 
 </div>
+
+
 
 ## 💡 Description
 
