@@ -67,7 +67,7 @@ Support it by staring and sharing it :star:
 
 ## 🤝 Contribution
 
-Most of the features are not completed except the chat feature, so anyone can contribute and improve this project.
+Most of the features are not completed except the txt2img feature, so anyone can contribute and improve this project.
 
 
 ## About this Repo
