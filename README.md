@@ -35,7 +35,7 @@ _/MacOs build with Metal_
 
 ## 💡 Description
 
-A multiplatform Stable Diffusion app (Android and Desktop) based on [stable-diffusion.cpp
+A multiplatform Stable Diffusion app (Android or Desktop) based on [stable-diffusion.cpp
 ](https://github.com/leejet/stable-diffusion.cpp) ,built with Compose Multiplatform 
 
 ## 📱 Supported platforms
