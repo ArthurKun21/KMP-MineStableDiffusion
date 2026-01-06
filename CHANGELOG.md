@@ -4,6 +4,10 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v2.0.0
+
+- support z_image_turbo model
+
 ## v1.3.2
 
 - ggml and sd backend use METAL in
