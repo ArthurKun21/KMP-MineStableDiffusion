@@ -16,8 +16,19 @@ actual class DiffusionLoader actual constructor() {
     }
 
 
-    actual fun loadModel(modelPath: String) {
-        nativePtr = nativeLoadModel(modelPath,true,true,true)
+    actual fun loadModel(
+        modelPath: String,
+        vaePath: String,
+        llmPath: String
+    ) {
+        nativePtr = nativeLoadModel(
+            modelPath,
+            vaePath,
+            llmPath,
+            true,
+            true,
+            true
+        )
     }
 
     actual fun release() {
@@ -34,7 +45,14 @@ actual class DiffusionLoader actual constructor() {
         seed: Long
     ): ByteArray? = nativeTxt2Img(nativePtr,prompt,negative,width,height,steps,cfg,seed)
 
-    private external fun nativeLoadModel(modelPath: String, offloadToCpu: Boolean, keepClipOnCpu: Boolean, keepVaeOnCpu: Boolean): Long
+    private external fun nativeLoadModel(
+        modelPath: String,
+        vaePath: String,
+        llmPath: String,
+        offloadToCpu: Boolean,
+        keepClipOnCpu: Boolean,
+        keepVaeOnCpu: Boolean
+    ): Long
     private external fun nativeTxt2Img(
         handle: Long,
         prompt: String,

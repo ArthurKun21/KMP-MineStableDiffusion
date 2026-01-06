@@ -2,7 +2,11 @@ package org.onion.diffusion.native
 
 expect class DiffusionLoader(){
     suspend fun getModelFilePath():String
-    fun loadModel(modelPath: String)
+    fun loadModel(
+        modelPath: String,
+        vaePath: String = "",
+        llmPath: String = ""
+    )
     fun txt2Img(
         prompt: String, negative: String,
         width: Int, height: Int,

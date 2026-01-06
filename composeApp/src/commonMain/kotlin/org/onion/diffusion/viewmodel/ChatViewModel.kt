@@ -64,8 +64,15 @@ class ChatViewModel  : ViewModel() {
         initModel = true
         viewModelScope.launch(Dispatchers.Default) {
             loadingModelState.emit(1)
-            // ---- read chatTemplate and contextSize ------
-            diffusionLoader.loadModel(diffusionModelPath.value)
+            diffusionLoader.loadModel(
+                modelPath = diffusionModelPath.value,
+                vaePath = vaePath.value,
+                llmPath = llmPath.value
+            )
+            println("=== Model Path ===")
+            println("Model Path: ${diffusionModelPath.value}")
+            println("VAE Path: ${vaePath.value}")
+            println("LLM Path: ${llmPath.value}")
             loadingModelState.emit(2)
         }
     }

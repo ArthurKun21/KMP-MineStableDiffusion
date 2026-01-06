@@ -40,19 +40,36 @@ extern "C" JNIEXPORT jlong JNICALL
 Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
         JNIEnv *env,jobject clazz,
         jstring jModelPath,
+        jstring jVaePath,
+        jstring jLlmPath,
         jboolean offloadToCpu,jboolean keepClipOnCpu,jboolean keepVaeOnCpu){
-    //(void)clazz这是一个常见的技巧，用来告诉编译器 clazz 这个参数我们在此函数中没有使用，以避免编译器发出 "unused parameter" (未使用参数) 的警告
+    //(void)clazz这是一个常见的技巧,用来告诉编译器 clazz 这个参数我们在此函数中没有使用,以避免编译器发出 "unused parameter" (未使用参数) 的警告
     (void) clazz;
 
     const char* modelPath = jModelPath ? env->GetStringUTFChars(jModelPath, nullptr) : nullptr;
+    const char* vaePath = jVaePath ? env->GetStringUTFChars(jVaePath, nullptr) : nullptr;
+    const char* llmPath = jLlmPath ? env->GetStringUTFChars(jLlmPath, nullptr) : nullptr;
 
-    printf("Initializing Stable Diffusion with:");
+    printf("Initializing Stable Diffusion with:\n");
+    printf("  Model path: %s\n", modelPath ? modelPath : "none");
+    if (vaePath && strlen(vaePath) > 0) {
+        printf("  VAE path: %s\n", vaePath);
+    }
+    if (llmPath && strlen(llmPath) > 0) {
+        printf("  LLM path: %s\n", llmPath);
+    }
 
     // 创建并初始化参数结构体
     sd_ctx_params_t p{};
     sd_ctx_params_init(&p);
     // 配置参数,将从 Java 传来的参数赋值给 C++ 结构体
-    p.model_path = modelPath ? modelPath : "";
+    // 配置 VAE 路径(如果提供)
+    if (vaePath && strlen(vaePath) > 0 && llmPath && strlen(llmPath) > 0) {
+        p.diffusion_model_path = modelPath ? modelPath : "";
+    } else p.model_path = modelPath ? modelPath : "";
+    p.vae_path = vaePath ? vaePath : "" ;
+    p.llm_path = llmPath ? llmPath : "" ;
+    
     // 不要立即释放资源,以方便下次使用
     p.free_params_immediately = false;
     p.n_threads = sd_get_num_physical_cores();
@@ -63,21 +80,23 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
     // 创建 Stable Diffusion 上下文（核心步骤
     sd_ctx_t* SdContext = new_sd_ctx(&p);
 
-    // 释放资源,GetStringUTFChars 在内存中创建了 C 字符串的副本。当 C++ 代码不再需要这些字符串时，必须调用 ReleaseStringUTFChars 来释放它们，否则会造成内存泄漏
+    // 释放资源,GetStringUTFChars 在内存中创建了 C 字符串的副本。当 C++ 代码不再需要这些字符串时,必须调用 ReleaseStringUTFChars 来释放它们,否则会造成内存泄漏
     if (jModelPath) env->ReleaseStringUTFChars(jModelPath, modelPath);
+    if (jVaePath) env->ReleaseStringUTFChars(jVaePath, vaePath);
+    if (jLlmPath) env->ReleaseStringUTFChars(jLlmPath, llmPath);
 
     // 处理创建失败的情况
     if (!SdContext) {
-        printf("Failed to create sd_ctx");
+        printf("Failed to create sd_ctx\n");
         return 0;
     }
 
     // 创建句柄并返回
     auto* handle = new SdHandle();
-    // 代码创建了一个 SdHandle 对象，并将刚刚成功创建的 ctx 存入其中
+    // 代码创建了一个 SdHandle 对象,并将刚刚成功创建的 ctx 存入其中
     handle->ctx = SdContext;
-    // 另一个 JNI 的关键技巧。C++ 的指针（如 handle）不能直接传递给 Java，因为 Java 没有指针的概念。所以，这里将指针的内存地址强制转换为一个 jlong（64位长整型）
-    // Java 代码会接收到这个 long 类型的数字。虽然 Java 不理解这个数字的含义，但它可以安全地存储它。当 Java 之后需要调用其他 native 方法（如 nativeTxt2Img 或 nativeDestroy）时，会把这个 long 值再传回 C++。C++ 代码再通过 reinterpret_cast<SdHandle*> 将其转回原来的指针，从而找到正确的 Stable Diffusion 实例进行操作
+    // 另一个 JNI 的关键技巧。C++ 的指针(如 handle)不能直接传递给 Java,因为 Java 没有指针的概念。所以,这里将指针的内存地址强制转换为一个 jlong(64位长整型)
+    // Java 代码会接收到这个 long 类型的数字。虽然 Java 不理解这个数字的含义,但它可以安全地存储它。当 Java 之后需要调用其他 native 方法(如 nativeTxt2Img 或 nativeDestroy)时,会把这个 long 值再传回 C++。C++ 代码再通过 reinterpret_cast<SdHandle*> 将其转回原来的指针,从而找到正确的 Stable Diffusion 实例进行操作
     return reinterpret_cast<jlong>(handle);
 }
 
