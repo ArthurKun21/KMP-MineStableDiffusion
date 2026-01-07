@@ -235,10 +235,4 @@ If you find this project useful:
 
 ---
 
-<div align="center">
 
-**Made with ❤️ using Kotlin Multiplatform**
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/onion99)
-
-</div>
