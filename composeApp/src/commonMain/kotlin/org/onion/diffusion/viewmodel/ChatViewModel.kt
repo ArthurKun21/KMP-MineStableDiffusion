@@ -25,6 +25,9 @@ class ChatViewModel  : ViewModel() {
     private var initModel = false
     // 0 default,1 loading,2 loading completely
     var loadingModelState = MutableStateFlow(0)
+    var isDiffusionModelLoading = mutableStateOf(false)
+    var isVaeModelLoading = mutableStateOf(false)
+    var isLlmModelLoading = mutableStateOf(false)
     
     // ========================================================================================
     //                              Image Generation Settings
@@ -42,20 +45,26 @@ class ChatViewModel  : ViewModel() {
     var cfgScale = mutableStateOf(2f)
 
     suspend fun selectDiffusionModelFile(): String{
+        isDiffusionModelLoading.value = true
         val diffusionModelPath = diffusionLoader.getModelFilePath()
         this.diffusionModelPath.value = diffusionModelPath
+        isDiffusionModelLoading.value = false
         return diffusionModelPath
     }
 
     suspend fun selectVaeFile(): String{
+        isVaeModelLoading.value = true
         val path = diffusionLoader.getModelFilePath()
         vaePath.value = path
+        isVaeModelLoading.value = false
         return path
     }
 
     suspend fun selectLlmFile(): String{
+        isLlmModelLoading.value = true
         val path = diffusionLoader.getModelFilePath()
         llmPath.value = path
+        isLlmModelLoading.value = false
         return path
     }
 

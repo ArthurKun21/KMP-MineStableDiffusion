@@ -46,6 +46,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -690,6 +691,9 @@ fun LLMFileSelectTipDialog(
         val vaePath by chatViewModel.vaePath
         val llmPath by chatViewModel.llmPath
         val diffusionPath by chatViewModel.diffusionModelPath
+        val isDiffusionModelLoading by chatViewModel.isDiffusionModelLoading
+        val isVaeModelLoading by chatViewModel.isVaeModelLoading
+        val isLlmModelLoading by chatViewModel.isLlmModelLoading
         val coroutineScope = rememberCoroutineScope()
         
         Dialog(
@@ -745,6 +749,7 @@ fun LLMFileSelectTipDialog(
                         subtitle = "Required",
                         selectedPath = diffusionPath,
                         isRequired = true,
+                        isLoading = isDiffusionModelLoading,
                         gradientColors = listOf(
                             Color(0xFFFFA726),
                             Color(0xFF81C784)
@@ -762,6 +767,7 @@ fun LLMFileSelectTipDialog(
                         subtitle = "Optional",
                         selectedPath = vaePath,
                         isRequired = false,
+                        isLoading = isVaeModelLoading,
                         gradientColors = listOf(
                             Color(0xFF9C27B0),
                             Color(0xFF2196F3)
@@ -779,6 +785,7 @@ fun LLMFileSelectTipDialog(
                         subtitle = "Optional",
                         selectedPath = llmPath,
                         isRequired = false,
+                        isLoading = isLlmModelLoading,
                         gradientColors = listOf(
                             Color(0xFF00BCD4),
                             Color(0xFF00E5FF)
@@ -843,6 +850,7 @@ private fun FileSelectionCard(
     subtitle: String,
     selectedPath: String,
     isRequired: Boolean,
+    isLoading: Boolean,
     gradientColors: List<Color>,
     onSelectClick: () -> Unit
 ) {
@@ -956,6 +964,7 @@ private fun FileSelectionCard(
             // Select button
             Button(
                 onClick = onSelectClick,
+                enabled = !isLoading,
                 modifier = Modifier
                     .height(36.dp)
                     .widthIn(min = 70.dp),
@@ -965,12 +974,16 @@ private fun FileSelectionCard(
                 ),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
             ) {
-                MediumText(
-                    text = if (isSelected) "Change" else "Select",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(20.dp))
+                } else {
+                    MediumText(
+                        text = if (isSelected) "Change" else "Select",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
             }
         }
     }
