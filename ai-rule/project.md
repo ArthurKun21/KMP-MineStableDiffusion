@@ -40,6 +40,9 @@ Current State: 2026-01-06
 ### UI Development
 - **Styling**: ALWAYS use values from `ui-theme` (e.g., `MaterialTheme.colorScheme`, `MaterialTheme.typography`).
 - **Layout**: Use `AdaptiveLayout` (found in `ui-theme`) for cross-platform responsiveness.
+- **Adaptive Strategy**: Use `AppTheme.contentType` to adapt complex layouts.
+    - `ContentType.Single` (Mobile): Use vertical layouts (Column) to prevent overcrowding.
+    - `ContentType.Dual` (Desktop): Use horizontal layouts (Row) to maximize screen usage.
 - **Resources**: Use `compose.components.resources` for images/strings.
 
 ### Concurrency
