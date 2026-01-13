@@ -4,6 +4,10 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v2.1.0
+
+- Android file selection optimization
+
 ## v2.0.0
 
 - support z_image_turbo model
