@@ -4,6 +4,11 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+
+## v2.2.0
+
+- add image to save
+
 ## v2.1.0
 
 - Android file selection optimization
