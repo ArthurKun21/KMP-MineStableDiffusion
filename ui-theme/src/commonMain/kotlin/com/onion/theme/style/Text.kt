@@ -85,7 +85,7 @@ fun LargeText(text: String,
                onTextLayout: ((TextLayoutResult) -> Unit)? = null
 ){
     Text(text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing, textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout,
-        AppTheme.typography.bodyLarge)
+        AppTheme.typography.titleLarge)
 }
 
 @Composable

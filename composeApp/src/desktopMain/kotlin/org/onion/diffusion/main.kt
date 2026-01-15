@@ -8,7 +8,6 @@ import androidx.compose.ui.window.rememberWindowState
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        state = rememberWindowState(width = 1080.dp, height = 800.dp),
         title = "MineDiffusion",
     ) {
         App()

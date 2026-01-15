@@ -180,7 +180,7 @@ fun HomeScreen(
                 }
             }
         )
-        ChatMessagesList(chatMessages = chatMessages)
+        ChatMessagesList(chatMessages = chatMessages,snackbarHostState)
         
         // Settings Entry Button - Premium floating design
         SettingsEntryButton(
@@ -301,11 +301,10 @@ private fun SettingsEntryButton(
 
 @OptIn(ExperimentalTime::class)
 @Composable
-private fun ChatMessagesList(chatMessages: List<ChatMessage>) {
+private fun ChatMessagesList(chatMessages: List<ChatMessage>,snackbarHostState: SnackbarHostState) {
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val chatViewModel = koinInject<ChatViewModel>()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     // Track scroll position to show/hide button
     val showScrollButton by remember {
@@ -756,10 +755,10 @@ fun LLMFileSelectTipDialog(
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(24.dp)
+                        .padding(24.dp,12.dp)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     // Lottie Animation
                     val composition by rememberLottieComposition {
@@ -905,7 +904,7 @@ private fun FileSelectionCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(110.dp),
+            .height(90.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
