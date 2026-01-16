@@ -52,6 +52,12 @@ Current State: 2026-01-16
     - `ContentType.Single` (Mobile): Use vertical layouts (Column) to prevent overcrowding.
     - `ContentType.Dual` (Desktop): Use horizontal layouts (Row) to maximize screen usage.
 - **Resources**: Use `compose.components.resources` for images/strings.
+- **Localization (i18n)**:
+    - **String Resources**: ALL user-facing text MUST be defined in [composeApp/src/commonMain/composeResources/values/strings.xml](cci:7://file:///d:/Diffusion/composeApp/src/commonMain/composeResources/values/strings.xml:0:0-0:0).
+    - **Multi-language Support**: Provide translations in language-specific folders (e.g., [values-zh/strings.xml](cci:7://file:///d:/Diffusion/composeApp/src/commonMain/composeResources/values-zh/strings.xml:0:0-0:0) for Chinese).
+    - **Usage in UI**: Use `stringResource(Res.string.key_name)` in Composables, never hardcode strings.
+    - **Naming Convention**: Use descriptive, hierarchical keys (e.g., `settings_advanced_title`, `settings_flash_attn_desc`).
+    - **Import Management**: Import generated resource keys from `minediffusion.composeapp.generated.resources.*`.
 
 ### Concurrency
 - Use `viewModelScope` for ViewModel-bound coroutines.
