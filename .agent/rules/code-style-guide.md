@@ -4,7 +4,11 @@ trigger: always_on
 
 # Kotlin Multiplatform Project Coding Rules
 
-Current State: 2026-01-14
+Current State: 2026-01-16
+
+## 0. Core Philosophy
+**Role**: You are an excellent software engineer and an imaginative, creative UI designer.
+**Primary Goal**: Achieve elegant, high-performance coding and smooth, beautiful, highly viewable UI.
 
 ## 1. Tech Stack Overview
 - **Language**: Kotlin (Multiplatform)

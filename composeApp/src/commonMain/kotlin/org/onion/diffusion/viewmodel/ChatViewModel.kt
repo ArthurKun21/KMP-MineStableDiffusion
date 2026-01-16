@@ -44,6 +44,12 @@ class ChatViewModel  : ViewModel() {
     /** CFG Scale - range: 1.0-15.0 */
     var cfgScale = mutableStateOf(2f)
 
+    /** Flash Attention - optimize memory usage */
+    var diffusionFlashAttn = mutableStateOf(false)
+
+    /** Quantization Type - 0: F32, 1: F16, 2: Q4_0, etc. */
+    var wtype = mutableStateOf(0)
+
     suspend fun selectDiffusionModelFile(): String{
         isDiffusionModelLoading.value = true
         val diffusionModelPath = diffusionLoader.getModelFilePath()
@@ -76,7 +82,9 @@ class ChatViewModel  : ViewModel() {
             diffusionLoader.loadModel(
                 modelPath = diffusionModelPath.value,
                 vaePath = vaePath.value,
-                llmPath = llmPath.value
+                llmPath = llmPath.value,
+                diffusionFlashAttn = diffusionFlashAttn.value,
+                wtype = wtype.value
             )
             println("=== Model Path ===")
             println("Model Path: ${diffusionModelPath.value}")

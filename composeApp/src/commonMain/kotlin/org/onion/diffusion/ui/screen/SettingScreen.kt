@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -193,6 +194,92 @@ fun SettingScreen(
                         chatViewModel.cfgScale.value = value
                     }
                 )
+            }
+            
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Advanced Settings Section
+            SettingsSectionCard(
+                title = "Advanced Settings",
+                subtitle = "Experimental features and optimizations",
+                icon = Icons.Default.Settings // Fallback if Build is not available or just generic
+            ) {
+                // Flash Attention Switch
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Flash Attention",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = "Reduces memory usage and potentially speeds up generation",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    androidx.compose.material3.Switch(
+                        checked = chatViewModel.diffusionFlashAttn.value,
+                        onCheckedChange = { chatViewModel.diffusionFlashAttn.value = it }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Quantization Type (wtype)
+                Column {
+                    Text(
+                        text = "Quantization (wtype)",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "Model weight precision. Lower bits save RAM but may reduce quality.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    
+                    val wtypes = listOf(
+                        0 to "Default (F32)",
+                        1 to "F16",
+                        2 to "Q4_0",
+                        6 to "Q5_0",
+                        8 to "Q8_0"
+                    )
+                    
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        wtypes.forEach { (value, label) ->
+                            val isSelected = chatViewModel.wtype.value == value
+                            val bgcolor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                            val txtcolor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                            
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(bgcolor)
+                                    .clickable { chatViewModel.wtype.value = value }
+                                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                            ) {
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                    color = txtcolor
+                                )
+                            }
+                        }
+                    }
+                }
             }
             
             Spacer(modifier = Modifier.height(20.dp))

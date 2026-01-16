@@ -40,7 +40,9 @@ actual class DiffusionLoader actual constructor() {
     actual fun loadModel(
         modelPath: String,
         vaePath: String,
-        llmPath: String
+        llmPath: String,
+        diffusionFlashAttn: Boolean,
+        wtype: Int
     ) {
         nativePtr = nativeLoadModel(
             modelPath,
@@ -48,7 +50,9 @@ actual class DiffusionLoader actual constructor() {
             llmPath,
             false,
             false,
-            false
+            false,
+            diffusionFlashAttn,
+            wtype
         )
     }
 
@@ -82,7 +86,9 @@ actual class DiffusionLoader actual constructor() {
         llmPath: String,
         offloadToCpu: Boolean,
         keepClipOnCpu: Boolean,
-        keepVaeOnCpu: Boolean
+        keepVaeOnCpu: Boolean,
+        diffusionFlashAttn: Boolean,
+        wtype: Int
     ): Long
 
     private external fun nativeTxt2Img(

@@ -5,7 +5,9 @@ expect class DiffusionLoader(){
     fun loadModel(
         modelPath: String,
         vaePath: String = "",
-        llmPath: String = ""
+        llmPath: String = "",
+        diffusionFlashAttn: Boolean = false,
+        wtype: Int = 0
     )
     fun txt2Img(
         prompt: String, negative: String,
