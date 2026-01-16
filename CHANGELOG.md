@@ -4,6 +4,10 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v2.3.0
+
+- Flash Attention Switch
+- Quantization Type
 
 ## v2.2.0
 
