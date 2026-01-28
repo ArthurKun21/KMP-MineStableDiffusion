@@ -18,6 +18,7 @@ import org.onion.diffusion.ui.navigation.route.RootRoute
 import org.onion.diffusion.ui.screen.homeScreen
 import org.onion.diffusion.ui.screen.mainScreen
 import org.onion.diffusion.ui.screen.settingScreen
+import org.onion.diffusion.ui.screen.advancedSettingScreen
 import org.onion.diffusion.ui.screen.splashScreen
 import org.onion.diffusion.utils.imageLoaderDiskCache
 import ui.theme.AppTheme
@@ -47,9 +48,16 @@ fun App() {
                 // ---- 首页架构容器 ------
                 // mainScreen()
                 // ---- 首页架构容器,暂时不做多tab首页,先搭建起来再说 ------
-                homeScreen(onSettingsClick = { rootNavActions.navigationTo(MainRoute.SettingRoute) })
+                homeScreen(
+                    onSettingsClick = { rootNavActions.navigationTo(MainRoute.SettingRoute) },
+                    onAdvancedSettingsClick = { rootNavActions.navigationTo(RootRoute.AdvancedSettingRoute) }
+                )
                 // ---- 设置页面 ------
-                settingScreen(onBackClick = { rootNavActions.back() })
+                settingScreen(
+                    onBackClick = { rootNavActions.back() },
+                )
+                // ---- 高级设置页面 ------
+                advancedSettingScreen(onBackClick = { rootNavActions.back() })
             }
         }
     }

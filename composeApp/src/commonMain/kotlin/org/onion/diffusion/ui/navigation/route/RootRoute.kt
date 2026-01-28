@@ -12,6 +12,7 @@ sealed interface RootRoute {
     data object Splash : RoutePage(name = "Splash")
     data object MainRoute : RoutePage(name = "MainRoute")
     data object SettingRoute : RoutePage(name = "SettingRoute")
+    data object AdvancedSettingRoute : RoutePage(name = "AdvancedSettingRoute")
 }
 
 open class RoutePage(

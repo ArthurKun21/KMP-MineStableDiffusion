@@ -136,15 +136,15 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 
-fun NavGraphBuilder.homeScreen(onSettingsClick: () -> Unit = {}){
+fun NavGraphBuilder.homeScreen(onSettingsClick: () -> Unit = {},onAdvancedSettingsClick: () -> Unit = {}){
     composable(/*DetailRoute.Home.name*/MainRoute.HomeRoute.name) {
-        HomeScreen(onSettingsClick)
+        HomeScreen(onSettingsClick,onAdvancedSettingsClick)
     }
 }
 
 @Composable
 fun HomeScreen(
-    onSettingsClick: () -> Unit = {}
+    onSettingsClick: () -> Unit = {},onAdvancedSettingsClick: () -> Unit = {}
 ) {
     Box(
         modifier = Modifier
@@ -179,7 +179,7 @@ fun HomeScreen(
                     }
                 }
             },
-            settingClick = onSettingsClick,
+            settingClick = onAdvancedSettingsClick,
         )
         ChatMessagesList(chatMessages = chatMessages,snackbarHostState)
         

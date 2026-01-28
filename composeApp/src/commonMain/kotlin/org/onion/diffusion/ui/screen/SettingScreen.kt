@@ -25,6 +25,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Settings
@@ -85,16 +87,18 @@ import org.onion.diffusion.viewmodel.ChatViewModel
 import kotlin.math.roundToInt
 
 fun NavGraphBuilder.settingScreen(
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
 ) {
     composable(RootRoute.SettingRoute.name) {
-        SettingScreen(onBackClick = onBackClick)
+        SettingScreen(
+            onBackClick = onBackClick,
+        )
     }
 }
 
 @Composable
 fun SettingScreen(
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
 ) {
     val chatViewModel = koinInject<ChatViewModel>()
     
@@ -201,92 +205,6 @@ fun SettingScreen(
                         chatViewModel.cfgScale.value = value
                     }
                 )
-            }
-            
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Advanced Settings Section
-            SettingsSectionCard(
-                title = stringResource(Res.string.settings_advanced_title),
-                subtitle = stringResource(Res.string.settings_advanced_subtitle),
-                icon = Icons.Default.Settings // Fallback if Build is not available or just generic
-            ) {
-                // Flash Attention Switch
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = stringResource(Res.string.settings_flash_attn),
-                            style = MaterialTheme.typography.labelLarge,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = stringResource(Res.string.settings_flash_attn_desc),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    androidx.compose.material3.Switch(
-                        checked = chatViewModel.diffusionFlashAttn.value,
-                        onCheckedChange = { chatViewModel.diffusionFlashAttn.value = it }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Quantization Type (wtype)
-                Column {
-                    Text(
-                        text = stringResource(Res.string.settings_quantization),
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = stringResource(Res.string.settings_quantization_desc),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                    
-                    val wtypes = listOf(
-                        0 to stringResource(Res.string.settings_quant_default),
-                        1 to "F16",
-                        2 to "Q4_0",
-                        6 to "Q5_0",
-                        8 to "Q8_0"
-                    )
-                    
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        wtypes.forEach { (value, label) ->
-                            val isSelected = chatViewModel.wtype.value == value
-                            val bgcolor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                            val txtcolor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-                            
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(bgcolor)
-                                    .clickable { chatViewModel.wtype.value = value }
-                                    .padding(horizontal = 12.dp, vertical = 6.dp)
-                            ) {
-                                Text(
-                                    text = label,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                    color = txtcolor
-                                )
-                            }
-                        }
-                    }
-                }
             }
             
             Spacer(modifier = Modifier.height(20.dp))
