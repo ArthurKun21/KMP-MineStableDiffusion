@@ -70,6 +70,7 @@ import minediffusion.composeapp.generated.resources.settings_keep_vae_on_cpu
 import minediffusion.composeapp.generated.resources.settings_keep_vae_on_cpu_desc
 import minediffusion.composeapp.generated.resources.settings_quant_auto
 import minediffusion.composeapp.generated.resources.settings_quant_default
+import minediffusion.composeapp.generated.resources.settings_quant_info
 import minediffusion.composeapp.generated.resources.settings_quantization
 import minediffusion.composeapp.generated.resources.settings_quantization_desc
 import minediffusion.composeapp.generated.resources.settings_quantization_warning
@@ -205,6 +206,27 @@ fun AdvancedSettingScreen(
                             style = AppTheme.typography.bodySmall,
                             color = Color(0xFFE65100), // Dark orange text
                             lineHeight = 18.sp
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    // Info Box - Detailed explanation
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color(0xFFE3F2FD)) // Light blue info background
+                            .border(1.dp, Color(0xFF64B5F6), RoundedCornerShape(12.dp))
+                            .padding(12.dp)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.settings_quant_info),
+                            style = AppTheme.typography.bodySmall.copy(
+                                fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                            ),
+                            color = Color(0xFF1565C0), // Dark blue text
+                            lineHeight = 20.sp
                         )
                     }
                     

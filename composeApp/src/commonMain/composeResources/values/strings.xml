@@ -49,11 +49,12 @@
     <string name="settings_advanced_subtitle">Experimental features and optimizations</string>
     <string name="settings_flash_attn">Flash Attention</string>
     <string name="settings_flash_attn_desc">Reduces memory usage and potentially speeds up generation</string>
-    <string name="settings_quantization">Quantization (wtype)</string>
-    <string name="settings_quantization_desc">Model weight precision. Lower bits save RAM but may reduce quality.</string>
-    <string name="settings_quantization_warning">⚠️ Not recommended to change. Modifying this may cause long initialization times and potential negative effects on quality or stability.</string>
+    <string name="settings_quantization">Model Weight Type (wtype)</string>
+    <string name="settings_quantization_desc">Controls how model weights are stored in memory. Higher precision = better quality but more RAM.</string>
+    <string name="settings_quantization_warning">⚠️ Advanced users only. Changing this requires re-loading the model (long initialization) and may cause quality degradation. Most users should keep "Auto".</string>
     <string name="settings_quant_default">Default (F32)</string>
-    <string name="settings_quant_auto">Auto (Recommended)</string>
+    <string name="settings_quant_auto">Auto</string>
+    <string name="settings_quant_info">• Auto: Library selects optimal type\n• F32: Full precision, ~8GB RAM, best quality\n• F16: Half precision, ~4GB RAM, minimal loss\n• Q8_0: 8-bit, ~2GB RAM, slight loss\n• Q5_0: 5-bit, ~1.2GB RAM, noticeable loss\n• Q4_0: 4-bit, ~1GB RAM, quality compromise</string>
     <string name="settings_offload_to_cpu">Offload to CPU</string>
     <string name="settings_offload_to_cpu_desc">Offload model computations to CPU to save GPU/memory</string>
     <string name="settings_keep_clip_on_cpu">Keep CLIP on CPU</string>

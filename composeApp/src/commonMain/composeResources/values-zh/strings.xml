@@ -48,11 +48,12 @@
     <string name="settings_advanced_subtitle">实验性功能和优化</string>
     <string name="settings_flash_attn">Flash Attention (闪电注意力)</string>
     <string name="settings_flash_attn_desc">降低内存使用并可能加速生成</string>
-    <string name="settings_quantization">量化 (wtype)</string>
-    <string name="settings_quantization_desc">模型权重精度。低位更省内存但可能降低画质。</string>
-    <string name="settings_quantization_warning">⚠️ 不推荐更改此选项。修改可能导致长时间的初始化，并可能对质量或稳定性产生负面影响。</string>
+    <string name="settings_quantization">模型权重类型 (wtype)</string>
+    <string name="settings_quantization_desc">控制模型权重在内存中的存储方式。精度越高=质量越好但占用内存越多。</string>
+    <string name="settings_quantization_warning">⚠️ 仅供高级用户。更改需要重新加载模型（长时间初始化）且可能导致画质下降。大多数用户应保持"自动"。</string>
     <string name="settings_quant_default">默认 (F32)</string>
-    <string name="settings_quant_auto">自动 (推荐)</string>
+    <string name="settings_quant_auto">自动</string>
+    <string name="settings_quant_info">• 自动：库自动选择最优类型\n• F32：全精度，约8GB内存，最佳质量\n• F16：半精度，约4GB内存，损失极小\n• Q8_0：8位量化，约2GB内存，轻微损失\n• Q5_0：5位量化，约1.2GB内存，明显损失\n• Q4_0：4位量化，约1GB内存，质量妥协</string>
     <string name="settings_offload_to_cpu">CPU卸载</string>
     <string name="settings_offload_to_cpu_desc">将模型计算卸载到CPU以节省GPU/内存</string>
     <string name="settings_keep_clip_on_cpu">CLIP保留在CPU</string>
