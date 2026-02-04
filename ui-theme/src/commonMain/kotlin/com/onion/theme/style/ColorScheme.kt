@@ -43,7 +43,11 @@ class ColorScheme(
     val imageBackground: Color = Color.Unspecified,
     val imageTagContainer: Color = Color.Unspecified,
     val imageOnTagContainer: Color = Color.Unspecified,
-    val itemVariant: Color = Color(0x10878787)
+    val itemVariant: Color = Color(0x10878787),
+    val background: Color = Color.Unspecified,
+    val onBackground: Color = Color.Unspecified,
+    val surfaceVariant: Color = Color.Unspecified,
+    val outline: Color = Color.Unspecified,
 )
 
 internal val darkScheme = ColorScheme(
@@ -80,6 +84,10 @@ internal val darkScheme = ColorScheme(
     imageBackground = neutral900,
     imageTagContainer = Color(0x80151515),
     imageOnTagContainer = Color(0xFFF0F0F0),
+    background = neutral950,
+    onBackground = neutral200,
+    surfaceVariant = neutral800,
+    outline = neutral600,
 )
 
 internal val lightScheme = ColorScheme(
@@ -116,4 +124,8 @@ internal val lightScheme = ColorScheme(
     imageBackground = neutral100,
     imageTagContainer = Color(0x804A4A4A),
     imageOnTagContainer = Color(0xFFF0F0F0),
+    background = neutral100,
+    onBackground = neutral800,
+    surfaceVariant = neutral200,
+    outline = neutral400,
 )
