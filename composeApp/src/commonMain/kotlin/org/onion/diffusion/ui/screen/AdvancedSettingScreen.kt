@@ -212,7 +212,7 @@ fun AdvancedSettingScreen(
                     
                     val wtypes = listOf(
                         -1 to stringResource(Res.string.settings_quant_auto),
-                        0 to stringResource(Res.string.settings_quant_default),
+                        0 to "F32",
                         1 to "F16",
                         2 to "Q4_0",
                         6 to "Q5_0",
