@@ -6,8 +6,10 @@
 
 ## v3.0.0
 
+More Advance Settings
+
 - (offloadToCpu, keepClipOnCpu, keepVaeOnCpu) independently controllable in the AdvancedSettingScreen
-- 
+- wtpe setting()
 
 ## v2.3.0
 

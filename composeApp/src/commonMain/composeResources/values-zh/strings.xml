@@ -53,7 +53,7 @@
     <string name="settings_quantization_warning">⚠️ 仅供高级用户。更改需要重新加载模型（长时间初始化）且可能导致画质下降。大多数用户应保持"自动"。</string>
     <string name="settings_quant_default">默认 (F32)</string>
     <string name="settings_quant_auto">自动</string>
-    <string name="settings_quant_info">• 自动：库自动选择最优类型\n• F32：全精度，约8GB内存，最佳质量\n• F16：半精度，约4GB内存，损失极小\n• Q8_0：8位量化，约2GB内存，轻微损失\n• Q5_0：5位量化，约1.2GB内存，明显损失\n• Q4_0：4位量化，约1GB内存，质量妥协</string>
+    <string name="settings_quant_info">• 自动：库自动选择最优类型\n• F32：全精度，约8GB内存，最佳质量\n• F16：半精度，约4GB内存，损失极小\n• BF16：脑浮点16位，约4GB，现代硬件优化\n• Q8_0：8位量化，约2GB内存，轻微损失\n• Q6_K：6位K变体，约1.5GB，良好平衡\n• Q5_K：5位K变体，约1.3GB，优于Q5_0\n• Q5_0：5位传统，约1.2GB，明显损失\n• Q4_K：4位K变体，约1GB，优于Q4_0\n• Q4_0：4位传统，约1GB，质量妥协\n• Q3_K：3位K变体，约0.7GB，低内存\n• Q2_K：2位K变体，约0.5GB，极致压缩\n\n注：K变体在相同位深度下质量优于传统版本。</string>
     <string name="settings_offload_to_cpu">CPU卸载</string>
     <string name="settings_offload_to_cpu_desc">将模型计算卸载到CPU以节省GPU/内存</string>
     <string name="settings_keep_clip_on_cpu">CLIP保留在CPU</string>

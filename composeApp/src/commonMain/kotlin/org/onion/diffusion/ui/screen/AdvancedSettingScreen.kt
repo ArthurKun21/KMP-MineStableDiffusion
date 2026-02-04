@@ -236,9 +236,15 @@ fun AdvancedSettingScreen(
                         -1 to stringResource(Res.string.settings_quant_auto),
                         0 to "F32",
                         1 to "F16",
-                        2 to "Q4_0",
+                        30 to "BF16",
+                        8 to "Q8_0",
+                        14 to "Q6_K",
+                        13 to "Q5_K",
                         6 to "Q5_0",
-                        8 to "Q8_0"
+                        12 to "Q4_K",
+                        2 to "Q4_0",
+                        11 to "Q3_K",
+                        10 to "Q2_K"
                     )
                     
                      CyberGridSelection(

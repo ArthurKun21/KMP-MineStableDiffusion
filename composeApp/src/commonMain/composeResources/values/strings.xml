@@ -54,7 +54,7 @@
     <string name="settings_quantization_warning">⚠️ Advanced users only. Changing this requires re-loading the model (long initialization) and may cause quality degradation. Most users should keep "Auto".</string>
     <string name="settings_quant_default">Default (F32)</string>
     <string name="settings_quant_auto">Auto</string>
-    <string name="settings_quant_info">• Auto: Library selects optimal type\n• F32: Full precision, ~8GB RAM, best quality\n• F16: Half precision, ~4GB RAM, minimal loss\n• Q8_0: 8-bit, ~2GB RAM, slight loss\n• Q5_0: 5-bit, ~1.2GB RAM, noticeable loss\n• Q4_0: 4-bit, ~1GB RAM, quality compromise</string>
+    <string name="settings_quant_info">• Auto: Library selects optimal type\n• F32: Full precision, ~8GB RAM, best quality\n• F16: Half precision, ~4GB RAM, minimal loss\n• BF16: Brain Float 16, ~4GB, modern hardware optimized\n• Q8_0: 8-bit quantized, ~2GB RAM, slight loss\n• Q6_K: 6-bit K-variant, ~1.5GB, good balance\n• Q5_K: 5-bit K-variant, ~1.3GB, better than Q5_0\n• Q5_0: 5-bit legacy, ~1.2GB, noticeable loss\n• Q4_K: 4-bit K-variant, ~1GB, better than Q4_0\n• Q4_0: 4-bit legacy, ~1GB, quality compromise\n• Q3_K: 3-bit K-variant, ~0.7GB, low memory\n• Q2_K: 2-bit K-variant, ~0.5GB, extreme compression\n\nNote: K-variants offer better quality at same bit-depth.</string>
     <string name="settings_offload_to_cpu">Offload to CPU</string>
     <string name="settings_offload_to_cpu_desc">Offload model computations to CPU to save GPU/memory</string>
     <string name="settings_keep_clip_on_cpu">Keep CLIP on CPU</string>
