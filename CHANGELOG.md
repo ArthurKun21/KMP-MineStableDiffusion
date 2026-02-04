@@ -6,10 +6,61 @@
 
 ## v3.0.0
 
-More Advance Settings
+### 🎨 Advanced Settings Overhaul
 
-- (offloadToCpu, keepClipOnCpu, keepVaeOnCpu) independently controllable in the AdvancedSettingScreen
-- wtpe setting()
+#### New Features
+- **CPU Offloading Controls**: Added three independent toggles for fine-grained memory management
+  - `offloadToCpu`: Offload model computations to CPU to save GPU/memory
+  - `keepClipOnCpu`: Keep CLIP model on CPU to reduce GPU memory usage
+  - `keepVaeOnCpu`: Keep VAE decoder on CPU to reduce GPU memory usage
+  - All parameters now user-controllable in Advanced Settings (previously hardcoded)
+
+- **Expanded Quantization Options**: Increased from 6 to 13 quantization types
+  - Added K-series variants: `Q2_K`, `Q3_K`, `Q4_K`, `Q5_K`, `Q6_K` (better quality at same bit-depth)
+  - Added `BF16` (Brain Float 16) for modern AI hardware optimization
+  - New "Auto" mode (default) that lets the library select optimal quantization
+  - Full list: Auto → F32 → F16 → BF16 → Q8_0 → Q6_K → Q5_K → Q5_0 → Q4_K → Q4_0 → Q3_K → Q2_K
+
+#### UI/UX Improvements
+- **Enhanced Flash Attention Documentation**
+  - Detailed benefits info box showing 30-50% memory reduction
+  - Compatibility notes for NVIDIA GPUs (compute capability ≥7.5)
+  - Clear recommendations: Enable for devices with <8GB RAM
+  - Dynamic info box (shows only when enabled)
+
+- **Comprehensive Quantization Guide**
+  - Warning box alerting users about re-initialization requirements
+  - Detailed info box with memory usage and quality tradeoffs for all 13 types
+  - Example: "Q4_K: 4-bit K-variant, ~1GB, better than Q4_0"
+  - Note explaining K-variants offer superior quality at same bit-depth
+
+- **Visual Design Enhancements**
+  - Color-coded info boxes:
+    - 🟧 Orange warning box for quantization risks
+    - 🔵 Blue info box for technical details
+    - 🟢 Green success box for Flash Attention benefits
+  - Monospace font for technical specifications
+  - Improved readability with proper line spacing
+
+#### Technical Changes
+- **Default Value Changes**
+  - `wtype` default changed from `0` (F32) to `-1` (Auto)
+  - C++ JNI layer now skips `wtype` assignment when value is `-1`
+  - Allows underlying stable-diffusion.cpp library to use its optimal defaults
+
+- **Internationalization**
+  - Added 15+ new string resources (English + Chinese)
+  - All new settings fully localized
+
+#### Developer Notes
+- Updated `DiffusionLoader` interface across all platforms (common, Android, Desktop)
+- Modified `ChatViewModel` to include new mutable state properties
+- Enhanced `AdvancedSettingScreen.kt` with conditional rendering and info boxes
+- C++ native code (`diffusion_loader_jni.cpp`) updated to handle new parameters
+
+---
+
+
 
 ## v2.3.0
 
