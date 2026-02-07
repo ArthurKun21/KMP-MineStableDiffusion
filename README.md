@@ -3,7 +3,7 @@
 
 # Mine StableDiffusion 🎨
 
-**The most powerful multiplatform Stable Diffusion client**  
+**The kotlin multiplatform Stable Diffusion client**  
 _Generate stunning AI art locally on Android & Desktop_
 
 <p align="center">
