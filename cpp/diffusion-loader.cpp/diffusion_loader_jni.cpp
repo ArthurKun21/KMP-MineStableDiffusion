@@ -59,21 +59,7 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
 
     printf("Initializing Stable Diffusion with:\n");
     printf("  Model path: %s\n", modelPath ? modelPath : "none");
-    if (vaePath && strlen(vaePath) > 0) {
-        printf("  VAE path: %s\n", vaePath);
-    }
-    if (llmPath && strlen(llmPath) > 0) {
-        printf("  LLM path: %s\n", llmPath);
-    }
-    if (clipLPath && strlen(clipLPath) > 0) {
-        printf("  CLIP-L path: %s\n", clipLPath);
-    }
-    if (clipGPath && strlen(clipGPath) > 0) {
-        printf("  CLIP-G path: %s\n", clipGPath);
-    }
-    if (t5xxlPath && strlen(t5xxlPath) > 0) {
-        printf("  T5XXL path: %s\n", t5xxlPath);
-    }
+
 
     // 创建并初始化参数结构体
     sd_ctx_params_t p{};
@@ -87,12 +73,29 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
     } else {
         p.model_path = modelPath ? modelPath : "";
     }
-    p.vae_path = vaePath ? vaePath : "" ;
-    p.llm_path = llmPath ? llmPath : "" ;
-    p.clip_l_path = clipLPath ? clipLPath : "" ;
-    p.clip_g_path = clipGPath ? clipGPath : "" ;
-    p.t5xxl_path = t5xxlPath ? t5xxlPath : "" ;
-    
+    if (vaePath && strlen(vaePath) > 0) {
+        p.vae_path = vaePath ? vaePath : "" ;
+        printf("  VAE path: %s\n", vaePath);
+    }
+    if (llmPath && strlen(llmPath) > 0) {
+        p.llm_path = llmPath ? llmPath : "" ;
+        printf("  LLM path: %s\n", llmPath);
+    }
+    if (clipLPath && strlen(clipLPath) > 0) {
+        p.clip_l_path = clipLPath ? clipLPath : "" ;
+        printf("  CLIP-L path: %s\n", clipLPath);
+    }
+    if (clipGPath && strlen(clipGPath) > 0) {
+        p.clip_g_path = clipGPath ? clipGPath : "" ;
+        printf("  CLIP-G path: %s\n", clipGPath);
+    }
+    if (t5xxlPath && strlen(t5xxlPath) > 0) {
+        p.t5xxl_path = t5xxlPath ? t5xxlPath : "" ;
+
+        printf("  T5XXL path: %s\n", t5xxlPath);
+    }
+
+
     // 不要立即释放资源,以方便下次使用
     p.free_params_immediately = false;
     p.n_threads = sd_get_num_physical_cores();

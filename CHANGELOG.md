@@ -4,6 +4,10 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v3.2.0
+
+- add clipLPath、clipGPath、t5xxlPath
+
 ## v3.1.0
 
 - Fix FLUX Model loading issue

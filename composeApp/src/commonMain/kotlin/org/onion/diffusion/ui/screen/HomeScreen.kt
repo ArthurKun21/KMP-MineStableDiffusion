@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -761,217 +762,275 @@ fun LLMFileSelectTipDialog(
         )
         Dialog(
             onDismissRequest = {},
-            properties = DialogProperties(dismissOnClickOutside = false)
+            properties = DialogProperties(
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = false
+            )
         ) {
             Card(
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxWidth(0.5f)
+                    .fillMaxHeight(0.85f),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
-                )
+                ),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
             ) {
                 Column(
-                    modifier = Modifier
-                        .padding(24.dp,12.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    // Lottie Animation
-                    val composition by rememberLottieComposition {
-                        LottieCompositionSpec.DotLottie(
-                            Res.readBytes("files/anim_ai_file_.lottie")
-                        )
-                    }
-                    Box(Modifier.fillMaxWidth().wrapContentHeight()){
-                        Image(
-                            painter = rememberLottiePainter(
-                                composition = composition,
-                                iterations = Compottie.IterateForever
-                            ),
-                            contentDescription = "File animation",
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .size(120.dp)
-                                .padding(bottom = 8.dp)
-                        )
+                    // Scrollable Content
+                    LazyColumn(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // Header
+                        item {
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                val composition by rememberLottieComposition {
+                                    LottieCompositionSpec.DotLottie(
+                                        Res.readBytes("files/anim_ai_file_.lottie")
+                                    )
+                                }
+                                Image(
+                                    painter = rememberLottiePainter(
+                                        composition = composition,
+                                        iterations = Compottie.IterateForever
+                                    ),
+                                    contentDescription = "File animation",
+                                    modifier = Modifier
+                                        .align(Alignment.Center)
+                                        .size(120.dp)
+                                        .padding(bottom = 8.dp)
+                                )
 
-                        IconButton(
-                            onClick = settingClick,
-                            modifier = Modifier.align(Alignment.TopEnd).size(48.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Settings,
-                                contentDescription = "Settings",
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .graphicsLayer {
-                                        rotationZ = rotation
+                                IconButton(
+                                    onClick = settingClick,
+                                    modifier = Modifier
+                                        .align(Alignment.TopEnd)
+                                        .size(48.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Settings,
+                                        contentDescription = "Settings",
+                                        modifier = Modifier
+                                            .size(24.dp)
+                                            .graphicsLayer {
+                                                rotationZ = rotation
+                                            }
+                                    )
+                                }
+                            }
+                        }
+
+                        // Required Section
+                        item {
+                            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                MediumText(
+                                    text = "Core Model",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Required for image generation",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+
+                        item {
+                            FileSelectionCard(
+                                title = "Diffusion Model",
+                                subtitle = "Required",
+                                selectedPath = diffusionPath,
+                                isRequired = true,
+                                isLoading = isDiffusionModelLoading,
+                                gradientColors = listOf(
+                                    Color(0xFFFFA726),
+                                    Color(0xFF81C784)
+                                ),
+                                onSelectClick = {
+                                    coroutineScope.launch(Dispatchers.Default) {
+                                        if(loadingState == 1) return@launch
+                                        chatViewModel.selectDiffusionModelFile()
                                     }
+                                }
+                            )
+                        }
+
+                        // Optional Section
+                        item {
+                            Column(
+                                modifier = Modifier.padding(top = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                MediumText(
+                                    text = "Optional Modules",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Enhance quality and capabilities",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+
+                        item {
+                            FileSelectionCard(
+                                title = "VAE Model",
+                                subtitle = "Optional",
+                                selectedPath = vaePath,
+                                isRequired = false,
+                                isLoading = isVaeModelLoading,
+                                gradientColors = listOf(
+                                    Color(0xFF9C27B0),
+                                    Color(0xFF2196F3)
+                                ),
+                                onSelectClick = {
+                                    coroutineScope.launch(Dispatchers.Default) {
+                                        if(loadingState == 1) return@launch
+                                        chatViewModel.selectVaeFile()
+                                    }
+                                }
+                            )
+                        }
+
+                        item {
+                           FileSelectionCard(
+                                title = "LLM Model",
+                                subtitle = "Optional",
+                                selectedPath = llmPath,
+                                isRequired = false,
+                                isLoading = isLlmModelLoading,
+                                gradientColors = listOf(
+                                    Color(0xFF00BCD4),
+                                    Color(0xFF00E5FF)
+                                ),
+                                onSelectClick = {
+                                    coroutineScope.launch(Dispatchers.Default) {
+                                        if(loadingState == 1) return@launch
+                                        chatViewModel.selectLlmFile()
+                                    }
+                                }
+                            )
+                        }
+
+                        item {
+                            FileSelectionCard(
+                                title = "CLIP-L Model",
+                                subtitle = "Optional",
+                                selectedPath = clipLPath,
+                                isRequired = false,
+                                isLoading = isClipLModelLoading,
+                                gradientColors = listOf(
+                                    Color(0xFFE91E63),
+                                    Color(0xFFFF6090)
+                                ),
+                                onSelectClick = {
+                                    coroutineScope.launch(Dispatchers.Default) {
+                                        if(loadingState == 1) return@launch
+                                        chatViewModel.selectClipLFile()
+                                    }
+                                }
+                            )
+                        }
+
+                        item {
+                            FileSelectionCard(
+                                title = "CLIP-G Model",
+                                subtitle = "Optional",
+                                selectedPath = clipGPath,
+                                isRequired = false,
+                                isLoading = isClipGModelLoading,
+                                gradientColors = listOf(
+                                    Color(0xFF4CAF50),
+                                    Color(0xFF8BC34A)
+                                ),
+                                onSelectClick = {
+                                    coroutineScope.launch(Dispatchers.Default) {
+                                        if(loadingState == 1) return@launch
+                                        chatViewModel.selectClipGFile()
+                                    }
+                                }
+                            )
+                        }
+
+                        item {
+                            FileSelectionCard(
+                                title = "T5XXL Model",
+                                subtitle = "Optional",
+                                selectedPath = t5xxlPath,
+                                isRequired = false,
+                                isLoading = isT5xxlModelLoading,
+                                gradientColors = listOf(
+                                    Color(0xFFFF9800),
+                                    Color(0xFFFFB74D)
+                                ),
+                                onSelectClick = {
+                                    coroutineScope.launch(Dispatchers.Default) {
+                                        if(loadingState == 1) return@launch
+                                        chatViewModel.selectT5xxlFile()
+                                    }
+                                }
                             )
                         }
                     }
 
-                    // Title
-                    /*MediumText(
-                        text = stringResource(Res.string.select_llm_model_title),
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )*/
-
-                    // File Selection Cards
-                    FileSelectionCard(
-                        title = "Diffusion Model",
-                        subtitle = "Required",
-                        selectedPath = diffusionPath,
-                        isRequired = true,
-                        isLoading = isDiffusionModelLoading,
-                        gradientColors = listOf(
-                            Color(0xFFFFA726),
-                            Color(0xFF81C784)
-                        ),
-                        onSelectClick = {
-                            coroutineScope.launch(Dispatchers.Default) {
-                                if(loadingState == 1) return@launch
-                                chatViewModel.selectDiffusionModelFile()
-                            }
-                        }
-                    )
-
-                    FileSelectionCard(
-                        title = "VAE Model",
-                        subtitle = "Optional",
-                        selectedPath = vaePath,
-                        isRequired = false,
-                        isLoading = isVaeModelLoading,
-                        gradientColors = listOf(
-                            Color(0xFF9C27B0),
-                            Color(0xFF2196F3)
-                        ),
-                        onSelectClick = {
-                            coroutineScope.launch(Dispatchers.Default) {
-                                if(loadingState == 1) return@launch
-                                chatViewModel.selectVaeFile()
-                            }
-                        }
-                    )
-
-                    FileSelectionCard(
-                        title = "LLM Model",
-                        subtitle = "Optional",
-                        selectedPath = llmPath,
-                        isRequired = false,
-                        isLoading = isLlmModelLoading,
-                        gradientColors = listOf(
-                            Color(0xFF00BCD4),
-                            Color(0xFF00E5FF)
-                        ),
-                        onSelectClick = {
-                            coroutineScope.launch(Dispatchers.Default) {
-                                if(loadingState == 1) return@launch
-                                chatViewModel.selectLlmFile()
-                            }
-                        }
-                    )
-
-                    FileSelectionCard(
-                        title = "CLIP-L Model",
-                        subtitle = "Optional",
-                        selectedPath = clipLPath,
-                        isRequired = false,
-                        isLoading = isClipLModelLoading,
-                        gradientColors = listOf(
-                            Color(0xFFE91E63),
-                            Color(0xFFFF6090)
-                        ),
-                        onSelectClick = {
-                            coroutineScope.launch(Dispatchers.Default) {
-                                if(loadingState == 1) return@launch
-                                chatViewModel.selectClipLFile()
-                            }
-                        }
-                    )
-
-                    FileSelectionCard(
-                        title = "CLIP-G Model",
-                        subtitle = "Optional",
-                        selectedPath = clipGPath,
-                        isRequired = false,
-                        isLoading = isClipGModelLoading,
-                        gradientColors = listOf(
-                            Color(0xFF4CAF50),
-                            Color(0xFF8BC34A)
-                        ),
-                        onSelectClick = {
-                            coroutineScope.launch(Dispatchers.Default) {
-                                if(loadingState == 1) return@launch
-                                chatViewModel.selectClipGFile()
-                            }
-                        }
-                    )
-
-                    FileSelectionCard(
-                        title = "T5XXL Model",
-                        subtitle = "Optional",
-                        selectedPath = t5xxlPath,
-                        isRequired = false,
-                        isLoading = isT5xxlModelLoading,
-                        gradientColors = listOf(
-                            Color(0xFFFF9800),
-                            Color(0xFFFFB74D)
-                        ),
-                        onSelectClick = {
-                            coroutineScope.launch(Dispatchers.Default) {
-                                if(loadingState == 1) return@launch
-                                chatViewModel.selectT5xxlFile()
-                            }
-                        }
-                    )
-
-                    // Confirm Button
-                    Button(
-                        onClick = selectAction,
-                        enabled = diffusionPath.isNotEmpty() && loadingState != 1,
+                    // Footer Button (Fixed)
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
-                            .height(52.dp)
-                            .clip(RoundedCornerShape(26.dp))
-                            .background(
-                                brush = if (diffusionPath.isNotEmpty() && loadingState != 1) {
-                                    Brush.horizontalGradient(
-                                        colors = listOf(
-                                            Color(0xFFFFA726),
-                                            Color(0xFF81C784)
-                                        )
-                                    )
-                                } else {
-                                    Brush.horizontalGradient(
-                                        colors = listOf(
-                                            Color.Gray.copy(alpha = 0.3f),
-                                            Color.Gray.copy(alpha = 0.3f)
-                                        )
-                                    )
-                                }
-                            ),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent
-                        )
+                            .padding(24.dp)
                     ) {
-                        MediumText(
-                            text = if(loadingState == 1) stringResource(Res.string.loading) 
-                                   else stringResource(Res.string.select),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (diffusionPath.isNotEmpty() && loadingState != 1) 
-                                Color.White else Color.White.copy(alpha = 0.5f)
-                        )
+                        Button(
+                            onClick = selectAction,
+                            enabled = diffusionPath.isNotEmpty() && loadingState != 1,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp)
+                                .clip(RoundedCornerShape(26.dp))
+                                .background(
+                                    brush = if (diffusionPath.isNotEmpty() && loadingState != 1) {
+                                        Brush.horizontalGradient(
+                                            colors = listOf(
+                                                Color(0xFFFFA726),
+                                                Color(0xFF81C784)
+                                            )
+                                        )
+                                    } else {
+                                        Brush.horizontalGradient(
+                                            colors = listOf(
+                                                Color.Gray.copy(alpha = 0.3f),
+                                                Color.Gray.copy(alpha = 0.3f)
+                                            )
+                                        )
+                                    }
+                                ),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent
+                            )
+                        ) {
+                            MediumText(
+                                text = if(loadingState == 1) stringResource(Res.string.loading) 
+                                       else stringResource(Res.string.select),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = if (diffusionPath.isNotEmpty() && loadingState != 1) 
+                                    Color.White else Color.White.copy(alpha = 0.5f)
+                            )
+                        }
                     }
                 }
             }
