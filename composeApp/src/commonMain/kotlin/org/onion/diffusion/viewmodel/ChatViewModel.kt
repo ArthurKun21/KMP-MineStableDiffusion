@@ -25,12 +25,18 @@ class ChatViewModel  : ViewModel() {
     var diffusionModelPath = mutableStateOf("")
     var vaePath = mutableStateOf("")
     var llmPath = mutableStateOf("")
+    var clipLPath = mutableStateOf("")
+    var clipGPath = mutableStateOf("")
+    var t5xxlPath = mutableStateOf("")
     private var initModel = false
     // 0 default,1 loading,2 loading completely
     var loadingModelState = MutableStateFlow(0)
     var isDiffusionModelLoading = mutableStateOf(false)
     var isVaeModelLoading = mutableStateOf(false)
     var isLlmModelLoading = mutableStateOf(false)
+    var isClipLModelLoading = mutableStateOf(false)
+    var isClipGModelLoading = mutableStateOf(false)
+    var isT5xxlModelLoading = mutableStateOf(false)
     
     // ========================================================================================
     //                              Image Generation Settings
@@ -87,6 +93,30 @@ class ChatViewModel  : ViewModel() {
         return path
     }
 
+    suspend fun selectClipLFile(): String{
+        isClipLModelLoading.value = true
+        val path = diffusionLoader.getModelFilePath()
+        clipLPath.value = path
+        isClipLModelLoading.value = false
+        return path
+    }
+
+    suspend fun selectClipGFile(): String{
+        isClipGModelLoading.value = true
+        val path = diffusionLoader.getModelFilePath()
+        clipGPath.value = path
+        isClipGModelLoading.value = false
+        return path
+    }
+
+    suspend fun selectT5xxlFile(): String{
+        isT5xxlModelLoading.value = true
+        val path = diffusionLoader.getModelFilePath()
+        t5xxlPath.value = path
+        isT5xxlModelLoading.value = false
+        return path
+    }
+
     fun initLLM(){
         if(initModel) return
         initModel = true
@@ -96,6 +126,9 @@ class ChatViewModel  : ViewModel() {
                 modelPath = diffusionModelPath.value,
                 vaePath = vaePath.value,
                 llmPath = llmPath.value,
+                clipLPath = clipLPath.value,
+                clipGPath = clipGPath.value,
+                t5xxlPath = t5xxlPath.value,
                 offloadToCpu = offloadToCpu.value,
                 keepClipOnCpu = keepClipOnCpu.value,
                 keepVaeOnCpu = keepVaeOnCpu.value,
@@ -106,6 +139,9 @@ class ChatViewModel  : ViewModel() {
             println("Model Path: ${diffusionModelPath.value}")
             println("VAE Path: ${vaePath.value}")
             println("LLM Path: ${llmPath.value}")
+            println("CLIP-L Path: ${clipLPath.value}")
+            println("CLIP-G Path: ${clipGPath.value}")
+            println("T5XXL Path: ${t5xxlPath.value}")
             loadingModelState.emit(2)
         }
     }
@@ -130,7 +166,7 @@ class ChatViewModel  : ViewModel() {
                     println("Image prompt: $promptContent")
                     println("Image negative: $negativeContent")
                     // Call txt2Img to generate image from the query prompt
-                    val startTime = Clock.System.now()
+                    val startTime = Clock.System.now().toEpochMilliseconds()
                     val imageByteArray = diffusionLoader.txt2Img(
                         prompt = promptContent,
                         negative = negativeContent,
@@ -165,7 +201,7 @@ class ChatViewModel  : ViewModel() {
                     if (_currentChatMessages.isNotEmpty()) {
                         val lastIndex = _currentChatMessages.lastIndex
                         _currentChatMessages.removeAt(lastIndex)
-                        val generationDuration = Clock.System.now() - startTime
+                        val generationDuration = Clock.System.now().toEpochMilliseconds() - startTime
                         val msg = getString(Res.string.image_generation_finished, generationDuration.toString())
                         _currentChatMessages.add(lastIndex, ChatMessage(
                             message = msg,

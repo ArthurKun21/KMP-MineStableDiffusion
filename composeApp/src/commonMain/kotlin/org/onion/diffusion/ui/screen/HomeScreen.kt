@@ -735,10 +735,16 @@ fun LLMFileSelectTipDialog(
         val loadingState by chatViewModel.loadingModelState.collectAsState(0)
         val vaePath by chatViewModel.vaePath
         val llmPath by chatViewModel.llmPath
+        val clipLPath by chatViewModel.clipLPath
+        val clipGPath by chatViewModel.clipGPath
+        val t5xxlPath by chatViewModel.t5xxlPath
         val diffusionPath by chatViewModel.diffusionModelPath
         val isDiffusionModelLoading by chatViewModel.isDiffusionModelLoading
         val isVaeModelLoading by chatViewModel.isVaeModelLoading
         val isLlmModelLoading by chatViewModel.isLlmModelLoading
+        val isClipLModelLoading by chatViewModel.isClipLModelLoading
+        val isClipGModelLoading by chatViewModel.isClipGModelLoading
+        val isT5xxlModelLoading by chatViewModel.isT5xxlModelLoading
         val coroutineScope = rememberCoroutineScope()
 
         val infiniteTransition = rememberInfiniteTransition(label = "settings_rotation")
@@ -869,6 +875,60 @@ fun LLMFileSelectTipDialog(
                             coroutineScope.launch(Dispatchers.Default) {
                                 if(loadingState == 1) return@launch
                                 chatViewModel.selectLlmFile()
+                            }
+                        }
+                    )
+
+                    FileSelectionCard(
+                        title = "CLIP-L Model",
+                        subtitle = "Optional",
+                        selectedPath = clipLPath,
+                        isRequired = false,
+                        isLoading = isClipLModelLoading,
+                        gradientColors = listOf(
+                            Color(0xFFE91E63),
+                            Color(0xFFFF6090)
+                        ),
+                        onSelectClick = {
+                            coroutineScope.launch(Dispatchers.Default) {
+                                if(loadingState == 1) return@launch
+                                chatViewModel.selectClipLFile()
+                            }
+                        }
+                    )
+
+                    FileSelectionCard(
+                        title = "CLIP-G Model",
+                        subtitle = "Optional",
+                        selectedPath = clipGPath,
+                        isRequired = false,
+                        isLoading = isClipGModelLoading,
+                        gradientColors = listOf(
+                            Color(0xFF4CAF50),
+                            Color(0xFF8BC34A)
+                        ),
+                        onSelectClick = {
+                            coroutineScope.launch(Dispatchers.Default) {
+                                if(loadingState == 1) return@launch
+                                chatViewModel.selectClipGFile()
+                            }
+                        }
+                    )
+
+                    FileSelectionCard(
+                        title = "T5XXL Model",
+                        subtitle = "Optional",
+                        selectedPath = t5xxlPath,
+                        isRequired = false,
+                        isLoading = isT5xxlModelLoading,
+                        gradientColors = listOf(
+                            Color(0xFFFF9800),
+                            Color(0xFFFFB74D)
+                        ),
+                        onSelectClick = {
+                            coroutineScope.launch(Dispatchers.Default) {
+                                if(loadingState == 1) return@launch
+                                chatViewModel.selectT5xxlFile()
                             }
                         }
                     )

@@ -42,6 +42,9 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
         jstring jModelPath,
         jstring jVaePath,
         jstring jLlmPath,
+        jstring jClipLPath,
+        jstring jClipGPath,
+        jstring jT5xxlPath,
         jboolean offloadToCpu,jboolean keepClipOnCpu,jboolean keepVaeOnCpu,
         jboolean diffusionFlashAttn, jint wtype){
     //(void)clazz这是一个常见的技巧,用来告诉编译器 clazz 这个参数我们在此函数中没有使用,以避免编译器发出 "unused parameter" (未使用参数) 的警告
@@ -50,6 +53,9 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
     const char* modelPath = jModelPath ? env->GetStringUTFChars(jModelPath, nullptr) : nullptr;
     const char* vaePath = jVaePath ? env->GetStringUTFChars(jVaePath, nullptr) : nullptr;
     const char* llmPath = jLlmPath ? env->GetStringUTFChars(jLlmPath, nullptr) : nullptr;
+    const char* clipLPath = jClipLPath ? env->GetStringUTFChars(jClipLPath, nullptr) : nullptr;
+    const char* clipGPath = jClipGPath ? env->GetStringUTFChars(jClipGPath, nullptr) : nullptr;
+    const char* t5xxlPath = jT5xxlPath ? env->GetStringUTFChars(jT5xxlPath, nullptr) : nullptr;
 
     printf("Initializing Stable Diffusion with:\n");
     printf("  Model path: %s\n", modelPath ? modelPath : "none");
@@ -59,19 +65,33 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
     if (llmPath && strlen(llmPath) > 0) {
         printf("  LLM path: %s\n", llmPath);
     }
+    if (clipLPath && strlen(clipLPath) > 0) {
+        printf("  CLIP-L path: %s\n", clipLPath);
+    }
+    if (clipGPath && strlen(clipGPath) > 0) {
+        printf("  CLIP-G path: %s\n", clipGPath);
+    }
+    if (t5xxlPath && strlen(t5xxlPath) > 0) {
+        printf("  T5XXL path: %s\n", t5xxlPath);
+    }
 
     // 创建并初始化参数结构体
     sd_ctx_params_t p{};
     sd_ctx_params_init(&p);
     // 配置参数,将从 Java 传来的参数赋值给 C++ 结构体
     // 配置 VAE 路径(如果提供)
-    if (vaePath && strlen(vaePath) > 0 || llmPath && strlen(llmPath) > 0) {
+    if (vaePath && strlen(vaePath) > 0 || llmPath && strlen(llmPath) > 0 || 
+        clipLPath && strlen(clipLPath) > 0 || clipGPath && strlen(clipGPath) > 0 || 
+        t5xxlPath && strlen(t5xxlPath) > 0) {
         p.diffusion_model_path = modelPath ? modelPath : "";
     } else {
         p.model_path = modelPath ? modelPath : "";
     }
     p.vae_path = vaePath ? vaePath : "" ;
     p.llm_path = llmPath ? llmPath : "" ;
+    p.clip_l_path = clipLPath ? clipLPath : "" ;
+    p.clip_g_path = clipGPath ? clipGPath : "" ;
+    p.t5xxl_path = t5xxlPath ? t5xxlPath : "" ;
     
     // 不要立即释放资源,以方便下次使用
     p.free_params_immediately = false;
@@ -92,6 +112,9 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
     if (jModelPath) env->ReleaseStringUTFChars(jModelPath, modelPath);
     if (jVaePath) env->ReleaseStringUTFChars(jVaePath, vaePath);
     if (jLlmPath) env->ReleaseStringUTFChars(jLlmPath, llmPath);
+    if (jClipLPath) env->ReleaseStringUTFChars(jClipLPath, clipLPath);
+    if (jClipGPath) env->ReleaseStringUTFChars(jClipGPath, clipGPath);
+    if (jT5xxlPath) env->ReleaseStringUTFChars(jT5xxlPath, t5xxlPath);
 
     // 处理创建失败的情况
     if (!SdContext) {
