@@ -4,6 +4,10 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v4.1.0
+
+- fix: linux CXXABL1.3.13'not found problem
+
 ## v4.0.0
 
 - fix linux system error:The following packages have unmet dependencies
