@@ -188,6 +188,9 @@ compose.desktop {
 
             linux {
                 iconFile.set(rootProject.file("docs/AppIcon.png"))
+                jvmArgs += listOf(
+                    "-Xmx4g"
+                )
             }
             windows {
                 iconFile.set(rootProject.file("docs/AppIcon.ico"))
@@ -211,7 +214,6 @@ compose.desktop {
 
         jvmArgs += listOf(
             //"-XX:+UseZGC",
-            "-Xmx4g",
             "-XX:SoftMaxHeapSize=2048m",
             "--add-opens=java.desktop/java.awt.peer=ALL-UNNAMED",
             "--add-opens=java.desktop/sun.awt=ALL-UNNAMED",
