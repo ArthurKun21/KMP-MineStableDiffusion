@@ -202,7 +202,7 @@ class ChatViewModel  : ViewModel() {
                         val lastIndex = _currentChatMessages.lastIndex
                         _currentChatMessages.removeAt(lastIndex)
                         val generationDuration = Clock.System.now().toEpochMilliseconds() - startTime
-                        val msg = getString(Res.string.image_generation_finished, generationDuration.toString())
+                        val msg = getString(Res.string.image_generation_finished).replace("%s", "${generationDuration/1000} s")
                         _currentChatMessages.add(lastIndex, ChatMessage(
                             message = msg,
                             isUser = false,
