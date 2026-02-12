@@ -62,23 +62,32 @@ Mine StableDiffusion is a **native, offline-first AI art generation app** that b
 
 ---
 
-## 🎲 Supported Models
+## 🎲 Supported Models & Performance Tiers
 
-Mine StableDiffusion supports a wide range of state-of-the-art generative models:
+Mine StableDiffusion supports a wide range of models. To help you choose the best model for your device, we've organized them by performance requirements:
 
-### 🔥 Popular Models
-- ✅ **[FLUX.1-dev / FLUX.1-schnell](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/flux.md)** - Next-gen image generation
-- ✅ **[FLUX.2-dev](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/flux.md)** - Latest FLUX iteration
-- ✅ **[SDXL / SDXL-Turbo](https://huggingface.co/stabilityai/sdxl-turbo)** - High-quality 1024x1024 images
-- ✅ **[SD3 / SD3.5](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/sd3.md)** - Stability AI's latest architecture
-- ✅ **SD1.x / SD2.x** - Classic Stable Diffusion models
-- ✅ **[SD-Turbo](https://huggingface.co/stabilityai/sd-turbo)** - Lightning-fast generation
+### � Entry & Speed (Fastest, Minimal VRAM)
+_Ideal for older phones or integrated graphics. High speed, low memory usage._
+- ✅ **[SD-Turbo](https://huggingface.co/stabilityai/sd-turbo)** - Extremely fast 1-step generation
+- ✅ **SD1.x / SD2.x** - Classic Stable Diffusion models (Very efficient)
+- ✅ **🎨 [Chroma](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma.md) / [Chroma1-Radiance](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma_radiance.md)** - Vibrant color generation
 
-### 🌈 Specialized Models
-- 🎨 **[Chroma](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma.md) / [Chroma1-Radiance](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma_radiance.md)** - Vibrant color generation
-- 🖼️ **[Z-Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/z_image.md)** - Advanced image synthesis
-- 🧠 **[Qwen Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/qwen_image.md)** - Alibaba's multimodal model
-- 👁️ **[Ovis-Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/ovis_image.md)** - Vision-language model
+### ⚖️ Balanced Performance (Standard Quality)
+_Good balance between quality and speed. Works well on most modern devices._
+- ✅ **[SDXL-Turbo](https://huggingface.co/stabilityai/sdxl-turbo)** - Fast high-quality 512x512 to 1024x1024 images
+- ✅ **🖼️ [Z-Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/z_image.md)** - Advanced image synthesis
+- ✅ **🧠 [Qwen Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/qwen_image.md)** - Alibaba's multimodal model
+
+### 💎 Professional Quality (High Requirements)
+_Best for high-detail 1024x1024+ generation. Requires more VRAM and time._
+- ✅ **[SDXL](https://huggingface.co/stabilityai/sdxl-turbo)** - Standard high-quality base model
+- ✅ **[SD3 / SD3.5](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/sd3.md)** - Stability AI's latest high-fidelity architecture
+- ✅ **👁️ [Ovis-Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/ovis_image.md)** - Vision-language model
+
+### 🌌 Next-Gen Large Models (Flagship & High-End PC)
+_State-of-the-art models with massive parameter counts. Best for flagship phones or dedicated GPUs._
+- ✅ **[FLUX.1-schnell / dev](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/flux.md)** - Next-gen image quality
+- ✅ **[FLUX.2-dev](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/flux.md)** - Latest and most capable iteration
 
 > [!TIP]
 > For model-specific documentation, check the [docs](./docs) folder
