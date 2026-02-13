@@ -128,6 +128,13 @@ Output: High-quality AI-generated image
 | 🍎 macOS | ✅ Supported | Metal support required |
 | 📱 iOS | ⏳ Planned | Coming soon |
 
+> [!TIP]
+> **Memory Optimization**:
+> - **Android**: If you encounter crashes due to insufficient memory, try enabling **Offload to CPU** or lowering the **wtype** (Weight Type) value in Settings.
+> - **macOS**: It is highly recommended to enable **Offload to CPU** to prevent potential crashes during generation.
+
+<img src="./docs/setting_tip.webp" height="298" width="426"  alt="setting"/>
+
 > [!NOTE]
 > iOS support is under development and will be available in future releases
 
