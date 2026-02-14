@@ -23,7 +23,7 @@ assignees: ''
 - [ ] **Other:** (Please specify below)
 
 ## ⚙️ Settings Used
-- **Model Path:** (e.g., Flux.1-dev-Q4_K.gguf)
+- **Model Path:** (e.g., xxxx.gguf)
 - **Quantization (wtype):** (e.g., Auto, Q4_K, F16)
 - **Offload to CPU:** [Enabled/Disabled]
 - **Enable MMAP:** [Enabled/Disabled]
@@ -35,14 +35,6 @@ assignees: ''
 3. Scroll down to '....'
 4. See error
 
-## 📋 Expected Behavior
-<!-- A clear and concise description of what you expected to happen. -->
-
-## ❌ Actual Behavior / Error Logs
-<!-- If applicable, add screenshots or copy-paste logs from the terminal/console to help explain your problem. -->
-```text
-(Paste your logs here)
-```
 
 ## 📸 Screenshots
 <!-- If applicable, add screenshots to help explain your problem. -->
