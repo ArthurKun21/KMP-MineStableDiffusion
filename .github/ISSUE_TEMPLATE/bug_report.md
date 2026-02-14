@@ -1,38 +1,48 @@
 ---
-name: Bug report
+name: Bug Report
 about: Create a report to help us improve
-title: ''
-labels: ''
+title: "[BUG] "
+labels: bug
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+## 🐛 Description
+<!-- A clear and concise description of what the bug is. -->
 
-**To Reproduce**
-Steps to reproduce the behavior:
+## 💻 System Information
+- **OS Version:** (e.g., Android 14, macOS 15.2, Windows 11)
+- **RAM/Memory:** (e.g., 8GB, 16GB)
+- **CPU:** (e.g., Snapdragon 8 Gen 3, Apple M3, Intel i7-12700K)
+- **Device Model:** (For Android/Mac/PC)
+
+## 🕒 Issue Scenario
+- [ ] **Model Loading:** Error occurred while selecting or initializing the model.
+- [ ] **Image Generation:** Error occurred during the inference process.
+- [ ] **UI/UX:** Visual glitches or interaction issues.
+- [ ] **Other:** (Please specify below)
+
+## ⚙️ Settings Used
+- **Model Path:** (e.g., Flux.1-dev-Q4_K.gguf)
+- **Quantization (wtype):** (e.g., Auto, Q4_K, F16)
+- **Offload to CPU:** [Enabled/Disabled]
+- **Enable MMAP:** [Enabled/Disabled]
+- **Flash Attention:** [Enabled/Disabled]
+
+## 🛠 Reproduction Steps
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## 📋 Expected Behavior
+<!-- A clear and concise description of what you expected to happen. -->
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## ❌ Actual Behavior / Error Logs
+<!-- If applicable, add screenshots or copy-paste logs from the terminal/console to help explain your problem. -->
+```text
+(Paste your logs here)
+```
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+## 📸 Screenshots
+<!-- If applicable, add screenshots to help explain your problem. -->
