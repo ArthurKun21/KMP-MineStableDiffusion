@@ -163,7 +163,7 @@ class ChatViewModel  : ViewModel() {
     private var isInferenceOn: Boolean = false
     private val defaultNegative = "worst quality,low quality,ugly,blurry"
     @OptIn(ExperimentalTime::class)
-    fun getTalkerResponse(query: String, onCancelled: () -> Unit, onError: (Throwable) -> Unit){
+    fun getImageTalkerResponse(query: String, onCancelled: () -> Unit, onError: (Throwable) -> Unit){
         runCatching {
             responseGenerationJob = viewModelScope.launch(Dispatchers.Default) {
                 isInferenceOn = true
@@ -255,7 +255,7 @@ class ChatViewModel  : ViewModel() {
             _currentChatMessages.add(ChatMessage(message, isUser))
             _currentChatMessages.add(ChatMessage("", false))
             isGenerating.value = true
-            getTalkerResponse(message,{},{})
+            getImageTalkerResponse(message,{},{})
         }
 
     }
