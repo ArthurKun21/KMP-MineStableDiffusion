@@ -132,6 +132,9 @@ Output: High-quality AI-generated image
 > **Memory Optimization**:
 > - **Android**: **Mmap** is enabled by default. You can manually disable it in Settings if you encounter any issues.
 > - **macOS**: **CLIP on CPU** is enabled by default to prevent potential crashes during generation.
+>
+> [!NOTE]
+> **Vulkan Performance**: Vulkan is currently used as a general-purpose acceleration backend. While it ensures broad compatibility, generation speeds may not be fully optimized compared to native implementations.
 
 <img src="./docs/setting_tip.webp" height="298" width="426"  alt="setting"/>
 
