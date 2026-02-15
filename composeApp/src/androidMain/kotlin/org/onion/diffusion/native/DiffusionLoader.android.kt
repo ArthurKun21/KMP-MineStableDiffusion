@@ -51,7 +51,8 @@ actual class DiffusionLoader actual constructor() {
         diffusionFlashAttn: Boolean,
         enableMmap: Boolean,
         diffusionConvDirect: Boolean,
-        wtype: Int
+        wtype: Int,
+        flowShift: Float
     ) {
         nativePtr = nativeLoadModel(
             modelPath,
@@ -66,7 +67,8 @@ actual class DiffusionLoader actual constructor() {
             diffusionFlashAttn,
             enableMmap,
             diffusionConvDirect,
-            wtype
+            wtype,
+            flowShift
         )
     }
 
@@ -83,6 +85,21 @@ actual class DiffusionLoader actual constructor() {
         cfg: Float,
         seed: Long
     ): ByteArray? = nativeTxt2Img(nativePtr,prompt,negative,width,height,steps,cfg,seed)
+
+    actual fun videoGen(
+        prompt: String,
+        negative: String,
+        width: Int,
+        height: Int,
+        videoFrames: Int,
+        steps: Int,
+        cfg: Float,
+        seed: Long,
+        sampleMethod: Int
+    ): List<ByteArray>? {
+        val result = nativeVideoGen(nativePtr, prompt, negative, width, height, videoFrames, steps, cfg, seed, sampleMethod)
+        return result?.toList()
+    }
 
     actual suspend fun saveImage(imageData: ByteArray, fileName: String): Boolean {
         return try {
@@ -107,7 +124,8 @@ actual class DiffusionLoader actual constructor() {
         diffusionFlashAttn: Boolean,
         enableMmap: Boolean,
         diffusionConvDirect: Boolean,
-        wtype: Int
+        wtype: Int,
+        flowShift: Float
     ): Long
 
     private external fun nativeTxt2Img(
@@ -120,6 +138,20 @@ actual class DiffusionLoader actual constructor() {
         cfg: Float,
         seed: Long
     ): ByteArray?
+
+    private external fun nativeVideoGen(
+        handle: Long,
+        prompt: String,
+        negative: String,
+        width: Int,
+        height: Int,
+        videoFrames: Int,
+        steps: Int,
+        cfg: Float,
+        seed: Long,
+        sampleMethod: Int
+    ): Array<ByteArray>?
+
     private external fun nativeRelease(handle: Long)
 
 }

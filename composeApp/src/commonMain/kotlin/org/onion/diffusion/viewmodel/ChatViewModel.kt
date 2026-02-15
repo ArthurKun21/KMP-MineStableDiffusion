@@ -18,6 +18,7 @@ import kotlin.time.measureTime
 import org.jetbrains.compose.resources.getString
 import minediffusion.composeapp.generated.resources.Res
 import minediffusion.composeapp.generated.resources.image_generation_finished
+import minediffusion.composeapp.generated.resources.video_generation_finished
 import org.onion.diffusion.getPlatform
 
 class ChatViewModel  : ViewModel() {
@@ -76,6 +77,15 @@ class ChatViewModel  : ViewModel() {
 
     /** Direct Convolution - optimize convolution in diffusion model */
     var diffusionConvDirect = mutableStateOf(false)
+
+    // ========================================================================================
+    //                              Video Generation Settings
+    // ========================================================================================
+    /** Video frames - number of frames to generate */
+    var videoFrames = mutableStateOf(33)
+
+    /** Flow Shift - controls temporal flow for video generation models (e.g. Wan2.1) */
+    var flowShift = mutableStateOf(3.0f)
 
 
 
@@ -145,7 +155,8 @@ class ChatViewModel  : ViewModel() {
                 diffusionFlashAttn = diffusionFlashAttn.value,
                 enableMmap = enableMmap.value,
                 diffusionConvDirect = diffusionConvDirect.value,
-                wtype = wtype.value
+                wtype = wtype.value,
+                flowShift = flowShift.value
             )
 
             println("=== Model Path ===")
@@ -220,6 +231,69 @@ class ChatViewModel  : ViewModel() {
                             message = msg,
                             isUser = false,
                             image = imageByteArray
+                        ))
+                    }
+                }
+                isGenerating.value = false
+            }
+        }.getOrElse { exception ->
+            isInferenceOn = false
+            if(exception is CancellationException){
+                onCancelled()
+            }else onError(exception)
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    fun getVideoTalkerResponse(query: String, onCancelled: () -> Unit, onError: (Throwable) -> Unit){
+        runCatching {
+            responseGenerationJob = viewModelScope.launch(Dispatchers.Default) {
+                isInferenceOn = true
+                val duration = measureTime {
+                    println("\n=== Video Generation Params===")
+                    var negativeContent = defaultNegative
+                    var promptContent = query
+                    if(query.contains("|")){
+                        val inputContent = query.split("|")
+                        negativeContent = inputContent.last()
+                        promptContent = inputContent.first()
+                    }
+                    println("Video prompt: $promptContent")
+                    println("Video negative: $negativeContent")
+                    println("Video frames: ${videoFrames.value}")
+                    // Call videoGen to generate video frames
+                    val startTime = Clock.System.now().toEpochMilliseconds()
+                    val frames = diffusionLoader.videoGen(
+                        prompt = promptContent,
+                        negative = negativeContent,
+                        width = imageWidth.value,
+                        height = imageHeight.value,
+                        videoFrames = videoFrames.value,
+                        steps = generationSteps.value,
+                        cfg = cfgScale.value,
+                        seed = Clock.System.now().toEpochMilliseconds(),
+                        sampleMethod = 0 // EULER_SAMPLE_METHOD
+                    )
+
+                    println("=== Video Generation Debug ===")
+                    println("Frames generated: ${frames?.size}")
+                    frames?.forEachIndexed { index, frameData ->
+                        println("Frame $index: ${frameData.size} bytes")
+                    }
+                    println("==============================")
+
+                    // Update the last message in the chat with the generated video frames
+                    if (_currentChatMessages.isNotEmpty()) {
+                        val lastIndex = _currentChatMessages.lastIndex
+                        _currentChatMessages.removeAt(lastIndex)
+                        val generationDuration = Clock.System.now().toEpochMilliseconds() - startTime
+                        val msg = getString(Res.string.video_generation_finished)
+                            .replaceFirst("%s", "${generationDuration/1000} s")
+                            .replaceFirst("%s", "${frames?.size ?: 0}")
+                        _currentChatMessages.add(lastIndex, ChatMessage(
+                            message = msg,
+                            isUser = false,
+                            videoFrames = frames
                         ))
                     }
                 }

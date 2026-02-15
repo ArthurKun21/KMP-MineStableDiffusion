@@ -15,13 +15,22 @@ expect class DiffusionLoader(){
         diffusionFlashAttn: Boolean = false,
         enableMmap: Boolean = false,
         diffusionConvDirect: Boolean = false,
-        wtype: Int = -1
+        wtype: Int = -1,
+        flowShift: Float = Float.POSITIVE_INFINITY
     )
     fun txt2Img(
         prompt: String, negative: String,
         width: Int, height: Int,
         steps: Int, cfg: Float, seed: Long,
     ): ByteArray?
+
+    fun videoGen(
+        prompt: String, negative: String,
+        width: Int, height: Int,
+        videoFrames: Int, steps: Int,
+        cfg: Float, seed: Long,
+        sampleMethod: Int
+    ): List<ByteArray>?
 
     fun release()
 

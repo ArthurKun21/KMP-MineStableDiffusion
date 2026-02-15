@@ -2,6 +2,7 @@
 #include <jni.h>
 #include "stable-diffusion.h"
 #include <iostream>
+#include <cmath>
 #include <vector>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -46,7 +47,8 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
         jstring jClipGPath,
         jstring jT5xxlPath,
         jboolean offloadToCpu, jboolean keepClipOnCpu, jboolean keepVaeOnCpu,
-        jboolean diffusionFlashAttn, jboolean enableMmap, jboolean diffusionConvDirect, jint wtype){
+        jboolean diffusionFlashAttn, jboolean enableMmap, jboolean diffusionConvDirect, jint wtype,
+        jfloat flowShift){
 
     //(void)clazz这是一个常见的技巧,用来告诉编译器 clazz 这个参数我们在此函数中没有使用,以避免编译器发出 "unused parameter" (未使用参数) 的警告
     (void) clazz;
@@ -110,6 +112,11 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeLoadModel(
     // Only set wtype if user explicitly chose a value (not -1/Auto)
     if (wtype != -1) {
         p.wtype = static_cast<sd_type_t>(wtype);
+    }
+
+    // Set flow_shift for video generation models (e.g. Wan2.1)
+    if (std::isfinite(flowShift)) {
+        p.flow_shift = flowShift;
     }
 
     // 创建 Stable Diffusion 上下文（核心步骤
@@ -253,4 +260,104 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeRelease(JNIEnv* env, jobje
     }
     // 释放句柄本身的内存,在 loadModel 中，我们使用了 new SdHandle() 来分配 SdHandle 这个包装结构体。在 C++ 中，任何通过 new 分配的内存都必须通过 delete 来释放
     delete handle;
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+// Video Generation - 视频生成 JNI 函数
+// 调用 C++ generate_video 函数生成视频帧，每帧 PNG 编码后返回为 Java byte[][] 数组
+///////////////////////////////////////////////////////////////////////////
+extern "C" JNIEXPORT jobjectArray JNICALL
+Java_org_onion_diffusion_native_DiffusionLoader_nativeVideoGen(JNIEnv* env, jobject thiz, jlong handlePtr,
+                                                               jstring jPrompt, jstring jNegative,
+                                                               jint width, jint height,
+                                                               jint videoFrames, jint steps,
+                                                               jfloat cfg, jlong seed,
+                                                               jint sampleMethod){
+    (void)thiz;
+    if (handlePtr == 0) {
+        printf("StableDiffusion not initialized for video generation\n");
+        return nullptr;
+    }
+
+    auto* handle = reinterpret_cast<SdHandle*>(handlePtr);
+    const char* prompt = jPrompt ? env->GetStringUTFChars(jPrompt, nullptr) : "";
+    const char* negative = jNegative ? env->GetStringUTFChars(jNegative, nullptr) : "";
+
+    // 初始化视频生成参数结构体
+    sd_vid_gen_params_t gen{};
+    sd_vid_gen_params_init(&gen);
+    gen.prompt = prompt;
+    gen.negative_prompt = negative;
+    gen.width = width;
+    gen.height = height;
+    gen.video_frames = videoFrames;
+    gen.seed = seed;
+
+    // 设置采样参数
+    sd_sample_params_init(&gen.sample_params);
+    if (steps > 0) gen.sample_params.sample_steps = steps;
+    gen.sample_params.guidance.txt_cfg = cfg > 0 ? cfg : 7.0f;
+    if (sampleMethod >= 0 && sampleMethod < SAMPLE_METHOD_COUNT) {
+        gen.sample_params.sample_method = static_cast<sample_method_t>(sampleMethod);
+    }
+
+    // 调用 C++ generate_video 函数
+    int num_frames = 0;
+    sd_image_t* frames = generate_video(handle->ctx, &gen, &num_frames);
+
+    // 释放字符串资源
+    if (jPrompt) env->ReleaseStringUTFChars(jPrompt, prompt);
+    if (jNegative) env->ReleaseStringUTFChars(jNegative, negative);
+
+    // 检查视频是否生成成功
+    if (!frames || num_frames <= 0) {
+        printf("generate_video failed\n");
+        return nullptr;
+    }
+
+    printf("Video generated: %d frames\n", num_frames);
+
+    // 创建 Java byte[][] 数组来存储所有帧的 PNG 数据
+    jclass byteArrayClass = env->FindClass("[B");
+    jobjectArray resultArray = env->NewObjectArray(num_frames, byteArrayClass, nullptr);
+    if (!resultArray) {
+        // 释放所有帧的内存
+        for (int i = 0; i < num_frames; i++) {
+            if (frames[i].data) free(frames[i].data);
+        }
+        free(frames);
+        return nullptr;
+    }
+
+    // 逐帧 PNG 编码并存入数组
+    for (int i = 0; i < num_frames; i++) {
+        if (!frames[i].data) continue;
+
+        PngWriteContext png_ctx;
+        int result = stbi_write_png_to_func(
+            png_write_callback,
+            &png_ctx,
+            frames[i].width,
+            frames[i].height,
+            frames[i].channel,
+            frames[i].data,
+            frames[i].width * frames[i].channel
+        );
+
+        if (result && !png_ctx.data.empty()) {
+            jbyteArray jbytes = env->NewByteArray((jsize)png_ctx.data.size());
+            if (jbytes) {
+                env->SetByteArrayRegion(jbytes, 0, (jsize)png_ctx.data.size(),
+                                        reinterpret_cast<jbyte*>(png_ctx.data.data()));
+                env->SetObjectArrayElement(resultArray, i, jbytes);
+                env->DeleteLocalRef(jbytes);
+            }
+        }
+
+        free(frames[i].data);
+    }
+    free(frames);
+
+    return resultArray;
 }
