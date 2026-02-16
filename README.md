@@ -161,7 +161,7 @@ The **Advanced Settings** page provides fine-grained control over the inference 
 | 🪟 Windows | ✅ Supported | Windows 10+ with Vulkan 1.2 |
 | 🐧 Linux | ✅ Supported | Vulkan 1.2+ drivers |
 | 🍎 macOS | ✅ Supported | Metal support required |
-| 📱 iOS | ⏳ Planned | Coming soon |
+| 📱 iOS | ✅ Supported | Metal support required |
 
 > [!TIP]
 > **Memory Optimization**:
