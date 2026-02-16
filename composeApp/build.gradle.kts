@@ -46,7 +46,20 @@ kotlin {
         }
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
-            isStatic = true
+            // isStatic = true
+            // 优点:启动速度可能稍快，因为不需要在运行时加载动态库。
+            // 缺点:如果多个扩展（如 WidgetKit）都使用了这个静态框架，每个扩展都会有一份代码拷贝，导致应用总体积增大。 可能会遇到符号冲突（duplicate symbols）问题，特别是当框架内部依赖的库与主应用或其他框架依赖的库版本不同时。
+            // isStatic = false？
+            // 正确链接原生依赖（C/C++ 库）: 当你构建一个动态框架时，linkerOpts 中指定的 -l... 和 -framework... 选项会记录为框架的运行时依赖。当你的应用启动并加载这个动态框架时，iOS 的动态链接器（dyld）会根据这些记录去寻找并加载所需的系统框架（如 Metal, Accelerate）和你提供的 C++ 库。如果 isStatic = true，链接器会尝试在构建静态库时就将所有原生库的代码合并进来，这非常复杂且极易出错，常常导致链接失败或运行时找不到符号（undefined symbols）。
+            // 避免重复符号错误 (Duplicate Symbols): 如果你的 C++ 库或者它依赖的任何系统库，与你的主 App Target 或其他依赖的框架有重叠，使用静态链接会把这些符号复制多份到最终的可执行文件中，从而导致“duplicate symbols”链接错误。而动态框架则可以确保这些共享库只被加载一次。
+            // 模块化和代码隔离: 使用动态框架可以将你的 Kotlin 和 C++ 封装成一个独立的模块。这使得依赖管理更加清晰。主应用只需要知道它依赖于 ComposeApp.framework，而不需要关心其内部复杂的原生链接细节。
+            isStatic = false
+        }
+        iosTarget.compilations["main"].cinterops {
+            val sdloader by creating {
+                defFile(project.file("src/nativeInterop/cinterop/sdloader.def"))
+                includeDirs(project.file("${rootProject.projectDir}/cpp/stable-diffusion.cpp/include"))
+            }
         }
     }
     
