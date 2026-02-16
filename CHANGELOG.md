@@ -4,6 +4,11 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v4.3.0
+
+- translation modify
+- 
+
 ## v4.2.1
 
 - android enable mmap default
