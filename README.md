@@ -122,11 +122,10 @@ The **Advanced Settings** page provides fine-grained control over the inference 
 
 | Setting | Description | Effect When ON | Effect When OFF | Recommendation |
 |---------|-------------|----------------|-----------------|----------------|
-| **Flash Attention** | Memory-optimized attention algorithm | Reduces VRAM/RAM usage by ~30-50%; may speed up generation on modern GPUs. Mathematically equivalent to standard attention. | Standard attention is used; higher memory consumption. | ✅ Enable if RAM < 8 GB or you want faster inference. Disable if you see crashes or artifacts. |
 | **Offload to CPU** | Offloads model computations from GPU to CPU | Saves GPU/VRAM at the cost of slower generation speed. | All computation stays on GPU (faster but needs more VRAM). | Enable on low-VRAM devices. |
 | **Keep CLIP on CPU** | Forces the CLIP text encoder to stay on CPU | Frees GPU memory for image generation; slightly slower prompt encoding. | CLIP runs on GPU (faster but uses more VRAM). | ✅ Enabled by default on **macOS** to prevent potential crashes. |
 | **Keep VAE on CPU** | Forces the VAE decoder to stay on CPU | Frees GPU memory; decoding step is slower. | VAE runs on GPU (faster final decode). | Enable if you encounter OOM errors during decode. |
-| **Enable MMAP** | Memory-maps model weights from disk instead of loading them entirely into RAM | Lower initial RAM spike; the OS pages weights in on demand (more disk I/O). | Entire model is loaded into RAM upfront (higher peak RAM, lower disk I/O). | ✅ Enabled by default on **Android**. Disable if you experience slow generation on devices with slow storage. |
+| **Enable MMAP** | Memory-maps model weights from disk instead of loading them entirely into RAM | Lower initial RAM spike; the OS pages weights in on demand (more disk I/O). | Entire model is loaded into RAM upfront (higher peak RAM, lower disk I/O). |  Disable if you experience slow generation on devices with slow storage. |
 | **Direct Convolution** | Uses a direct convolution implementation in the diffusion model | Experimental performance boost on some hardware. | Standard im2col-based convolution is used. | Try enabling to see if it improves speed on your device; disable if quality degrades. |
 
 **Model Weight Type (wtype)** — Controls how model weights are stored in memory. Lower bit-depth reduces RAM usage but may degrade image quality.

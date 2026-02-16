@@ -86,14 +86,14 @@ class ChatViewModel  : ViewModel() {
     /** Offload to CPU - offload model computations to CPU */
     var offloadToCpu = mutableStateOf(false)
 
-    /** Keep CLIP on CPU - keep CLIP model on CPU */
-    var keepClipOnCpu = mutableStateOf(true)
+    /** Keep CLIP on CPU - keep CLIP model on CPU (enabled by default on macOS) */
+    var keepClipOnCpu = mutableStateOf(getPlatform().isMacOS)
 
     /** Keep VAE on CPU - keep VAE decoder on CPU */
     var keepVaeOnCpu = mutableStateOf(false)
     
     /** Enable MMAP - memory map the model weights */
-    var enableMmap = mutableStateOf(getPlatform().name.startsWith("Android"))
+    var enableMmap = mutableStateOf(false)
 
 
     /** Direct Convolution - optimize convolution in diffusion model */
