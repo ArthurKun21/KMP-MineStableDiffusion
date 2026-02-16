@@ -129,7 +129,7 @@ fun AdvancedSettingScreen(
             // Neon Glass Card 1
             NeonGlassCard {
                 Column {
-                    SettingsRow(
+                    /*SettingsRow(
                         title = stringResource(Res.string.settings_flash_attn),
                         subtitle = stringResource(Res.string.settings_flash_attn_desc),
                     ) {
@@ -138,11 +138,11 @@ fun AdvancedSettingScreen(
                             onCheckedChange = { chatViewModel.diffusionFlashAttn.value = it }
                         )
                     }
-                    
+
                     // Flash Attention Info Box
                     if (chatViewModel.diffusionFlashAttn.value) {
                         Spacer(modifier = Modifier.height(12.dp))
-                        
+
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -159,7 +159,7 @@ fun AdvancedSettingScreen(
                                 lineHeight = 18.sp
                             )
                         }
-                    }
+                    }*/
                     
                     SettingsRow(
                         title = stringResource(Res.string.settings_offload_to_cpu),
