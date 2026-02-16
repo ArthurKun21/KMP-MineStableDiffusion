@@ -22,7 +22,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_21)
         }
     }
-    
+    // app icon iosApp/Assets.xcassets/AppIcon.appiconset/app-icon-1024.png,https://convertany.net/zh-cn/app-icon-converter
     listOf(
         iosX64(),
         iosArm64(),
