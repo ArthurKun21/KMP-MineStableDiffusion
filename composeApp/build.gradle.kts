@@ -43,6 +43,7 @@ kotlin {
                 "-framework", "Foundation",
                 "-framework", "Accelerate"
             )
+            linkTaskProvider.configure { dependsOn("buildIosNativeLibs") }
         }
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -475,4 +476,24 @@ tasks.matching { it.name.contains("packageReleaseDmg")
 // desktopProcessResources 必须在 buildNativeLibsIfNeeded 之后运行
 tasks.matching { it.name.contains("desktopProcessResources") }.configureEach {
     dependsOn("buildNativeLibsIfNeeded")
+}
+
+// ------------------------------------------------------------------------
+// iOS Native Build Task
+// ------------------------------------------------------------------------
+tasks.register<Exec>("buildIosNativeLibs") {
+    val script = rootProject.file("cpp/build_ios.sh")
+    workingDir = rootProject.file("cpp")
+    commandLine("bash", "./build_ios.sh")
+
+    // Only run on macOS
+    onlyIf {
+        System.getProperty("os.name").lowercase(Locale.getDefault()).contains("mac")
+    }
+
+    // Declare inputs and outputs for up-to-date checks
+    inputs.dir(rootProject.file("cpp/stable-diffusion.cpp"))
+    inputs.file(script)
+    outputs.dir(rootProject.file("cpp/libs/ios-device"))
+    outputs.dir(rootProject.file("cpp/libs/ios-simulator"))
 }
