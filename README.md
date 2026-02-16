@@ -116,6 +116,42 @@ Output: High-quality AI-generated image
 - Seed control for reproducible results
 - Batch generation support
 
+### ⚙️ Advanced Settings Guide
+
+The **Advanced Settings** page provides fine-grained control over the inference engine. Below is a summary of each toggle and its impact:
+
+| Setting | Description | Effect When ON | Effect When OFF | Recommendation |
+|---------|-------------|----------------|-----------------|----------------|
+| **Flash Attention** | Memory-optimized attention algorithm | Reduces VRAM/RAM usage by ~30-50%; may speed up generation on modern GPUs. Mathematically equivalent to standard attention. | Standard attention is used; higher memory consumption. | ✅ Enable if RAM < 8 GB or you want faster inference. Disable if you see crashes or artifacts. |
+| **Offload to CPU** | Offloads model computations from GPU to CPU | Saves GPU/VRAM at the cost of slower generation speed. | All computation stays on GPU (faster but needs more VRAM). | Enable on low-VRAM devices. |
+| **Keep CLIP on CPU** | Forces the CLIP text encoder to stay on CPU | Frees GPU memory for image generation; slightly slower prompt encoding. | CLIP runs on GPU (faster but uses more VRAM). | ✅ Enabled by default on **macOS** to prevent potential crashes. |
+| **Keep VAE on CPU** | Forces the VAE decoder to stay on CPU | Frees GPU memory; decoding step is slower. | VAE runs on GPU (faster final decode). | Enable if you encounter OOM errors during decode. |
+| **Enable MMAP** | Memory-maps model weights from disk instead of loading them entirely into RAM | Lower initial RAM spike; the OS pages weights in on demand (more disk I/O). | Entire model is loaded into RAM upfront (higher peak RAM, lower disk I/O). | ✅ Enabled by default on **Android**. Disable if you experience slow generation on devices with slow storage. |
+| **Direct Convolution** | Uses a direct convolution implementation in the diffusion model | Experimental performance boost on some hardware. | Standard im2col-based convolution is used. | Try enabling to see if it improves speed on your device; disable if quality degrades. |
+
+**Model Weight Type (wtype)** — Controls how model weights are stored in memory. Lower bit-depth reduces RAM usage but may degrade image quality.
+
+| Type | Precision | Approx. RAM | Notes |
+|------|-----------|-------------|-------|
+| Auto | — | — | Library selects optimal type automatically (**recommended**) |
+| F32 | Full 32-bit | ~8 GB | Best quality, highest memory |
+| F16 | Half 16-bit | ~4 GB | Minimal quality loss |
+| BF16 | Brain Float 16 | ~4 GB | Optimized for modern hardware |
+| Q8_0 | 8-bit | ~2 GB | Slight quality loss |
+| Q6_K | 6-bit K-variant | ~1.5 GB | Good quality/size balance |
+| Q5_K | 5-bit K-variant | ~1.3 GB | Better than Q5_0 |
+| Q5_0 | 5-bit legacy | ~1.2 GB | Noticeable quality loss |
+| Q4_K | 4-bit K-variant | ~1 GB | Better than Q4_0 |
+| Q4_0 | 4-bit legacy | ~1 GB | Quality compromise |
+| Q3_K | 3-bit K-variant | ~0.7 GB | Low memory mode |
+| Q2_K | 2-bit K-variant | ~0.5 GB | Extreme compression, significant quality loss |
+
+> [!TIP]
+> **K-variants** (Q6_K, Q5_K, Q4_K, Q3_K, Q2_K) offer better quality at the same bit-depth compared to their legacy counterparts. Most users should keep **Auto** and only change this if they have specific memory constraints.
+
+> [!WARNING]
+> Changing the weight type requires re-loading the model, which can take a long time. Only change this setting if you understand the trade-offs.
+
 ---
 
 ## 📱 Platform Support

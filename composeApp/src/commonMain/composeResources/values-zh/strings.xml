@@ -47,24 +47,24 @@
     <string name="settings_cfg_scale_description">低 = 创意 | 高 = 精准</string>
     <string name="settings_current_configuration">当前配置</string>
     <string name="settings_advanced_title">高级设置</string>
-    <string name="settings_advanced_subtitle">实验性功能和优化</string>
-    <string name="settings_flash_attn">Flash Attention (闪电注意力)</string>
-    <string name="settings_flash_attn_desc">内存优化的注意力算法。推荐在内存有限的设备上启用（&lt;8GB）。</string>
-    <string name="settings_flash_attn_info">**优势：**\n• 降低显存/内存使用约30-50%\n• 在现代GPU上可能加速生成\n• 数学上等价于标准注意力机制\n\n**兼容性：**\n• 在NVIDIA GPU上效果最佳（算力≥7.5）\n• 部分纯CPU环境可能不兼容\n• 如遇崩溃或画质异常请禁用\n\n**建议：**\n内存低于8GB或希望加速推理时启用。</string>
-    <string name="settings_quantization">模型权重类型 (wtype)</string>
-    <string name="settings_quantization_desc">控制模型权重在内存中的存储方式。精度越高=质量越好但占用内存越多。</string>
-    <string name="settings_quantization_warning">⚠️ 仅供高级用户。更改需要重新加载模型（长时间初始化）且可能导致画质下降。大多数用户应保持"自动"。</string>
+    <string name="settings_advanced_subtitle">性能调优与实验性功能</string>
+    <string name="settings_flash_attn">闪存注意力 (Flash Attention)</string>
+    <string name="settings_flash_attn_desc">低显存注意力优化，可大幅降低生成时的显存/内存占用。建议设备内存不足 8GB 时开启。</string>
+    <string name="settings_flash_attn_info">**效果：**\n• 显存/内存占用降低约 30-50%\n• 现代 GPU 上可加速生成过程\n• 输出质量与标准模式完全一致\n\n**兼容性：**\n• NVIDIA GPU（算力 ≥ 7.5）效果最佳\n• 纯 CPU 环境可能不兼容\n• 如遇崩溃或画面异常请关闭\n\n**建议：**\n设备内存低于 8GB 或追求更快生成速度时开启。</string>
+    <string name="settings_quantization">权重精度 (wtype)</string>
+    <string name="settings_quantization_desc">设定模型权重的存储精度。精度越高画质越好，但所需内存也越大。</string>
+    <string name="settings_quantization_warning">⚠️ 进阶选项。切换后需要重新加载模型（耗时较长），且低精度可能导致画质下降。一般用户建议保持「自动」。</string>
     <string name="settings_quant_default">默认 (F32)</string>
     <string name="settings_quant_auto">自动</string>
-    <string name="settings_quant_info">• 自动：库自动选择最优类型\n• F32：全精度，约8GB内存，最佳质量\n• F16：半精度，约4GB内存，损失极小\n• BF16：脑浮点16位，约4GB，现代硬件优化\n• Q8_0：8位量化，约2GB内存，轻微损失\n• Q6_K：6位K变体，约1.5GB，良好平衡\n• Q5_K：5位K变体，约1.3GB，优于Q5_0\n• Q5_0：5位传统，约1.2GB，明显损失\n• Q4_K：4位K变体，约1GB，优于Q4_0\n• Q4_0：4位传统，约1GB，质量妥协\n• Q3_K：3位K变体，约0.7GB，低内存\n• Q2_K：2位K变体，约0.5GB，极致压缩\n\n注：K变体在相同位深度下质量优于传统版本。</string>
-    <string name="settings_offload_to_cpu">CPU卸载</string>
-    <string name="settings_offload_to_cpu_desc">将模型计算卸载到CPU以节省GPU/内存</string>
-    <string name="settings_keep_clip_on_cpu">CLIP保留在CPU</string>
-    <string name="settings_keep_clip_on_cpu_desc">将CLIP模型保留在CPU上以减少GPU内存使用</string>
-    <string name="settings_keep_vae_on_cpu">VAE保留在CPU</string>
-    <string name="settings_keep_vae_on_cpu_desc">将VAE解码器保留在CPU上以减少GPU内存使用</string>
-    <string name="settings_enable_mmap">启用 MMAP</string>
-    <string name="settings_enable_mmap_desc">将模型权重进行内存映射，而不是全部加载到内存。减少启动时的内存占用，但会增加磁盘 I/O。</string>
-    <string name="settings_conv_direct">直接卷积 (Conv Direct)</string>
-    <string name="settings_conv_direct_desc">在扩散模型中启用直接卷积优化。在特定硬件上可能有实验性的性能提升。</string>
+    <string name="settings_quant_info">• 自动：由引擎自动选择最优精度\n• F32：32 位全精度 ≈ 8GB，画质最佳\n• F16：16 位半精度 ≈ 4GB，画质几乎无损\n• BF16：16 位 BF 浮点 ≈ 4GB，适合新硬件\n• Q8_0：8 位量化 ≈ 2GB，画质损失极小\n• Q6_K：6 位 K 量化 ≈ 1.5GB，质量与体积兼顾\n• Q5_K：5 位 K 量化 ≈ 1.3GB，优于 Q5_0\n• Q5_0：5 位旧式量化 ≈ 1.2GB，画质有损\n• Q4_K：4 位 K 量化 ≈ 1GB，优于 Q4_0\n• Q4_0：4 位旧式量化 ≈ 1GB，画质妥协\n• Q3_K：3 位 K 量化 ≈ 0.7GB，极度压缩\n• Q2_K：2 位 K 量化 ≈ 0.5GB，极限压缩\n\n提示：K 量化在同等位宽下画质优于旧式量化。</string>
+    <string name="settings_offload_to_cpu">权重转移至 CPU</string>
+    <string name="settings_offload_to_cpu_desc">将模型权重存放在系统内存中以节省显存，按需自动加载到 GPU。</string>
+    <string name="settings_keep_clip_on_cpu">CLIP 运行于 CPU</string>
+    <string name="settings_keep_clip_on_cpu_desc">将文本编码器 (CLIP) 保留在 CPU 上运行，释放 GPU 显存用于图像生成。</string>
+    <string name="settings_keep_vae_on_cpu">VAE 运行于 CPU</string>
+    <string name="settings_keep_vae_on_cpu_desc">将图像解码器 (VAE) 保留在 CPU 上运行，释放 GPU 显存。解码阶段速度会稍慢。</string>
+    <string name="settings_enable_mmap">内存映射 (MMAP)</string>
+    <string name="settings_enable_mmap_desc">使用内存映射方式加载模型，按需从磁盘读取权重。可显著降低加载时的内存峰值，但对磁盘读写速度有一定要求。</string>
+    <string name="settings_conv_direct">直接卷积</string>
+    <string name="settings_conv_direct_desc">使用直接卷积替代默认的 im2col 实现。实验性功能，部分硬件上可获得加速效果。</string>
 </resources>
