@@ -41,7 +41,8 @@ kotlin {
                 "-framework", "Metal",
                 "-framework", "MetalPerformanceShaders",
                 "-framework", "Foundation",
-                "-framework", "Accelerate"
+                "-framework", "Accelerate",
+                "-lzip"
             )
             linkTaskProvider.configure { dependsOn("buildIosNativeLibs") }
         }

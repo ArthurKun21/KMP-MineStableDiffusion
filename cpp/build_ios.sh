@@ -18,13 +18,16 @@ cmake -S stable-diffusion.cpp -B build-ios-device -G Xcode \
     -DCMAKE_OSX_ARCHITECTURES="arm64" \
     -DSD_METAL=ON \
     -DSD_BUILD_SHARED_LIBS=OFF \
-    -DSD_BUILD_EXAMPLES=OFF
+    -DSD_BUILD_EXAMPLES=OFF \
+    -DCMAKE_C_FLAGS="-w" \
+    -DCMAKE_CXX_FLAGS="-w"
 
 cmake --build build-ios-device --config Release --target stable-diffusion
 
 mkdir -p libs/ios-device
 find build-ios-device -name "libstable-diffusion.a" -exec cp {} libs/ios-device/ \;
 find build-ios-device -name "libggml*.a" -exec cp {} libs/ios-device/ \;
+find build-ios-device -path "*/Release-iphoneos/libzip.a" -exec cp {} libs/ios-device/ \;
 
 # ==========================================
 # 2. Build for iOS Simulator (iphonesimulator)
@@ -41,7 +44,9 @@ cmake -S stable-diffusion.cpp -B build-ios-sim-arm64 -G Xcode \
     -DCMAKE_OSX_ARCHITECTURES="arm64" \
     -DSD_METAL=ON \
     -DSD_BUILD_SHARED_LIBS=OFF \
-    -DSD_BUILD_EXAMPLES=OFF
+    -DSD_BUILD_EXAMPLES=OFF \
+    -DCMAKE_C_FLAGS="-w" \
+    -DCMAKE_CXX_FLAGS="-w"
 
 cmake --build build-ios-sim-arm64 --config Release --target stable-diffusion
 
@@ -54,7 +59,9 @@ cmake -S stable-diffusion.cpp -B build-ios-sim-x64 -G Xcode \
     -DCMAKE_OSX_ARCHITECTURES="x86_64" \
     -DSD_METAL=ON \
     -DSD_BUILD_SHARED_LIBS=OFF \
-    -DSD_BUILD_EXAMPLES=OFF
+    -DSD_BUILD_EXAMPLES=OFF \
+    -DCMAKE_C_FLAGS="-w" \
+    -DCMAKE_CXX_FLAGS="-w"
 
 cmake --build build-ios-sim-x64 --config Release --target stable-diffusion
 
@@ -81,6 +88,7 @@ merge_lib "libggml-base.a"
 merge_lib "libggml-cpu.a"
 merge_lib "libggml-blas.a"
 merge_lib "libggml-metal.a"
+merge_lib "libzip.a"
 
 echo "--------------------------------------------------------"
 echo "iOS build complete."
