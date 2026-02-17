@@ -61,7 +61,15 @@ kotlin {
             val sdloader by creating {
                 defFile(project.file("src/nativeInterop/cinterop/sdloader.def"))
                 includeDirs(project.file("${rootProject.projectDir}/cpp/stable-diffusion.cpp/include"))
+                extraOpts("-verbose")
             }
+        }
+    }
+    
+    // Ensure cinterop depends on native build to avoid race conditions and ensure headers/libs are ready
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.CInteropProcess>().configureEach {
+        if (name.contains("SdloaderIos")) {
+            dependsOn("buildIosNativeLibs")
         }
     }
     
