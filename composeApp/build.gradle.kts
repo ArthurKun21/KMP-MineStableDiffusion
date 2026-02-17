@@ -59,8 +59,10 @@ kotlin {
         }
         iosTarget.compilations["main"].cinterops {
             val sdloader by creating {
+                val headersDir = project.file("${rootProject.projectDir}/cpp/stable-diffusion.cpp/include")
                 defFile(project.file("src/nativeInterop/cinterop/sdloader.def"))
-                includeDirs(project.file("${rootProject.projectDir}/cpp/stable-diffusion.cpp/include"))
+                compilerOpts("-I${headersDir.absolutePath}")
+                includeDirs(headersDir)
                 extraOpts("-verbose")
             }
         }
