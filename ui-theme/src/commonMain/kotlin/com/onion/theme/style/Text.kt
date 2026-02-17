@@ -1,8 +1,10 @@
 package com.onion.theme.style
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -12,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -25,67 +28,175 @@ import androidx.compose.ui.unit.TextUnit
 import ui.theme.AppTheme
 
 @Composable
-fun Text(text: String,
-               modifier: Modifier = Modifier,
-               color: Color = Color.Unspecified,
-               fontSize: TextUnit = TextUnit.Unspecified,
-               fontStyle: FontStyle? = null,
-               fontWeight: FontWeight? = null,
-               fontFamily: FontFamily? = null,
-               letterSpacing: TextUnit = TextUnit.Unspecified,
-               textDecoration: TextDecoration? = null,
-               textAlign: TextAlign? = null,
-               lineHeight: TextUnit = TextUnit.Unspecified,
-               overflow: TextOverflow = TextOverflow.Clip,
-               softWrap: Boolean = true,
-               maxLines: Int = Int.MAX_VALUE,
-               minLines: Int = 1,
-               onTextLayout: ((TextLayoutResult) -> Unit)? = null
-){
-    Text(text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing, textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout,
-        AppTheme.typography.bodySmall)
+fun Text(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    autoSize: TextAutoSize? = null,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    onTextLayout: ((TextLayoutResult) -> Unit)? = null,
+    style: TextStyle = AppTheme.typography.bodySmall
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = color,
+        autoSize = autoSize,
+        fontSize = fontSize,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        overflow = overflow,
+        softWrap = softWrap,
+        maxLines = maxLines,
+        minLines = minLines,
+        onTextLayout = onTextLayout,
+        style = style
+    )
 }
+
 @Composable
-fun MediumText(text: String,
-               modifier: Modifier = Modifier,
-               color: Color = Color.Unspecified,
-               fontSize: TextUnit = TextUnit.Unspecified,
-               fontStyle: FontStyle? = null,
-               fontWeight: FontWeight? = null,
-               fontFamily: FontFamily? = null,
-               letterSpacing: TextUnit = TextUnit.Unspecified,
-               textDecoration: TextDecoration? = null,
-               textAlign: TextAlign? = null,
-               lineHeight: TextUnit = TextUnit.Unspecified,
-               overflow: TextOverflow = TextOverflow.Clip,
-               softWrap: Boolean = true,
-               maxLines: Int = Int.MAX_VALUE,
-               minLines: Int = 1,
-               onTextLayout: ((TextLayoutResult) -> Unit)? = null
-){
-    Text(text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing, textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout,
-        AppTheme.typography.bodyMedium)
+fun Text(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    autoSize: TextAutoSize? = null,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    inlineContent: Map<String, InlineTextContent> = mapOf(),
+    onTextLayout: (TextLayoutResult) -> Unit = {},
+    style: TextStyle = AppTheme.typography.bodySmall
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = color,
+        autoSize = autoSize,
+        fontSize = fontSize,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        overflow = overflow,
+        softWrap = softWrap,
+        maxLines = maxLines,
+        minLines = minLines,
+        inlineContent = inlineContent,
+        onTextLayout = onTextLayout,
+        style = style
+    )
 }
+
 @Composable
-fun LargeText(text: String,
-               modifier: Modifier = Modifier,
-               color: Color = Color.Unspecified,
-               fontSize: TextUnit = TextUnit.Unspecified,
-               fontStyle: FontStyle? = null,
-               fontWeight: FontWeight? = null,
-               fontFamily: FontFamily? = null,
-               letterSpacing: TextUnit = TextUnit.Unspecified,
-               textDecoration: TextDecoration? = null,
-               textAlign: TextAlign? = null,
-               lineHeight: TextUnit = TextUnit.Unspecified,
-               overflow: TextOverflow = TextOverflow.Clip,
-               softWrap: Boolean = true,
-               maxLines: Int = Int.MAX_VALUE,
-               minLines: Int = 1,
-               onTextLayout: ((TextLayoutResult) -> Unit)? = null
-){
-    Text(text, modifier, color, fontSize, fontStyle, fontWeight, fontFamily, letterSpacing, textDecoration, textAlign, lineHeight, overflow, softWrap, maxLines, minLines, onTextLayout,
-        AppTheme.typography.titleLarge)
+fun MediumText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    autoSize: TextAutoSize? = null,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    onTextLayout: ((TextLayoutResult) -> Unit)? = null
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = color,
+        autoSize = autoSize,
+        fontSize = fontSize,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        overflow = overflow,
+        softWrap = softWrap,
+        maxLines = maxLines,
+        minLines = minLines,
+        onTextLayout = onTextLayout,
+        style = AppTheme.typography.bodyMedium
+    )
+}
+
+@Composable
+fun LargeText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = Color.Unspecified,
+    autoSize: TextAutoSize? = null,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    lineHeight: TextUnit = TextUnit.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    softWrap: Boolean = true,
+    maxLines: Int = Int.MAX_VALUE,
+    minLines: Int = 1,
+    onTextLayout: ((TextLayoutResult) -> Unit)? = null
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = color,
+        autoSize = autoSize,
+        fontSize = fontSize,
+        fontStyle = fontStyle,
+        fontWeight = fontWeight,
+        fontFamily = fontFamily,
+        letterSpacing = letterSpacing,
+        textDecoration = textDecoration,
+        textAlign = textAlign,
+        lineHeight = lineHeight,
+        overflow = overflow,
+        softWrap = softWrap,
+        maxLines = maxLines,
+        minLines = minLines,
+        onTextLayout = onTextLayout,
+        style = AppTheme.typography.titleLarge
+    )
 }
 
 @Composable
