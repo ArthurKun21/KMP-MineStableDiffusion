@@ -618,3 +618,10 @@ tasks.register("buildReleaseIpa", BuildIpaTask::class) {
     outputIpa = layout.buildDirectory.file("archives/release/MineStableDiffusion-${libs.versions.app.version.get()}.ipa")
     dependsOn(buildReleaseArchive)
 }
+
+// Ensure strict version resolution for kotlinx-datetime
+configurations.all {
+    resolutionStrategy {
+        force(libs.kotlinx.datetime)
+    }
+}
