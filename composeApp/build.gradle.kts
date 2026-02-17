@@ -66,7 +66,6 @@ kotlin {
                 defFile(project.file("src/nativeInterop/cinterop/sdloader.def"))
                 compilerOpts("-I${headersDir.absolutePath}")
                 includeDirs(headersDir)
-                extraOpts("-I${headersDir.absolutePath}")
                 extraOpts("-verbose")
             }
         }
