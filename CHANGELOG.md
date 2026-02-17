@@ -4,6 +4,10 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v5.0.0
+
+- IOS support
+
 ## v4.4.0
 
 - fix linux sdloader error
