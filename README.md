@@ -151,7 +151,7 @@ The **Advanced Settings** page provides fine-grained control over the inference 
 Created something amazing? We'd love to see it!
 Share your generation details (prompt, seed, model, etc.) to help others learn and create better art.
 
-[**👉 Submit your creation here**](https://github.com/Onion99/KMP-MineStableDiffusion/issues/new?template=image_generation_record.md)
+[**👉 Submit your creation here**](https://github.com/Onion99/KMP-MineStableDiffusion/issues/13)
 
 ---
 
