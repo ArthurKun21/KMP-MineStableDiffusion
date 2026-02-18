@@ -39,7 +39,7 @@ Mine StableDiffusion is a **native, offline-first AI art generation app** that b
 - **🚀 Native Performance** - C++ backend with JNI bindings for maximum speed
 - **🔒 Privacy First** - 100% offline, all processing happens on your device
 - **🎨 Modern UI** - Beautiful Compose Multiplatform interface
-- **📱 True Multiplatform** - Shared codebase for Android & Desktop
+- **📱 True Multiplatform** - Shared codebase for Android & iOS & Desktop
 - **🔧 Model Flexibility** - Support for FLUX, SDXL, SD3, and many more
 - **⚡ Hardware Accelerated** - Vulkan 1.2+ (Android/Linux/Windows) & Metal (macOS)
 
