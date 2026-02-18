@@ -101,12 +101,6 @@ Input: "A serene mountain landscape at sunset, digital art"
 Output: High-quality AI-generated image
 ```
 
-### Advanced Controls
-- Customizable generation parameters (steps, CFG scale, sampler)
-- Multiple aspect ratios
-- Seed control for reproducible results
-- Batch generation support
-
 ### ⚙️ Advanced Settings Guide
 
 The **Advanced Settings** page provides fine-grained control over the inference engine. Below is a summary of each toggle and its impact:
