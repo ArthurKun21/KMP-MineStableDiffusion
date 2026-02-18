@@ -84,10 +84,10 @@ class ChatViewModel  : ViewModel() {
     var wtype = mutableStateOf(-1)
 
     /** Offload to CPU - offload model computations to CPU */
-    var offloadToCpu = mutableStateOf(false)
+    var offloadToCpu = mutableStateOf(getPlatform().isIOS)
 
-    /** Keep CLIP on CPU - keep CLIP model on CPU (enabled by default on macOS) */
-    var keepClipOnCpu = mutableStateOf(getPlatform().isMacOS)
+    /** Keep CLIP on CPU - keep CLIP model on CPU (enabled by default on macOS and iOS) */
+    var keepClipOnCpu = mutableStateOf(getPlatform().isMacOS || getPlatform().isIOS)
 
     /** Keep VAE on CPU - keep VAE decoder on CPU */
     var keepVaeOnCpu = mutableStateOf(false)
