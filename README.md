@@ -76,7 +76,7 @@ Mine StableDiffusion supports a wide range of models. To help you choose the bes
 _Ideal for older phones or integrated graphics. High speed, low memory usage._
 - ✅ **[SD-Turbo](https://huggingface.co/stabilityai/sd-turbo)** - Extremely fast 1-step generation
 - ✅ **[SD1.x / SD2.x/Illustrious](https://civitai.com/models)**
-- ✅ **[SDXL-Turbo](https://huggingface.co/stabilityai/sdxl-turbo)** - Fast high-quality 512x512 to 1024x1024 images
+- ✅ **[SDXL-Turbo](https://huggingface.co/stabilityai/sdxl-turbo)** - Fast high 512x512 
     - Test:[Model](https://huggingface.co/stabilityai/sdxl-turbo/blob/main/sd_xl_turbo_1.0_fp16.safetensors)
     -  <img src="docs/model/sdxl.webp" width="256"  alt="sdxl">
 
