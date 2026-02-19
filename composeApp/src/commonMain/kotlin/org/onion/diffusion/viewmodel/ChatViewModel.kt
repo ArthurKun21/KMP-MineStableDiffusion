@@ -193,7 +193,7 @@ class ChatViewModel  : ViewModel() {
 
     private var responseGenerationJob: Job? = null
     private var isInferenceOn: Boolean = false
-    private val defaultNegative = "worst quality,low quality,ugly,blurry"
+    private val defaultNegative = ""
     @OptIn(ExperimentalTime::class)
     fun getImageTalkerResponse(query: String, onCancelled: () -> Unit, onError: (Throwable) -> Unit){
         runCatching {
@@ -201,7 +201,7 @@ class ChatViewModel  : ViewModel() {
                 isInferenceOn = true
                 val duration = measureTime {
                     println("\n=== Image Generation Params===")
-                    var negativeContent = defaultNegative
+                    var negativeContent = ""
                     var promptContent = query
                     if(query.contains("|")){
                         val inputContent = query.split("|")
