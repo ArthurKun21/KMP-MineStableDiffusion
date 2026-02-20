@@ -34,5 +34,5 @@ expect class DiffusionLoader(){
 
     fun release()
 
-    suspend fun saveImage(imageData: ByteArray, fileName: String): Boolean
+    suspend fun saveImage(imageData: ByteArray, fileName: String, metadata: Map<String, String>? = null): Boolean
 }

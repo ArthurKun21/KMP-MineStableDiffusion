@@ -248,10 +248,21 @@ class ChatViewModel  : ViewModel() {
                         _currentChatMessages.removeAt(lastIndex)
                         val generationDuration = Clock.System.now().toEpochMilliseconds() - startTime
                         val msg = getString(Res.string.image_generation_finished).replace("%s", formatDuration(generationDuration))
+                        val metadata = mapOf(
+                            "prompt" to promptContent,
+                            "negative_prompt" to negativeContent,
+                            "steps" to generationSteps.value.toString(),
+                            "cfg_scale" to cfgScale.value.toString(),
+                            "seed" to Clock.System.now().toEpochMilliseconds().toString(), // Note: verify if we should use the same seed as generation
+                            "model" to diffusionModelPath.value.substringAfterLast("/"),
+                             "loras" to enabledLoras.joinToString(",") { "${it.name}:${it.strength}" }
+                        )
+
                         _currentChatMessages.add(lastIndex, ChatMessage(
                             message = msg,
                             isUser = false,
-                            image = imageByteArray
+                            image = imageByteArray,
+                            metadata = metadata
                         ))
                     }
                 }
@@ -311,10 +322,21 @@ class ChatViewModel  : ViewModel() {
                         val msg = getString(Res.string.video_generation_finished)
                             .replaceFirst("%s", formatDuration(generationDuration))
                             .replaceFirst("%s", "${frames?.size ?: 0}")
+                        val metadata = mapOf(
+                            "prompt" to promptContent,
+                            "negative_prompt" to negativeContent,
+                            "video_frames" to videoFrames.value.toString(),
+                            "steps" to generationSteps.value.toString(),
+                            "cfg_scale" to cfgScale.value.toString(),
+                            "seed" to Clock.System.now().toEpochMilliseconds().toString(),
+                            "model" to diffusionModelPath.value.substringAfterLast("/"),
+                            "loras" to enabledLoras.joinToString(",") { "${it.name}:${it.strength}" }
+                        )
                         _currentChatMessages.add(lastIndex, ChatMessage(
                             message = msg,
                             isUser = false,
-                            videoFrames = frames
+                            videoFrames = frames,
+                            metadata = metadata
                         ))
                     }
                 }

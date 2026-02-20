@@ -12,6 +12,7 @@ import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.openFilePicker
 import io.github.vinceglb.filekit.name
 import io.github.vinceglb.filekit.saveImageToGallery
+import org.onion.diffusion.utils.PngMetadata
 import java.io.File
 import java.io.FileOutputStream
 
@@ -101,9 +102,14 @@ actual class DiffusionLoader actual constructor() {
         return result?.toList()
     }
 
-    actual suspend fun saveImage(imageData: ByteArray, fileName: String): Boolean {
+    actual suspend fun saveImage(imageData: ByteArray, fileName: String, metadata: Map<String, String>?): Boolean {
         return try {
-            FileKit.saveImageToGallery(imageData,fileName)
+            val finalBytes = if (metadata != null) {
+                PngMetadata.inject(imageData, metadata)
+            } else {
+                imageData
+            }
+            FileKit.saveImageToGallery(finalBytes,fileName)
             true
         } catch (e: Exception) {
             e.printStackTrace()

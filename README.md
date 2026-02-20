@@ -83,7 +83,6 @@ _Ideal for older phones or integrated graphics. High speed, low memory usage._
 
 ### ⚖️ Balanced Performance (Standard)
 _Good balance between quality and speed. Works well on most modern devices._
-- ✅ **🎨 [Chroma](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma.md) / [Chroma1-Radiance](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma_radiance.md)** - Vibrant color generation
 - ✅ **🖼️ [Z-Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/z_image.md)** - Advanced image synthesis
   - Test:[Model](https://huggingface.co/leejet/Z-Image-Turbo-GGUF/blob/main/z_image_turbo-Q2_K.gguf)+[VAE](https://huggingface.co/black-forest-labs/FLUX.1-schnell/blob/main/ae.safetensors)+[LLM](https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/blob/main/Qwen3-4B-Instruct-2507-Q2_K_L.gguf)
   -  <img src="docs/model/zimage.webp" width="256"  alt="zimage">
@@ -93,6 +92,9 @@ _Best for high-detail 1024x1024+ generation. Requires more VRAM and time._
 - ✅ **[SDXL](https://huggingface.co/stabilityai/sdxl-turbo)** - Standard high-quality base model
 - ✅ **[SD3 / SD3.5](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/sd3.md)** - Stability AI's latest high-fidelity architecture
 - ✅ **👁️ [Ovis-Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/ovis_image.md)** - Vision-language model
+- ✅ **🎨 [Chroma](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma.md) / [Chroma1-Radiance](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma_radiance.md)** - Vibrant color generation
+    - Chroma-Test:[Model](https://huggingface.co/silveroxides/Chroma-GGUF)+[VAE](https://huggingface.co/black-forest-labs/FLUX.1-dev/blob/main/ae.safetensors)+[T5XXL](https://huggingface.co/comfyanonymous/flux_text_encoders/blob/main/t5xxl_fp16.safetensors)
+    - <img src="docs/model/chroma.webp" width="256"  alt="chroma">
 
 ### 🌌 Next-Gen Large Models (Flagship & High-End PC)
 _State-of-the-art models with massive parameter counts. Best for flagship phones or dedicated GPUs._

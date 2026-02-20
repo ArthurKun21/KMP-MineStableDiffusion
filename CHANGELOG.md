@@ -4,6 +4,13 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v5.2.0
+
+### ✨ New Features
+- **Image Metadata Injection**: 
+  - Saved PNG images now automatically embed generation parameters (prompt, negative prompt, seed, steps, cfg, model, etc.) as `tEXt` chunks.
+  - Seamlessly supported across all platforms (Android, Desktop, iOS).
+
 ## v5.1.0
 
 - Fix: com/sun/security/auth/module/UnixSystem error on Linux

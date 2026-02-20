@@ -80,9 +80,14 @@ actual class DiffusionLoader actual constructor() {
         return result?.toList()
     }
 
-    actual suspend fun saveImage(imageData: ByteArray, fileName: String): Boolean {
+    actual suspend fun saveImage(imageData: ByteArray, fileName: String, metadata: Map<String, String>?): Boolean {
         return try {
-            FileKit.saveImageToGallery(imageData,fileName)
+            val finalBytes = if (metadata != null) {
+                org.onion.diffusion.utils.PngMetadata.inject(imageData, metadata)
+            } else {
+                imageData
+            }
+            FileKit.saveImageToGallery(finalBytes,fileName)
             true
         } catch (e: Exception) {
             e.printStackTrace()
