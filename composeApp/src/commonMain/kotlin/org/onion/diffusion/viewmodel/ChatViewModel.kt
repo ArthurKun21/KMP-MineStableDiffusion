@@ -413,6 +413,31 @@ class ChatViewModel  : ViewModel() {
 
     }
 
+    fun reGenerateMessage(message: ChatMessage) {
+        val prompt = message.metadata?.get("prompt") ?: return
+        val negativePrompt = message.metadata?.get("negative_prompt") ?: ""
+        
+        val fullPrompt = if (negativePrompt.isNotBlank()) {
+            "$prompt|$negativePrompt"
+        } else {
+            prompt
+        }
+        
+        val isVideo = message.videoFrames != null
+        
+        viewModelScope.launch {
+            if(isGenerating.value) stopGeneration()
+            _currentChatMessages.add(ChatMessage(fullPrompt, true))
+            _currentChatMessages.add(ChatMessage("", false))
+            isGenerating.value = true
+            if (isVideo) {
+                getVideoTalkerResponse(fullPrompt,{},{})
+            } else {
+                getImageTalkerResponse(fullPrompt,{},{})
+            }
+        }
+    }
+
     fun stopGeneration() {
         isGenerating.value = false
         responseGenerationJob?.cancel()

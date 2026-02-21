@@ -43,7 +43,9 @@ import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowDown
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SaveAlt
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -83,6 +85,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import coil3.compose.AsyncImage
@@ -110,6 +114,8 @@ import minediffusion.composeapp.generated.resources.feature_not_available
 import minediffusion.composeapp.generated.resources.ic_avatar_sytem
 import minediffusion.composeapp.generated.resources.ic_avatar_user
 import minediffusion.composeapp.generated.resources.loading
+import minediffusion.composeapp.generated.resources.text_copied
+import minediffusion.composeapp.generated.resources.copy
 import minediffusion.composeapp.generated.resources.scroll_to_bottom
 import minediffusion.composeapp.generated.resources.select
 import minediffusion.composeapp.generated.resources.select_llm_model_title
@@ -120,6 +126,7 @@ import minediffusion.composeapp.generated.resources.user_image
 import minediffusion.composeapp.generated.resources.save_image
 import minediffusion.composeapp.generated.resources.image_saved
 import minediffusion.composeapp.generated.resources.image_save_failed
+import minediffusion.composeapp.generated.resources.regenerate
 import org.onion.diffusion.native.DiffusionLoader
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.getString
@@ -307,6 +314,7 @@ private fun ChatMessagesList(chatMessages: List<ChatMessage>,snackbarHostState: 
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val chatViewModel = koinInject<ChatViewModel>()
+    val clipboardManager = LocalClipboardManager.current
 
     // Track scroll position to show/hide button
     val showScrollButton by remember {
@@ -349,6 +357,15 @@ private fun ChatMessagesList(chatMessages: List<ChatMessage>,snackbarHostState: 
                                 val success = chatViewModel.diffusionLoader.saveImage(imageData, fileName, message.metadata)
                                 val msg = if (success) getString(Res.string.image_saved) else getString(Res.string.image_save_failed)
                                 snackbarHostState.showSnackbar(msg)
+                            }
+                        },
+                        onRegenerate = if (message.metadata?.containsKey("prompt") == true) {
+                            { chatViewModel.reGenerateMessage(message) }
+                        } else null,
+                        onCopyText = { textToCopy ->
+                            clipboardManager.setText(AnnotatedString(textToCopy))
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(getString(Res.string.text_copied))
                             }
                         }
                     )
@@ -543,7 +560,9 @@ fun ChatBubble(
     message: String,
     image: ByteArray? = null,
     isUser: Boolean,
-    onSaveImage: ((ByteArray) -> Unit)? = null
+    onSaveImage: ((ByteArray) -> Unit)? = null,
+    onRegenerate: (() -> Unit)? = null,
+    onCopyText: ((String) -> Unit)? = null
 ) {
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -573,7 +592,9 @@ fun ChatBubble(
                 message = message,
                 image = image,
                 isUser = isUser,
-                onSaveImage = onSaveImage
+                onSaveImage = onSaveImage,
+                onRegenerate = onRegenerate,
+                onCopyText = onCopyText
             )
         }
     }
@@ -631,17 +652,19 @@ private fun ChatBubbleMessage(
     message: String,
     image: ByteArray? = null,
     isUser: Boolean,
-    onSaveImage: ((ByteArray) -> Unit)? = null
+    onSaveImage: ((ByteArray) -> Unit)? = null,
+    onRegenerate: (() -> Unit)? = null,
+    onCopyText: ((String) -> Unit)? = null
 ) {
     if (isUser) {
-        UserMessage(message = message, image = image)
+        UserMessage(message = message, image = image, onCopyText = onCopyText)
     } else {
-        AiMessage(message = message, image = image, onSaveImage = onSaveImage)
+        AiMessage(message = message, image = image, onSaveImage = onSaveImage, onRegenerate = onRegenerate, onCopyText = onCopyText)
     }
 }
 
 @Composable
-private fun UserMessage(message: String, image: ByteArray? = null) {
+private fun UserMessage(message: String, image: ByteArray? = null, onCopyText: ((String) -> Unit)? = null) {
     Column(modifier = Modifier.fillMaxWidth()) {
         if (image != null) {
             AsyncImage(
@@ -655,13 +678,28 @@ private fun UserMessage(message: String, image: ByteArray? = null) {
             )
         }
         if (message.isNotEmpty()) {
-            MediumText(
-                text = message,
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                modifier = Modifier
-                    .padding(top = 4.dp, end = 8.dp)
-                    .fillMaxWidth()
-            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
+                MediumText(
+                    text = message,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier
+                        .padding(top = 4.dp, end = 8.dp)
+                        .weight(1f)
+                )
+                if (onCopyText != null) {
+                    IconButton(
+                        onClick = { onCopyText.invoke(message) },
+                        modifier = Modifier.size(24.dp).padding(start = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ContentCopy,
+                            contentDescription = stringResource(Res.string.copy),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -670,7 +708,9 @@ private fun UserMessage(message: String, image: ByteArray? = null) {
 private fun AiMessage(
     message: String,
     image: ByteArray? = null,
-    onSaveImage: ((ByteArray) -> Unit)? = null
+    onSaveImage: ((ByteArray) -> Unit)? = null,
+    onRegenerate: (() -> Unit)? = null,
+    onCopyText: ((String) -> Unit)? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         // 当消息为空且无图片时，显示创意加载动画
@@ -690,35 +730,69 @@ private fun AiMessage(
                             .wrapContentSize()
                             .padding(bottom = 4.dp)
                     )
-                    // Save button overlay
-                    IconButton(
-                        onClick = { onSaveImage?.invoke(image) },
+                    // Premium Action Bar Overlay
+                    Row(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(8.dp)
-                            .size(36.dp)
                             .background(
-                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                                shape = CircleShape
+                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.7f),
+                                shape = RoundedCornerShape(16.dp)
                             )
+                            .padding(horizontal = 4.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.SaveAlt,
-                            contentDescription = stringResource(Res.string.save_image),
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(20.dp)
-                        )
+                        if (onRegenerate != null) {
+                            IconButton(
+                                onClick = onRegenerate,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Refresh,
+                                    contentDescription = stringResource(Res.string.regenerate),
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                        IconButton(
+                            onClick = { onSaveImage?.invoke(image) },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.SaveAlt,
+                                contentDescription = stringResource(Res.string.save_image),
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
                 }
             }
             if (message.isNotEmpty()) {
-                MediumText(
-                    text = message,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier
-                        .padding(top = 4.dp, end = 8.dp)
-                        .fillMaxWidth()
-                )
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
+                    MediumText(
+                        text = message,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .padding(top = 4.dp, end = 8.dp)
+                            .weight(1f)
+                    )
+                    if (onCopyText != null) {
+                        IconButton(
+                            onClick = { onCopyText.invoke(message) },
+                            modifier = Modifier.size(24.dp).padding(start = 4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ContentCopy,
+                                contentDescription = stringResource(Res.string.copy),
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
