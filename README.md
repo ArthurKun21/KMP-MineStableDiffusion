@@ -73,7 +73,7 @@ Mine StableDiffusion supports a wide range of models. To help you choose the bes
 > **Start Small**: We recommend starting with smaller models (e.g., SD-Turbo, SD 1.5) and gradually trying larger ones. This allows you to gauge your device's capabilities and identify performance bottlenecks effectively.
 
 
-### � Entry & Speed (Fastest, Minimal VRAM)
+### ⚖️ Entry & Speed (Fastest, Minimal VRAM)
 _Ideal for older phones or integrated graphics. High speed, low memory usage._
 - ✅ **[SD-Turbo](https://huggingface.co/stabilityai/sd-turbo)** - Extremely fast 1-step generation
 - ✅ **[SD1.x / SD2.x/Illustrious](https://civitai.com/models)**
