@@ -4,6 +4,10 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+## v5.4.0
+
+- Modify Android application name
+
 ## v5.3.0
 
 - add copy & retry
