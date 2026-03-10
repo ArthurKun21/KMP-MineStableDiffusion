@@ -163,6 +163,7 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeTxt2Img(JNIEnv* env, jobje
                                                               jstring jPrompt, jstring jNegative,
                                                               jint width, jint height,
                                                               jint steps, jfloat cfg, jlong seed,
+                                                              jint sampleMethod,
                                                               jobjectArray jLoraPaths, jfloatArray jLoraStrengths){
     (void)thiz;
     // 如果句柄是 0，说明初始化失败或从未初始化
@@ -207,6 +208,9 @@ Java_org_onion_diffusion_native_DiffusionLoader_nativeTxt2Img(JNIEnv* env, jobje
     sd_sample_params_init(&sample);
     if (steps > 0) sample.sample_steps = steps;
     sample.guidance.txt_cfg = cfg > 0 ? cfg : 7.0f;
+    if (sampleMethod >= 0 && sampleMethod < SAMPLE_METHOD_COUNT) {
+        sample.sample_method = static_cast<sample_method_t>(sampleMethod);
+    }
     // 初始化生成参数结构体
     sd_img_gen_params_t gen{};
     sd_img_gen_params_init(&gen);

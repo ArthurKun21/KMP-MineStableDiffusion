@@ -22,6 +22,7 @@ expect class DiffusionLoader(){
         prompt: String, negative: String,
         width: Int, height: Int,
         steps: Int, cfg: Float, seed: Long,
+        sampleMethod: Int = -1,
         loraPaths: Array<String>? = null,
         loraStrengths: FloatArray? = null
     ): ByteArray?

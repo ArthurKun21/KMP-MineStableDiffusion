@@ -67,6 +67,8 @@ import minediffusion.composeapp.generated.resources.settings_advanced_title
 import minediffusion.composeapp.generated.resources.settings_back
 import minediffusion.composeapp.generated.resources.settings_cfg_scale
 import minediffusion.composeapp.generated.resources.settings_cfg_scale_description
+import minediffusion.composeapp.generated.resources.settings_sampler
+import minediffusion.composeapp.generated.resources.settings_sampler_desc
 import minediffusion.composeapp.generated.resources.settings_current_configuration
 import minediffusion.composeapp.generated.resources.settings_flash_attn
 import minediffusion.composeapp.generated.resources.settings_flash_attn_desc
@@ -123,6 +125,7 @@ fun SettingScreen(
     val currentHeight by chatViewModel.imageHeight
     val currentSteps by chatViewModel.generationSteps
     val currentCfg by chatViewModel.cfgScale
+    val currentSampler by chatViewModel.sampleMethod
 
     Box(
         modifier = Modifier
@@ -221,6 +224,18 @@ fun SettingScreen(
                         chatViewModel.cfgScale.value = value
                     }
                 )
+                
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                // Sampler Selector
+                SamplerSelector(
+                    label = stringResource(Res.string.settings_sampler),
+                    description = stringResource(Res.string.settings_sampler_desc),
+                    currentValue = currentSampler,
+                    onValueSelected = { value ->
+                        chatViewModel.sampleMethod.value = value
+                    }
+                )
             }
             
             Spacer(modifier = Modifier.height(20.dp))
@@ -236,7 +251,8 @@ fun SettingScreen(
                 width = currentWidth,
                 height = currentHeight,
                 steps = currentSteps,
-                cfg = currentCfg
+                cfg = currentCfg,
+                sampler = currentSampler
             )
             
             Spacer(modifier = Modifier.height(32.dp))
@@ -608,8 +624,25 @@ private fun CurrentSettingsPreview(
     width: Int,
     height: Int,
     steps: Int,
-    cfg: Float
+    cfg: Float,
+    sampler: Int
 ) {
+    val samplerName = when (sampler) {
+        -1 -> "Auto"
+        0 -> "Euler"
+        1 -> "Euler a"
+        2 -> "Heun"
+        3 -> "DPM2"
+        4 -> "DPM++ 2S a"
+        5 -> "DPM++ 2M"
+        6 -> "DPM++ 2M Karras"
+        7 -> "iPNDM"
+        8 -> "iPNDM_v"
+        9 -> "LCM"
+        10 -> "DDIM"
+        11 -> "TCD"
+        else -> "Unknown"
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -646,7 +679,7 @@ private fun CurrentSettingsPreview(
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "${width}×${height} • $steps steps • CFG ${((cfg * 10).roundToInt() / 10.0)}",
+                    text = "${width}×${height} • $steps steps • CFG ${((cfg * 10).roundToInt() / 10.0)} • $samplerName",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -774,5 +807,112 @@ private fun LoraItemRow(
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SamplerSelector(
+    label: String,
+    description: String,
+    currentValue: Int,
+    onValueSelected: (Int) -> Unit
+) {
+    val samplerOptions = listOf(
+        -1 to "Auto",
+        0 to "Euler",
+        1 to "Euler a",
+        3 to "DPM2",
+        5 to "DPM++ (2M)",
+        9 to "LCM",
+        10 to "DDIM",
+        11 to "TCD"
+    )
+
+    Column {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Text(
+            text = description,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            samplerOptions.forEach { (value, name) ->
+                DimensionChip(
+                    value = value,
+                    name = name,
+                    isSelected = value == currentValue,
+                    onClick = { onValueSelected(value) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DimensionChip(
+    value: Int,
+    name: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isSelected) 
+            MaterialTheme.colorScheme.primaryContainer 
+        else 
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        animationSpec = tween(200),
+        label = "chip_bg"
+    )
+    
+    val borderColor by animateColorAsState(
+        targetValue = if (isSelected) 
+            MaterialTheme.colorScheme.primary 
+        else 
+            Color.Transparent,
+        animationSpec = tween(200),
+        label = "chip_border"
+    )
+    
+    val scale by animateFloatAsState(
+        targetValue = if (isSelected) 1.05f else 1f,
+        animationSpec = tween(150),
+        label = "chip_scale"
+    )
+    
+    Box(
+        modifier = Modifier
+            .scale(scale)
+            .clip(RoundedCornerShape(12.dp))
+            .background(backgroundColor)
+            .border(
+                width = 2.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = name,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+            color = if (isSelected) 
+                MaterialTheme.colorScheme.onPrimaryContainer 
+            else 
+                MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }

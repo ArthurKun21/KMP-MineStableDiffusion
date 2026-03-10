@@ -63,9 +63,10 @@ actual class DiffusionLoader actual constructor() {
         steps: Int,
         cfg: Float,
         seed: Long,
+        sampleMethod: Int,
         loraPaths: Array<String>?,
         loraStrengths: FloatArray?
-    ): ByteArray? = nativeTxt2Img(nativePtr,prompt,negative,width,height,steps,cfg,seed,loraPaths,loraStrengths)
+    ): ByteArray? = nativeTxt2Img(nativePtr,prompt,negative,width,height,steps,cfg,seed,sampleMethod,loraPaths,loraStrengths)
 
     actual fun videoGen(
         prompt: String,
@@ -124,6 +125,7 @@ actual class DiffusionLoader actual constructor() {
         steps: Int,
         cfg: Float,
         seed: Long,
+        sampleMethod: Int,
         loraPaths: Array<String>? = null,
         loraStrengths: FloatArray? = null
     ): ByteArray?

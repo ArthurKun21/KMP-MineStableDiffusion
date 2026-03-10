@@ -100,6 +100,9 @@ class ChatViewModel  : ViewModel() {
     /** Direct Convolution - optimize convolution in diffusion model */
     var diffusionConvDirect = mutableStateOf(false)
 
+    /** Sampling Method - default is -1 (Auto/Euler) */
+    var sampleMethod = mutableStateOf(-1)
+
     // ========================================================================================
     //                              Video Generation Settings
     // ========================================================================================
@@ -248,6 +251,7 @@ class ChatViewModel  : ViewModel() {
                         steps = generationSteps.value,//模型渲染细节的 “迭代次数”，步数越多细节越丰富，但耗时越长（20-30 步性价比最高）
                         cfg = cfgScale.value,// 控制模型 “遵守正向提示词” 的严格程度，数值越高越贴合提示词，越低越自由发挥（7.0-9.0 最常用）
                         seed = Clock.System.now().toEpochMilliseconds(),
+                        sampleMethod = sampleMethod.value,
                         loraPaths = loraPaths,
                         loraStrengths = loraStrengths
                     )
@@ -338,7 +342,7 @@ class ChatViewModel  : ViewModel() {
                         steps = generationSteps.value,
                         cfg = cfgScale.value,
                         seed = Clock.System.now().toEpochMilliseconds(),
-                        sampleMethod = 0, // EULER_SAMPLE_METHOD
+                        sampleMethod = sampleMethod.value,
                         loraPaths = loraPaths,
                         loraStrengths = loraStrengths
                     )
@@ -366,6 +370,7 @@ class ChatViewModel  : ViewModel() {
                             "cfg_scale" to cfgScale.value.toString(),
                             "seed" to Clock.System.now().toEpochMilliseconds().toString(),
                             "model" to diffusionModelPath.value.substringAfterLast("/"),
+                            "sampler" to sampleMethod.value.toString(),
                             "loras" to enabledLoras.joinToString(",") { "${it.name}:${it.strength}" }
                         )
                         _currentChatMessages.add(lastIndex, ChatMessage(

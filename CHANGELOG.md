@@ -4,6 +4,13 @@
 
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
+
+## v5.5.0
+
+- **Sampling Methods**:
+  - Select the specific algorithm used to denoise the image during generation (Euler, Euler a, DPM++ 2M, LCM, DDIM, TCD, etc.).
+  - Dynamically switches sampler directly in the stable-diffusion.cpp native backend.
+
 ## v5.4.0
 
 - Modify Android application name
@@ -22,6 +29,7 @@
   - Load external LoRA models (`.safetensors`) to adjust image generation style and details.
   - Added intuitive UI in settings for managing multiple LoRAs (enable/disable, adjust strength, remove).
   - Fully integrated with the native generation pipeline across Android, Desktop, and iOS platforms.
+
 
 ## v5.1.0
 
