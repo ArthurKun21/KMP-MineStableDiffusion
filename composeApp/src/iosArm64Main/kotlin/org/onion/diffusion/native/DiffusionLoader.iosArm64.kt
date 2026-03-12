@@ -94,6 +94,7 @@ actual class DiffusionLoader actual constructor() {
         steps: Int,
         cfg: Float,
         seed: Long,
+        sampleMethod: Int,
         loraPaths: Array<String>?,
         loraStrengths: FloatArray?
     ): ByteArray? {
