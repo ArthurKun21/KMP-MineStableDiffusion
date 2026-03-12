@@ -5,6 +5,14 @@
 本项目遵循 [语义化版本](https://semver.org/spec/v2.0.0.html)。
 
 
+## v5.6.0
+
+### ✨ New Features
+- **Batch Image Generation**:
+  - Added support for generating multiple images in a single batch (1-10 images per request).
+  - Configurable "Batch Size" (生成数量) slider in Generation Quality settings.
+  - Real-time sequential generation display with progress tracking (e.g., `(1/4)`, `(2/4)`) directly in the chat interface.
+
 ## v5.5.0
 
 - **Sampling Methods**:

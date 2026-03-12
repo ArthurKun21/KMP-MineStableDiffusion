@@ -72,6 +72,9 @@ class ChatViewModel  : ViewModel() {
     /** Image height - options: 128, 256, 512, 768, 1024 */
     var imageHeight = mutableStateOf(512)
     
+    /** Batch count - number of images to generate */
+    var batchCount = mutableStateOf(1)
+    
     /** Steps for generation - range: 1-50 */
     var generationSteps = mutableStateOf(5)
     
@@ -236,67 +239,80 @@ class ChatViewModel  : ViewModel() {
                     println("Image prompt: $promptContent")
                     println("Image negative: $negativeContent")
                     // Call txt2Img to generate image from the query prompt
-                    val startTime = Clock.System.now().toEpochMilliseconds()
 
                     val enabledLoras = loraList.filter { it.isEnabled }
                     val loraPaths = enabledLoras.map { it.path }.toTypedArray()
                     val loraStrengths = enabledLoras.map { it.strength }.toFloatArray()
 
-                    val imageByteArray = diffusionLoader.txt2Img(
-                        prompt = promptContent,
-                        negative = negativeContent,
-                        // 768×1024（竖版人像）/ 1024×768（横版场景）/ 1024×1344（高清竖版）
-                        width = imageWidth.value,
-                        height = imageHeight.value,
-                        steps = generationSteps.value,//模型渲染细节的 “迭代次数”，步数越多细节越丰富，但耗时越长（20-30 步性价比最高）
-                        cfg = cfgScale.value,// 控制模型 “遵守正向提示词” 的严格程度，数值越高越贴合提示词，越低越自由发挥（7.0-9.0 最常用）
-                        seed = Clock.System.now().toEpochMilliseconds(),
-                        sampleMethod = sampleMethod.value,
-                        loraPaths = loraPaths,
-                        loraStrengths = loraStrengths
-                    )
-
-                    // Debug logging to verify image format
-                    println("=== Image Generation Debug ===")
-                    println("Image size: ${imageByteArray?.size} bytes")
-                    if (imageByteArray != null && imageByteArray.size >= 10) {
-                        println("First 10 bytes: ${imageByteArray.take(10).joinToString { it.toString() }}")
-                        // PNG signature: 137 80 78 71 13 10 26 10 (需要使用 and 0xFF 转换为无符号值)
-                        // JPEG signature: 255 216 255
-                        val isPNG = imageByteArray.size >= 8 &&
-                                imageByteArray[0].toInt() and 0xFF == 137 &&
-                                imageByteArray[1].toInt() and 0xFF == 80 &&
-                                imageByteArray[2].toInt() and 0xFF == 78 &&
-                                imageByteArray[3].toInt() and 0xFF == 71
-                        val isJPEG = imageByteArray.size >= 3 &&
-                                imageByteArray[0].toInt() and 0xFF == 255 &&
-                                imageByteArray[1].toInt() and 0xFF == 216
-                        println("Format detection - PNG: $isPNG, JPEG: $isJPEG")
-                    }
-                    println("==============================")
-                    // Update the last message in the chat with the generated image
-                    // Using removeAt + add instead of index assignment to trigger recomposition
-                    if (_currentChatMessages.isNotEmpty()) {
-                        val lastIndex = _currentChatMessages.lastIndex
-                        _currentChatMessages.removeAt(lastIndex)
-                        val generationDuration = Clock.System.now().toEpochMilliseconds() - startTime
-                        val msg = getString(Res.string.image_generation_finished).replace("%s", formatDuration(generationDuration))
-                        val metadata = mapOf(
-                            "prompt" to promptContent,
-                            "negative_prompt" to negativeContent,
-                            "steps" to generationSteps.value.toString(),
-                            "cfg_scale" to cfgScale.value.toString(),
-                            "seed" to Clock.System.now().toEpochMilliseconds().toString(), // Note: verify if we should use the same seed as generation
-                            "model" to diffusionModelPath.value.substringAfterLast("/"),
-                             "loras" to enabledLoras.joinToString(",") { "${it.name}:${it.strength}" }
+                    var first = true
+                    for (i in 0 until batchCount.value) {
+                        val startTime = Clock.System.now().toEpochMilliseconds()
+                        val imageByteArray = diffusionLoader.txt2Img(
+                            prompt = promptContent,
+                            negative = negativeContent,
+                            // 768×1024（竖版人像）/ 1024×768（横版场景）/ 1024×1344（高清竖版）
+                            width = imageWidth.value,
+                            height = imageHeight.value,
+                            steps = generationSteps.value,//模型渲染细节的 “迭代次数”，步数越多细节越丰富，但耗时越长（20-30 步性价比最高）
+                            cfg = cfgScale.value,// 控制模型 “遵守正向提示词” 的严格程度，数值越高越贴合提示词，越低越自由发挥（7.0-9.0 最常用）
+                            seed = Clock.System.now().toEpochMilliseconds(),
+                            sampleMethod = sampleMethod.value,
+                            loraPaths = loraPaths,
+                            loraStrengths = loraStrengths
                         )
 
-                        _currentChatMessages.add(lastIndex, ChatMessage(
-                            message = msg,
-                            isUser = false,
-                            image = imageByteArray,
-                            metadata = metadata
-                        ))
+                        // Debug logging to verify image format
+                        println("=== Image Generation Debug ===")
+                        println("Image size: ${imageByteArray?.size} bytes")
+                        if (imageByteArray != null && imageByteArray.size >= 10) {
+                            println("First 10 bytes: ${imageByteArray.take(10).joinToString { it.toString() }}")
+                            // PNG signature: 137 80 78 71 13 10 26 10 (需要使用 and 0xFF 转换为无符号值)
+                            // JPEG signature: 255 216 255
+                            val isPNG = imageByteArray.size >= 8 &&
+                                    imageByteArray[0].toInt() and 0xFF == 137 &&
+                                    imageByteArray[1].toInt() and 0xFF == 80 &&
+                                    imageByteArray[2].toInt() and 0xFF == 78 &&
+                                    imageByteArray[3].toInt() and 0xFF == 71
+                            val isJPEG = imageByteArray.size >= 3 &&
+                                    imageByteArray[0].toInt() and 0xFF == 255 &&
+                                    imageByteArray[1].toInt() and 0xFF == 216
+                            println("Format detection - PNG: $isPNG, JPEG: $isJPEG")
+                        }
+                        println("==============================")
+                        // Update the last message in the chat with the generated image
+                        // Using removeAt + add instead of index assignment to trigger recomposition
+                        if (_currentChatMessages.isNotEmpty()) {
+                            val lastIndex = _currentChatMessages.lastIndex
+                            if (first) {
+                                _currentChatMessages.removeAt(lastIndex)
+                                first = false
+                            } else {
+                                _currentChatMessages.removeAt(lastIndex)
+                            }
+                            val generationDuration = Clock.System.now().toEpochMilliseconds() - startTime
+                            val batchStr = if (batchCount.value > 1) " (${i + 1}/${batchCount.value})" else ""
+                            val msg = getString(Res.string.image_generation_finished).replace("%s", formatDuration(generationDuration)) + batchStr
+                            val metadata = mapOf(
+                                "prompt" to promptContent,
+                                "negative_prompt" to negativeContent,
+                                "steps" to generationSteps.value.toString(),
+                                "cfg_scale" to cfgScale.value.toString(),
+                                "seed" to Clock.System.now().toEpochMilliseconds().toString(), // Note: verify if we should use the same seed as generation
+                                "model" to diffusionModelPath.value.substringAfterLast("/"),
+                                 "loras" to enabledLoras.joinToString(",") { "${it.name}:${it.strength}" }
+                            )
+
+                            _currentChatMessages.add(ChatMessage(
+                                message = msg,
+                                isUser = false,
+                                image = imageByteArray,
+                                metadata = metadata
+                            ))
+                            
+                            if (i < batchCount.value - 1) {
+                                _currentChatMessages.add(ChatMessage("", false))
+                            }
+                        }
                     }
                 }
                 isGenerating.value = false

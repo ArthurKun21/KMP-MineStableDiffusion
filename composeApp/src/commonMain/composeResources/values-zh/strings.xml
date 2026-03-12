@@ -50,6 +50,8 @@
     <string name="settings_cfg_scale_description">低 = 创意 | 高 = 精准</string>
     <string name="settings_sampler">采样方法</string>
     <string name="settings_sampler_desc">选择用于图像去噪的生成算法</string>
+    <string name="settings_batch_count">生成数量</string>
+    <string name="settings_batch_count_description">一次生成的图片数量</string>
     <string name="settings_current_configuration">当前配置</string>
     <string name="settings_advanced_title">高级设置</string>
     <string name="settings_advanced_subtitle">性能调优与实验性功能</string>

@@ -51,6 +51,8 @@
     <string name="settings_cfg_scale_description">Low = Creative | High = Precise</string>
     <string name="settings_sampler">Sampling Method</string>
     <string name="settings_sampler_desc">Select the algorithm used to denoise the image</string>
+    <string name="settings_batch_count">Batch Size</string>
+    <string name="settings_batch_count_description">Number of images to generate</string>
     <string name="settings_current_configuration">Current Configuration</string>
     <string name="settings_advanced_title">Advanced Settings</string>
     <string name="settings_advanced_subtitle">Experimental features and optimizations</string>

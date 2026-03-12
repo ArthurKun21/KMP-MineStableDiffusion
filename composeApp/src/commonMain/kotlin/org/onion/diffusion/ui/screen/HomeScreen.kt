@@ -360,7 +360,13 @@ private fun ChatMessagesList(chatMessages: List<ChatMessage>,snackbarHostState: 
                             }
                         },
                         onRegenerate = if (message.metadata?.containsKey("prompt") == true) {
-                            { chatViewModel.reGenerateMessage(message) }
+                            {
+                                if (chatViewModel.isGenerating.value) {
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar(getString(Res.string.error_no_interrupt_api))
+                                    }
+                                }else chatViewModel.reGenerateMessage(message)
+                            }
                         } else null,
                         onCopyText = { textToCopy ->
                             clipboardManager.setText(AnnotatedString(textToCopy))

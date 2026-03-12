@@ -69,6 +69,8 @@ import minediffusion.composeapp.generated.resources.settings_cfg_scale
 import minediffusion.composeapp.generated.resources.settings_cfg_scale_description
 import minediffusion.composeapp.generated.resources.settings_sampler
 import minediffusion.composeapp.generated.resources.settings_sampler_desc
+import minediffusion.composeapp.generated.resources.settings_batch_count
+import minediffusion.composeapp.generated.resources.settings_batch_count_description
 import minediffusion.composeapp.generated.resources.settings_current_configuration
 import minediffusion.composeapp.generated.resources.settings_flash_attn
 import minediffusion.composeapp.generated.resources.settings_flash_attn_desc
@@ -123,6 +125,7 @@ fun SettingScreen(
     // Direct access to mutableStateOf properties (singleton ViewModel)
     val currentWidth by chatViewModel.imageWidth
     val currentHeight by chatViewModel.imageHeight
+    val currentBatchCount by chatViewModel.batchCount
     val currentSteps by chatViewModel.generationSteps
     val currentCfg by chatViewModel.cfgScale
     val currentSampler by chatViewModel.sampleMethod
@@ -197,6 +200,21 @@ fun SettingScreen(
                 subtitle = stringResource(Res.string.settings_generation_quality_subtitle),
                 icon = Icons.Default.Tune
             ) {
+                // Batch Count Slider
+                SliderSetting(
+                    label = stringResource(Res.string.settings_batch_count),
+                    value = currentBatchCount.toFloat(),
+                    valueRange = 1f..10f,
+                    steps = 8,
+                    valueDisplay = currentBatchCount.toString(),
+                    description = stringResource(Res.string.settings_batch_count_description),
+                    onValueChange = { value ->
+                        chatViewModel.batchCount.value = value.toInt()
+                    }
+                )
+                
+                Spacer(modifier = Modifier.height(24.dp))
+                
                 // Steps Slider
                 SliderSetting(
                     label = stringResource(Res.string.settings_steps),
