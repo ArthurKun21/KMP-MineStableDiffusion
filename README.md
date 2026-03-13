@@ -41,8 +41,10 @@ Mine StableDiffusion is a **native, offline-first AI art generation app** that b
 - **🎨 Modern UI** - Beautiful Compose Multiplatform interface
 - **📱 True Multiplatform** - Shared codebase for Android & iOS & Desktop
 - **🔧 Model Flexibility** - Support for FLUX, SDXL, SD3, and many more
-- **⚡ Hardware Accelerated** - Vulkan 1.2+ (Android/Linux/Windows) & Metal (macOS)
-- **🏷️ Embedded Metadata** - Automatically saves generation parameters (prompts, seeds, etc.) directly into exported PNGs
+- **⚡ Hardware Accelerated** - Vulkan 1.2+ (Android/Linux/Windows) & Metal (macOS/iOS)
+- **🧩 Extensions & Plugins** - Full support for external LoRA models (`.safetensors`) offering stylized output
+- **🛠  Power Features** - Batch Image Generation, Flash Attention, Multi-step Samplers, Direct Convolution
+- **🏷️ Embedded Metadata** - Automatically saves generation parameters (prompts, seeds, dimensions, models, loras) directly into exported PNGs
 
 ---
 
@@ -99,13 +101,19 @@ _Best for high-detail 1024x1024+ generation. Requires more VRAM and time._
 
 ## 🌟 Key Features
 
-### Text-to-Image Generation
-Generate stunning images from text descriptions with various models
+### Text-to-Image / Batch Generation
+Generate single or multiple stunning images from text descriptions with various models synchronously.
 
 ```
 Input: "A serene mountain landscape at sunset, digital art"
-Output: High-quality AI-generated image
+Output: High-quality AI-generated image(s) with progress indicator
 ```
+
+### 🧩 LoRA Integration
+Effortlessly stylize generations by utilizing multiple `.safetensors` LoRA files with completely customizable strength dials directly from the sleek UI settings.
+
+### 📊 Transparent Sampler Algorithms
+Choose the perfect algorithm for your workflow directly on device (e.g. Euler, Euler a, DPM++ 2M, DDIM, LCM, TCD, and more) to master the noise-canceling mechanics.
 
 ### ⚙️ Advanced Settings Guide
 

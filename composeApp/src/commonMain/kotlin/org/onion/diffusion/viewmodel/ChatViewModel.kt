@@ -299,6 +299,8 @@ class ChatViewModel  : ViewModel() {
                                 "cfg_scale" to cfgScale.value.toString(),
                                 "seed" to Clock.System.now().toEpochMilliseconds().toString(), // Note: verify if we should use the same seed as generation
                                 "model" to diffusionModelPath.value.substringAfterLast("/"),
+                                "width" to imageWidth.value.toString(),
+                                "height" to imageHeight.value.toString(),
                                  "loras" to enabledLoras.joinToString(",") { "${it.name}:${it.strength}" }
                             )
 

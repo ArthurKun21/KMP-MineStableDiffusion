@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -336,7 +337,7 @@ private fun ChatMessagesList(chatMessages: List<ChatMessage>,snackbarHostState: 
                 .padding(top = 70.dp, bottom = 90.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(chatMessages) { message ->
+            items(chatMessages, key = { it.id }) { message ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -373,7 +374,8 @@ private fun ChatMessagesList(chatMessages: List<ChatMessage>,snackbarHostState: 
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar(getString(Res.string.text_copied))
                             }
-                        }
+                        },
+                        metadata = message.metadata
                     )
                 }
             }
@@ -568,7 +570,8 @@ fun ChatBubble(
     isUser: Boolean,
     onSaveImage: ((ByteArray) -> Unit)? = null,
     onRegenerate: (() -> Unit)? = null,
-    onCopyText: ((String) -> Unit)? = null
+    onCopyText: ((String) -> Unit)? = null,
+    metadata: Map<String, String>? = null
 ) {
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -600,7 +603,8 @@ fun ChatBubble(
                 isUser = isUser,
                 onSaveImage = onSaveImage,
                 onRegenerate = onRegenerate,
-                onCopyText = onCopyText
+                onCopyText = onCopyText,
+                metadata = metadata
             )
         }
     }
@@ -660,12 +664,13 @@ private fun ChatBubbleMessage(
     isUser: Boolean,
     onSaveImage: ((ByteArray) -> Unit)? = null,
     onRegenerate: (() -> Unit)? = null,
-    onCopyText: ((String) -> Unit)? = null
+    onCopyText: ((String) -> Unit)? = null,
+    metadata: Map<String, String>? = null
 ) {
     if (isUser) {
         UserMessage(message = message, image = image, onCopyText = onCopyText)
     } else {
-        AiMessage(message = message, image = image, onSaveImage = onSaveImage, onRegenerate = onRegenerate, onCopyText = onCopyText)
+        AiMessage(message = message, image = image, onSaveImage = onSaveImage, onRegenerate = onRegenerate, onCopyText = onCopyText, metadata = metadata)
     }
 }
 
@@ -716,7 +721,8 @@ private fun AiMessage(
     image: ByteArray? = null,
     onSaveImage: ((ByteArray) -> Unit)? = null,
     onRegenerate: (() -> Unit)? = null,
-    onCopyText: ((String) -> Unit)? = null
+    onCopyText: ((String) -> Unit)? = null,
+    metadata: Map<String, String>? = null
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         // 当消息为空且无图片时，显示创意加载动画
@@ -726,15 +732,28 @@ private fun AiMessage(
             // 正常显示逻辑
             if (image != null) {
                 Box(modifier = Modifier.wrapContentSize()) {
+                    // Try to pre-calculate aspect ratio to prevent layout shifts
+                    val widthStr = metadata?.get("width")
+                    val heightStr = metadata?.get("height")
+                    val imgModifier = Modifier
+                        .padding(bottom = 4.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .let { m ->
+                            if (widthStr != null && heightStr != null && widthStr.toFloatOrNull() != null && heightStr.toFloatOrNull() != null) {
+                                val w = widthStr.toFloat()
+                                val h = heightStr.toFloat()
+                                m.aspectRatio(w / h)
+                            } else {
+                                m.wrapContentSize()
+                            }
+                        }
+
                     AsyncImage(
                         model = image,
                         contentDescription = stringResource(Res.string.ai_image),
                         alignment = Alignment.Center,
-                        contentScale = ContentScale.Inside,
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .wrapContentSize()
-                            .padding(bottom = 4.dp)
+                        contentScale = ContentScale.Fit,
+                        modifier = imgModifier
                     )
                     // Premium Action Bar Overlay
                     Row(
