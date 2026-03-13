@@ -39,7 +39,7 @@ Mine StableDiffusion is a **native, offline-first AI art generation studio** res
 - 🚀 **Native Performance** — Pure C++ backend combined with JNI bindings ensures maximum hardware utilization.
 - 🔒 **100% Privacy** — Everything runs offline. No cloud, no subscriptions, no data harvesting.
 - 📱 **True Multiplatform** — A unified, beautiful Compose Multiplatform UX natively adapted for Mobile & Desktop.
-- � **Pro-Level Controls** — Granular control over VRAM (Flash Attention, CPU Offloading, Direct Convolution).
+- 💠 **Pro-Level Controls** — Granular control over VRAM (Flash Attention, CPU Offloading, Direct Convolution).
 - 🧩 **Endless Expansion** — Out-of-the-box support for external `.safetensors` LoRAs, advanced Samplers, and metadata injection.
 
 ---
@@ -105,22 +105,25 @@ _Best for high-detail 1024x1024+ generation. Requires more VRAM and time._
 
 ---
 
-## 🛠 Advanced Controls Deep Dive
+### ⚙️ Advanced Settings Guide
 
-For power users, our settings menu opens up the entire `stable-diffusion.cpp` engine.
+The **Advanced Settings** page provides fine-grained control over the inference engine. Below is a summary of each toggle and its impact:
 
-| Tuning Parameter | What it does | Pro Tip |
-|------------------|--------------|---------|
-| **Quantization (wtype)** | Formats weights to limit RAM footprint (F16, Q8_0, Q4_K). | _Leave on `Auto` unless explicitly tuning for low VRAM targets._ |
-| **Flash Attention** | Memory-optimized attention tracking logic. | _Enable immediately on devices with `< 8GB RAM` for huge memory savings._ |
-| **CPU Offloading** | Manually unloads layers (like CLIP or VAE) out of VRAM. | _If you hit `Out of Memory` decoding the final image, enable `Keep VAE on CPU`._ |
-| **Memory Mapping (MMAP)** | Maps weights directly from storage rather than bulk loading RAM. | _Enabled on Android by default. Disable on Desktop if you have slow HDDs._ |
+| Setting | Description | Effect When ON | Effect When OFF | Recommendation |
+|---------|-------------|----------------|-----------------|----------------|
+| **Offload to CPU** | Offloads model computations from GPU to CPU | Saves GPU/VRAM at the cost of slower generation speed. | All computation stays on GPU (faster but needs more VRAM). | Enable on low-VRAM devices. |
+| **Keep CLIP on CPU** | Forces the CLIP text encoder to stay on CPU | Frees GPU memory for image generation; slightly slower prompt encoding. | CLIP runs on GPU (faster but uses more VRAM). | ✅ Enabled by default on **macOS** to prevent potential crashes. |
+| **Keep VAE on CPU** | Forces the VAE decoder to stay on CPU | Frees GPU memory; decoding step is slower. | VAE runs on GPU (faster final decode). | Enable if you encounter OOM errors during decode. |
+| **Enable MMAP** | Memory-maps model weights from disk instead of loading them entirely into RAM | Lower initial RAM spike; the OS pages weights in on demand (more disk I/O). | Entire model is loaded into RAM upfront (higher peak RAM, lower disk I/O). |  Disable if you experience slow generation on devices with slow storage. |
+| **Direct Convolution** | Uses a direct convolution implementation in the diffusion model | Experimental performance boost on some hardware. | Standard im2col-based convolution is used. | Try enabling to see if it improves speed on your device; disable if quality degrades. |
 
-<br>
-<div align="center">
-  <img src="./docs/setting_tip.webp" height="250" style="border-radius:12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" alt="Memory Setting Example"/>
-</div>
-<br>
+**Model Weight Type (wtype)** — Controls how model weights are stored in memory. Lower bit-depth reduces RAM usage but may degrade image quality.
+
+> [!TIP]
+> **K-variants** (Q6_K, Q5_K, Q4_K, Q3_K, Q2_K) offer better quality at the same bit-depth compared to their legacy counterparts. Most users should keep **Auto** and only change this if they have specific memory constraints.
+
+> [!WARNING]
+> Changing the weight type requires re-loading the model, which can take a long time. Only change this setting if you understand the trade-offs.
 
 ---
 
