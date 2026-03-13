@@ -84,17 +84,21 @@ We cover bleeding-edge architectures. Ensure the models you pick fit within your
 ### ⚖️ Entry & Speed (Fastest, Minimal VRAM)
 _Ideal for older phones or integrated graphics. High speed, low memory usage._
 - ✅ **[SD-Turbo](https://huggingface.co/stabilityai/sd-turbo)** - Extremely fast 1-step generation
-- ✅ **[SD1.x / SD2.x/Illustrious](https://civitai.com/models)**
-- ✅ **[SDXL-Turbo](https://huggingface.co/stabilityai/sdxl-turbo)** - Fast high 512x512
+- ✅ **SD 1.x / SD 2.x** - The classic standard models
+
+### ⚖️ Balanced Performance (Moderate VRAM)
+_Great middle ground for modern phones and mid-range PCs. Requires 4GB-8GB VRAM._
+- ✅ **[Illustrious-XL / Pony](https://civitai.com/models)** - Popular high-quality SDXL-based community models
+- ✅ **[SDXL-Turbo](https://huggingface.co/stabilityai/sdxl-turbo)** - Fast high quality 512x512
     - Test:[Model](https://huggingface.co/stabilityai/sdxl-turbo/blob/main/sd_xl_turbo_1.0_fp16.safetensors)
     -  <img src="docs/model/sdxl.webp" width="256"  alt="sdxl">
-- ✅ **🖼️ [Z-Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/z_image.md)** - Advanced image synthesis
+- ✅ **[SDXL](https://huggingface.co/stabilityai/sdxl-turbo)** - Standard high-quality base model
+- ✅ **🖼️ [Z-Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/z_image.md)** - Advanced image synthesis pipeline
     - Test:[Model](https://huggingface.co/leejet/Z-Image-Turbo-GGUF/blob/main/z_image_turbo-Q2_K.gguf)+[VAE](https://huggingface.co/black-forest-labs/FLUX.1-schnell/blob/main/ae.safetensors)+[LLM](https://huggingface.co/unsloth/Qwen3-4B-Instruct-2507-GGUF/blob/main/Qwen3-4B-Instruct-2507-Q2_K_L.gguf)
     -  <img src="docs/model/zimage.webp" width="256"  alt="zimage">
 
 ### 💎 Professional Quality (High Requirements)
-_Best for high-detail 1024x1024+ generation. Requires more VRAM and time._
-- ✅ **[SDXL](https://huggingface.co/stabilityai/sdxl-turbo)** - Standard high-quality base model
+_Best for high-detail 1024x1024+ generation. Requires modern GPUs with ample VRAM._
 - ✅ **[SD3 / SD3.5](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/sd3.md)** - Stability AI's latest high-fidelity architecture
 - ✅ **👁️ [Ovis-Image](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/ovis_image.md)** - Vision-language model
 - ✅ **🎨 [Chroma](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma.md) / [Chroma1-Radiance](https://github.com/leejet/stable-diffusion.cpp/blob/master/docs/chroma_radiance.md)** - Vibrant color generation
