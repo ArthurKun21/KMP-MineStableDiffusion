@@ -81,7 +81,7 @@ We cover bleeding-edge architectures. Ensure the models you pick fit within your
 > [!TIP]
 > **Start Small**: We highly recommend testing the waters with **SD-Turbo** or **SD 1.5** models to gauge your device's capabilities before moving to demanding architectures like FLUX.
 
-### ⚖️ Entry & Speed (Fastest, Minimal VRAM)
+### 🎮 Entry & Speed (Fastest, Minimal VRAM)
 
 - ✅ **[SD-Turbo](https://huggingface.co/stabilityai/sd-turbo)** - Extremely fast 1-step generation
 - ✅ **SD 1.x / SD 2.x** - The classic standard models
