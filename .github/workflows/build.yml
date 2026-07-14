@@ -1,8 +1,8 @@
 name: Build
 
 on:
-  schedule:
-    - cron: '0 3 * * *' # 每天凌晨3点运行一次测试构建
+  #schedule:
+  #  - cron: '0 3 * * *' # 每天凌晨3点运行一次测试构建
   # 1. 当代码推送到 main 分支时
   push:
     branches:
